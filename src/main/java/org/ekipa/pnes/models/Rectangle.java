@@ -26,7 +26,7 @@ public class Rectangle extends NetElement {
 
     public Rectangle(String id, String name, double x, double y, double rotationAngle, NetElement start, NetElement end) {
         super(id, name, x, y);
-        this.rotationAngle = rotationAngle;
+        this.rotationAngle = (rotationAngle % 360);
         this.start = start;
         this.end = end;
     }
