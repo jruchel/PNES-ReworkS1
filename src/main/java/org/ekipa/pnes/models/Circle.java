@@ -2,6 +2,7 @@ package org.ekipa.pnes.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.ekipa.pnes.models.token.Token;
 
 import java.util.ArrayList;
 import java.util.List;
