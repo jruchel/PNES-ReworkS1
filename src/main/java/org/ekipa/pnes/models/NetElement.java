@@ -17,6 +17,10 @@ public abstract class NetElement {
     private List<Arc> arcs;
 
     public NetElement(String id, String name, double x, double y) {
+        this.id = id;
+        this.name = name;
+        this.x = x;
+        this.y = y;
         this.arcs = new ArrayList<>();
     }
 
