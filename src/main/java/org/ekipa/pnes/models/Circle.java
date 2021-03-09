@@ -3,6 +3,7 @@ package org.ekipa.pnes.models;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,11 +15,13 @@ public class Circle extends NetElement {
     public Circle(String id, String name, double x, double y, List<Arc> arcs, int tokenCapacity) {
         super(id, name, x, y, arcs);
         this.tokenCapacity = tokenCapacity;
+        List<Token> tokens = new ArrayList<>();
     }
 
     public Circle(String id, String name, double x, double y, int tokenCapacity) {
         super(id, name, x, y);
         this.tokenCapacity = tokenCapacity;
+        List<Token> tokens = new ArrayList<>();
     }
 
     public Circle(String id, String name, double x, double y, List<Arc> arcs, int tokenCapacity, List<Token> tokens) {
