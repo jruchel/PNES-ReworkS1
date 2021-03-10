@@ -1,18 +1,14 @@
-package org.ekipa.pnes.utils;
-
 import org.ekipa.pnes.models.Circle;
 import org.ekipa.pnes.models.NetElement;
 import org.ekipa.pnes.models.Rectangle;
 import org.ekipa.pnes.models.token.IntegerTokenValue;
 import org.ekipa.pnes.models.token.Token;
 import org.ekipa.pnes.models.token.ValidationException;
+import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IdGeneratorTest {
 
@@ -22,20 +18,19 @@ class IdGeneratorTest {
     private NetElement Circle1;
     private NetElement Circle2;
     private NetElement Circle3;
-    private Token token;
 
 
     @BeforeEach
-    private void initialize() throws ValidationException {
+    public void initialize() throws ValidationException {
 
+        IdGenerator.reset();
+        Rectangle1 = new Rectangle("", "P", 2, 3, 20, Rectangle1, Rectangle2);
+        Rectangle2 = new Rectangle("", "P", 4, 5, 20, Rectangle2, Rectangle3);
+        Rectangle3 = new Rectangle("", "P", 4, 5, 20, Rectangle3, Rectangle1);
 
-        Rectangle1 = new Rectangle("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
-        Rectangle2 = new Rectangle("P-1", "P", 4, 5, 20, Rectangle2, Rectangle3);
-        Rectangle3 = new Rectangle("P-2", "P", 4, 5, 20, Rectangle3, Rectangle1);
-
-        Circle1 = new Circle<IntegerTokenValue>("K-0", "K", 2, 3, 5);
-        Circle2 = new Circle<IntegerTokenValue>("K-1", "K", 2, 3, 5);
-        Circle3 = new Circle<IntegerTokenValue>("K-2", "K", 2, 3, 5);
+        Circle1 = new Circle<IntegerTokenValue>("", "K", 2, 3, 5);
+        Circle2 = new Circle<IntegerTokenValue>("", "K", 2, 3, 5);
+        Circle3 = new Circle<IntegerTokenValue>("", "K", 2, 3, 5);
 
 
         token = new Token<IntegerTokenValue>(Circle1, new IntegerTokenValue(5L));
@@ -55,6 +50,7 @@ class IdGeneratorTest {
     @Test
     public void doesShapeHaveTheSameIdBeforeUsingSetIdAndAfter() {
 
+        Rectangle1.setId("P-0");
         String expected = Rectangle1.getId();
         String actual = IdGenerator.setId(Rectangle1).getId();
 

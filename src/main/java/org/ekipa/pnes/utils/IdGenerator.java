@@ -13,6 +13,10 @@ public class IdGenerator {
         elementsList = new ArrayList<>();
     }
 
+    public static void reset() {
+        elementsList = new ArrayList<>();
+    }
+
     public static NetElement setId(NetElement element) {
         if (elementsList.contains(element)) return element;
         element.setId(String.format("%s-%d", element.getName(), findOccurrencesOfSameType(element)));
