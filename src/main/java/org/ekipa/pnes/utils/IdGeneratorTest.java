@@ -81,55 +81,50 @@ class IdGeneratorTest {
     @Test
     public void doesIdGenerateWellForCircle() {
 
-        int correctGenerateId = 0;
+        String expected;
+        String actual;
 
         IdGenerator.setId(Circle1);
+        expected = "K-0";
+        actual = Circle1.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Circle2);
+        expected = "K-1";
+        actual = Circle2.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Circle3);
-
-        ArrayList<String> listOfGeneratedId = new ArrayList<>();
-
-        listOfGeneratedId.add(Circle1.getId());
-        listOfGeneratedId.add(Circle2.getId());
-        listOfGeneratedId.add(Circle3.getId());
-
-        for (int i = 0; i < listOfGeneratedId.size(); i++) {
-            if (listOfGeneratedId.get(i).equals("K-" + i)) {
-                correctGenerateId++;
-            }
-        }
-
-        int expected = 3;
-        int actual = correctGenerateId;
+        expected = "K-2";
+        actual = Circle3.getId();
 
         assertEquals(expected, actual);
 
     }
 
-
     @Test
     public void doesIdGenerateWellForRectangle() {
 
-        int correctGenerateId = 0;
+        String expected;
+        String actual;
 
         IdGenerator.setId(Rectangle1);
+        expected = "P-0";
+        actual = Rectangle1.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Rectangle2);
+        expected = "P-1";
+        actual = Rectangle2.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Rectangle3);
-
-        ArrayList<String> listOfGeneratedId = new ArrayList<>();
-
-        listOfGeneratedId.add(Rectangle1.getId());
-        listOfGeneratedId.add(Rectangle2.getId());
-        listOfGeneratedId.add(Rectangle3.getId());
-
-        for (int i = 0; i < listOfGeneratedId.size(); i++) {
-            if (listOfGeneratedId.get(i).equals("P-" + i)) {
-                correctGenerateId++;
-            }
-        }
-
-        int expected = 3;
-        int actual = correctGenerateId;
+        expected = "P-2";
+        actual = Rectangle3.getId();
 
         assertEquals(expected, actual);
 
@@ -138,48 +133,47 @@ class IdGeneratorTest {
     @Test
     public void doesIdGenerateWellForCircleAndRectangleTogether() {
 
-        int correctGenerateIdRectangle = 0;
-        int correctGenerateIdCircle = 0;
-        int correctIdAtTheMomentRectangle = 0;
-        int correctIdAtTheMomentCircle = 0;
+        String expected;
+        String actual;
 
         IdGenerator.setId(Rectangle1);
+        expected = "P-0";
+        actual = Rectangle1.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Circle1);
+        expected = "K-0";
+        actual = Circle1.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Rectangle2);
+        expected = "P-1";
+        actual = Rectangle2.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Circle2);
+        expected = "K-1";
+        actual = Circle2.getId();
+
+        assertEquals(expected, actual);
+
         IdGenerator.setId(Rectangle3);
+        expected = "P-2";
+        actual = Rectangle3.getId();
+
+        assertEquals(expected, actual);
+
+
         IdGenerator.setId(Circle3);
+        expected = "K-2";
+        actual = Circle3.getId();
 
-        ArrayList<String> listOfGeneratedId = new ArrayList<>();
+        assertEquals(expected, actual);
 
-        listOfGeneratedId.add(Rectangle1.getId());
-        listOfGeneratedId.add(Circle1.getId());
-        listOfGeneratedId.add(Rectangle2.getId());
-        listOfGeneratedId.add(Circle2.getId());
-        listOfGeneratedId.add(Rectangle3.getId());
-        listOfGeneratedId.add(Circle3.getId());
 
-        for (int i = 0; i < listOfGeneratedId.size(); i++) {
-            if (listOfGeneratedId.get(i).charAt(0) == 'P') {
-                if (listOfGeneratedId.get(i).equals("P-" + correctIdAtTheMomentRectangle)) {
-                    correctIdAtTheMomentRectangle++;
-                }
-                correctGenerateIdRectangle++;
-            } else if (listOfGeneratedId.get(i).charAt(0) == 'K') {
-                if (listOfGeneratedId.get(i).equals("K-" + correctIdAtTheMomentCircle)) {
-                    correctIdAtTheMomentCircle++;
-                }
-                correctGenerateIdCircle++;
-            }
-        }
-
-        int actual = 0;
-
-        if (correctGenerateIdRectangle == correctGenerateIdCircle) {
-            actual = correctGenerateIdCircle;
-        }
-        int expected = 3;
-        assertTrue(expected == actual);
     }
 
 }
