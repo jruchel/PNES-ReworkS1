@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IdGeneratorTest {
 
@@ -45,21 +44,18 @@ class IdGeneratorTest {
     @Test
     public void doesIdWillBeChangedToCorrect() {
         Rectangle1.setId("P-5");
-        String idAfterUsingFunction = IdGenerator.setId(Rectangle1).getId();
 
         String expected = "P-0";
-        String actual = idAfterUsingFunction;
+        String actual = IdGenerator.setId(Rectangle1).getId();
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void doesShapeHaveTheSameIdBeforeUsingSetIdAndAfter() {
-        String idBeforeUsingFunction = Rectangle1.getId();
-        String idAfterUsingFunction = IdGenerator.setId(Rectangle1).getId();
 
-        String expected = idBeforeUsingFunction;
-        String actual = idAfterUsingFunction;
+        String expected = Rectangle1.getId();
+        String actual = IdGenerator.setId(Rectangle1).getId();
 
         assertEquals(expected, actual);
     }
@@ -83,7 +79,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void doesIdGenerateWell() {
+    public void doesIdGenerateWellForCircle() {
 
         int correctGenerateId = 0;
 
@@ -110,30 +106,74 @@ class IdGeneratorTest {
 
     }
 
-    @Test
-    public void doesElementHaveCorrectIdForCircle() {
-
-        IdGenerator.setId(Circle1);
-        IdGenerator.setId(Circle2);
-        IdGenerator.setId(Circle3);
-
-        String expected = "K-1";
-        String actual = Circle2.getId();
-
-        assertEquals(expected, actual);
-    }
 
     @Test
-    public void doesElementHaveCorrectIDForRectangle() {
+    public void doesIdGenerateWellForRectangle() {
+
+        int correctGenerateId = 0;
 
         IdGenerator.setId(Rectangle1);
         IdGenerator.setId(Rectangle2);
         IdGenerator.setId(Rectangle3);
 
-        String expected = "P-1";
-        String actual = Rectangle2.getId();
+        ArrayList<String> listOfGeneratedId = new ArrayList<>();
+
+        listOfGeneratedId.add(Rectangle1.getId());
+        listOfGeneratedId.add(Rectangle2.getId());
+        listOfGeneratedId.add(Rectangle3.getId());
+
+        for (int i = 0; i < listOfGeneratedId.size(); i++) {
+            if (listOfGeneratedId.get(i).equals("P-" + i)) {
+                correctGenerateId++;
+            }
+        }
+
+        int expected = 3;
+        int actual = correctGenerateId;
 
         assertEquals(expected, actual);
+
     }
 
-}
+    @Test
+    public void doesIdGenerateWellForCircleAndRectangleTogether() {
+
+        int correctGenerateIdRectangle = 0;
+        int correctGenerateIdCircle = 0;
+        int correctIdAtTheMomentRectangle = 0;
+        int correctIdAtTheMomentCircle = 0;
+
+        IdGenerator.setId(Rectangle1);
+        IdGenerator.setId(Circle1);
+        IdGenerator.setId(Rectangle2);
+        IdGenerator.setId(Circle2);
+        IdGenerator.setId(Rectangle3);
+        IdGenerator.setId(Circle3);
+
+        ArrayList<String> listOfGeneratedId = new ArrayList<>();
+
+        listOfGeneratedId.add(Rectangle1.getId());
+        listOfGeneratedId.add(Circle1.getId());
+        listOfGeneratedId.add(Rectangle2.getId());
+        listOfGeneratedId.add(Circle2.getId());
+        listOfGeneratedId.add(Rectangle3.getId());
+        listOfGeneratedId.add(Circle3.getId());
+
+        for (int i = 0; i < listOfGeneratedId.size(); i++) {
+            if (listOfGeneratedId.get(i).charAt(0) == 'P') {
+                if (listOfGeneratedId.get(i).equals("P-" + correctIdAtTheMomentRectangle)) {
+                    correctIdAtTheMomentRectangle++;
+                }
+                correctGenerateIdRectangle++;
+            } else if (listOfGeneratedId.get(i).charAt(0) == 'K') {
+                if (listOfGeneratedId.get(i).equals("K-" + correctIdAtTheMomentCircle)) {
+                    correctIdAtTheMomentCircle++;
+                }
+                correctGenerateIdCircle++;
+            }
+        }
+            assertTrue(correctGenerateIdRectangle == correctGenerateIdCircle);
+        }
+
+    }
+
