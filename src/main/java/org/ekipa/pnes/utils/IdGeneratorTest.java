@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IdGeneratorTest {
 
@@ -61,8 +62,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void doesIdWillBeChangedForTheObjectWithTheSameFields()
-    {
+    public void doesIdWillBeChangedForTheObjectWithTheSameFields() {
         Rectangle1 = new Rectangle("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
         Rectangle2 = new Rectangle("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
         Rectangle3 = new Rectangle("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
@@ -75,7 +75,7 @@ class IdGeneratorTest {
         String expected = "P-2";
         String actual = Rectangle3.getId();
 
-        assertEquals(expected,actual);
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -172,8 +172,15 @@ class IdGeneratorTest {
                 correctGenerateIdCircle++;
             }
         }
-            assertTrue(correctGenerateIdRectangle == correctGenerateIdCircle);
-        }
 
+        int actual = 0;
+
+        if (correctGenerateIdRectangle == correctGenerateIdCircle) {
+            actual = correctGenerateIdCircle;
+        }
+        int expected = 3;
+        assertTrue(expected == actual);
     }
+
+}
 
