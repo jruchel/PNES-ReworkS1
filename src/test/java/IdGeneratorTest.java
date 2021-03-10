@@ -33,8 +33,6 @@ class IdGeneratorTest {
         Circle3 = new Circle<IntegerTokenValue>("", "K", 2, 3, 5);
 
 
-        token = new Token<IntegerTokenValue>(Circle1, new IntegerTokenValue(5L));
-
     }
 
     @Test
