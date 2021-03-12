@@ -1,8 +1,7 @@
-import org.ekipa.pnes.models.Circle;
+import org.ekipa.pnes.models.Place;
 import org.ekipa.pnes.models.NetElement;
-import org.ekipa.pnes.models.Rectangle;
+import org.ekipa.pnes.models.Transition;
 import org.ekipa.pnes.models.token.IntegerTokenValue;
-import org.ekipa.pnes.models.token.Token;
 import org.ekipa.pnes.models.token.ValidationException;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,13 +23,13 @@ class IdGeneratorTest {
     public void initialize() throws ValidationException {
 
         IdGenerator.reset();
-        Rectangle1 = new Rectangle("", "P", 2, 3, 20, Rectangle1, Rectangle2);
-        Rectangle2 = new Rectangle("", "P", 4, 5, 20, Rectangle2, Rectangle3);
-        Rectangle3 = new Rectangle("", "P", 4, 5, 20, Rectangle3, Rectangle1);
+        Rectangle1 = new Transition("", "P", 2, 3, 20, Rectangle1, Rectangle2);
+        Rectangle2 = new Transition("", "P", 4, 5, 20, Rectangle2, Rectangle3);
+        Rectangle3 = new Transition("", "P", 4, 5, 20, Rectangle3, Rectangle1);
 
-        Circle1 = new Circle<IntegerTokenValue>("", "K", 2, 3, 5);
-        Circle2 = new Circle<IntegerTokenValue>("", "K", 2, 3, 5);
-        Circle3 = new Circle<IntegerTokenValue>("", "K", 2, 3, 5);
+        Circle1 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
+        Circle2 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
+        Circle3 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
 
 
     }
@@ -57,9 +56,9 @@ class IdGeneratorTest {
 
     @Test
     public void doesIdWillBeChangedForTheObjectWithTheSameFields() {
-        Rectangle1 = new Rectangle("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
-        Rectangle2 = new Rectangle("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
-        Rectangle3 = new Rectangle("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
+        Rectangle1 = new Transition("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
+        Rectangle2 = new Transition("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
+        Rectangle3 = new Transition("P-0", "P", 2, 3, 20, Rectangle1, Rectangle2);
 
 
         IdGenerator.setId(Rectangle1);
