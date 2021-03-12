@@ -19,7 +19,7 @@ public class IdGenerator {
 
     public static NetElement setId(NetElement element) {
         if (elementsList.contains(element)) return element;
-        element.setId(String.format("%s-%d", element.getName(), findOccurrencesOfSameType(element)));
+        element.setId(String.format("%s%d", element.getClass().getSimpleName().charAt(0), findOccurrencesOfSameType(element)));
         elementsList.add(element);
         return element;
     }
