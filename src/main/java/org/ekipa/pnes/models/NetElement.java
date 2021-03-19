@@ -24,4 +24,11 @@ public abstract class NetElement {
         this.arcs = new ArrayList<>();
     }
 
+    /**
+     * Szukanie wszystkich elementow, gdzie poczatek i koniec sa tymi samymi elementami, sumowanie ich wag i zbieranie w jeden
+     */
+    private void condenseArcs() {
+
+    }
+
 }
