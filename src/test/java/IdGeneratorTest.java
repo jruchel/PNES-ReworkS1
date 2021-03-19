@@ -11,35 +11,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IdGeneratorTest {
 
-    private NetElement Rectangle1;
-    private NetElement Rectangle2;
-    private NetElement Rectangle3;
-    private NetElement Circle1;
-    private NetElement Circle2;
-    private NetElement Circle3;
+    private NetElement rectangle1;
+    private NetElement rectangle2;
+    private NetElement rectangle3;
+    private NetElement circle1;
+    private NetElement circle2;
+    private NetElement circle3;
 
 
     @BeforeEach
     public void initialize() throws ValidationException {
 
         IdGenerator.reset();
-        Rectangle1 = new Transition("", "P", 2, 3, 20, Rectangle1, Rectangle2);
-        Rectangle2 = new Transition("", "P", 4, 5, 20, Rectangle2, Rectangle3);
-        Rectangle3 = new Transition("", "P", 4, 5, 20, Rectangle3, Rectangle1);
+        rectangle1 = new Transition("", "P", 2, 3, 20, rectangle1, rectangle2);
+        rectangle2 = new Transition("", "P", 4, 5, 20, rectangle2, rectangle3);
+        rectangle3 = new Transition("", "P", 4, 5, 20, rectangle3, rectangle1);
 
-        Circle1 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
-        Circle2 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
-        Circle3 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
+        circle1 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
+        circle2 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
+        circle3 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
 
 
     }
 
     @Test
     public void doesIdWillBeChangedToCorrect() {
-        Rectangle1.setId("P5");
+        rectangle1.setId("P5");
 
         String expected = "T0";
-        String actual = IdGenerator.setId(Rectangle1).getId();
+        String actual = IdGenerator.setId(rectangle1).getId();
 
         assertEquals(expected, actual);
     }
@@ -47,26 +47,26 @@ class IdGeneratorTest {
     @Test
     public void doesShapeHaveTheSameIdBeforeUsingSetIdAndAfter() {
 
-        Rectangle1.setId("T0");
-        String expected = Rectangle1.getId();
-        String actual = IdGenerator.setId(Rectangle1).getId();
+        rectangle1.setId("T0");
+        String expected = rectangle1.getId();
+        String actual = IdGenerator.setId(rectangle1).getId();
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void doesIdWillBeChangedForTheObjectWithTheSameFields() {
-        Rectangle1 = new Transition("P0", "P", 2, 3, 20, Rectangle1, Rectangle2);
-        Rectangle2 = new Transition("P0", "P", 2, 3, 20, Rectangle1, Rectangle2);
-        Rectangle3 = new Transition("P0", "P", 2, 3, 20, Rectangle1, Rectangle2);
+        rectangle1 = new Transition("P0", "P", 2, 3, 20, rectangle1, rectangle2);
+        rectangle2 = new Transition("P0", "P", 2, 3, 20, rectangle1, rectangle2);
+        rectangle3 = new Transition("P0", "P", 2, 3, 20, rectangle1, rectangle2);
 
 
-        IdGenerator.setId(Rectangle1);
-        IdGenerator.setId(Rectangle2);
-        IdGenerator.setId(Rectangle3);
+        IdGenerator.setId(rectangle1);
+        IdGenerator.setId(rectangle2);
+        IdGenerator.setId(rectangle3);
 
         String expected = "T2";
-        String actual = Rectangle3.getId();
+        String actual = rectangle3.getId();
 
         assertEquals(expected, actual);
     }
@@ -77,21 +77,21 @@ class IdGeneratorTest {
         String expected;
         String actual;
 
-        IdGenerator.setId(Circle1);
+        IdGenerator.setId(circle1);
         expected = "P0";
-        actual = Circle1.getId();
+        actual = circle1.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Circle2);
+        IdGenerator.setId(circle2);
         expected = "P1";
-        actual = Circle2.getId();
+        actual = circle2.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Circle3);
+        IdGenerator.setId(circle3);
         expected = "P2";
-        actual = Circle3.getId();
+        actual = circle3.getId();
 
         assertEquals(expected, actual);
 
@@ -103,21 +103,21 @@ class IdGeneratorTest {
         String expected;
         String actual;
 
-        IdGenerator.setId(Rectangle1);
+        IdGenerator.setId(rectangle1);
         expected = "T0";
-        actual = Rectangle1.getId();
+        actual = rectangle1.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Rectangle2);
+        IdGenerator.setId(rectangle2);
         expected = "T1";
-        actual = Rectangle2.getId();
+        actual = rectangle2.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Rectangle3);
+        IdGenerator.setId(rectangle3);
         expected = "T2";
-        actual = Rectangle3.getId();
+        actual = rectangle3.getId();
 
         assertEquals(expected, actual);
 
@@ -129,40 +129,40 @@ class IdGeneratorTest {
         String expected;
         String actual;
 
-        IdGenerator.setId(Rectangle1);
+        IdGenerator.setId(rectangle1);
         expected = "T0";
-        actual = Rectangle1.getId();
+        actual = rectangle1.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Circle1);
+        IdGenerator.setId(circle1);
         expected = "P0";
-        actual = Circle1.getId();
+        actual = circle1.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Rectangle2);
+        IdGenerator.setId(rectangle2);
         expected = "T1";
-        actual = Rectangle2.getId();
+        actual = rectangle2.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Circle2);
+        IdGenerator.setId(circle2);
         expected = "P1";
-        actual = Circle2.getId();
+        actual = circle2.getId();
 
         assertEquals(expected, actual);
 
-        IdGenerator.setId(Rectangle3);
+        IdGenerator.setId(rectangle3);
         expected = "T2";
-        actual = Rectangle3.getId();
+        actual = rectangle3.getId();
 
         assertEquals(expected, actual);
 
 
-        IdGenerator.setId(Circle3);
+        IdGenerator.setId(circle3);
         expected = "P2";
-        actual = Circle3.getId();
+        actual = circle3.getId();
 
         assertEquals(expected, actual);
 
