@@ -13,7 +13,7 @@ public abstract class NetModel {
 
     public abstract void translate(NetModel model);
 
-    public abstract void transform(NetModel model);
+    public abstract void transform(NetModel model) throws ImpossibleTransformationException;
 
 
 }
