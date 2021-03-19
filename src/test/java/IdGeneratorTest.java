@@ -1,8 +1,8 @@
-import org.ekipa.pnes.models.Place;
-import org.ekipa.pnes.models.NetElement;
-import org.ekipa.pnes.models.Transition;
-import org.ekipa.pnes.models.token.IntegerTokenValue;
-import org.ekipa.pnes.models.token.ValidationException;
+import org.ekipa.pnes.models.elements.Place;
+import org.ekipa.pnes.models.elements.NetElement;
+import org.ekipa.pnes.models.elements.Transition;
+import org.ekipa.pnes.models.elements.token.IntegerTokenValue;
+import org.ekipa.pnes.models.elements.token.ValidationException;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

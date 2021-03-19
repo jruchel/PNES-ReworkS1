@@ -1,4 +1,4 @@
-package org.ekipa.pnes.models.token;
+package org.ekipa.pnes.models.elements.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

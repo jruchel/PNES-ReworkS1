@@ -1,4 +1,4 @@
-package org.ekipa.pnes.models.token;
+package org.ekipa.pnes.models.elements.token;
 
 public class FloatingPointTokenValue extends TokenValue<Double> {
     public FloatingPointTokenValue(Double value) throws ValidationException {

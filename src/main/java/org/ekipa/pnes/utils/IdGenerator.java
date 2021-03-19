@@ -1,6 +1,6 @@
 package org.ekipa.pnes.utils;
 
-import org.ekipa.pnes.models.NetElement;
+import org.ekipa.pnes.models.elements.NetElement;
 
 import java.util.ArrayList;
 import java.util.List;

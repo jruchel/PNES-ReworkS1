@@ -1,9 +1,9 @@
-package org.ekipa.pnes.models;
+package org.ekipa.pnes.models.elements;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.ekipa.pnes.models.token.Token;
-import org.ekipa.pnes.models.token.TokenValue;
+import org.ekipa.pnes.models.elements.token.Token;
+import org.ekipa.pnes.models.elements.token.TokenValue;
 
 import java.util.ArrayList;
 import java.util.List;

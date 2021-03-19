@@ -1,4 +1,4 @@
-package org.ekipa.pnes.models.token;
+package org.ekipa.pnes.models.elements.token;
 
 public class RangeTokenValue extends TokenValue<Range> {
     public RangeTokenValue(Range value) throws ValidationException {

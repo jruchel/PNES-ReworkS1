@@ -1,4 +1,4 @@
-package org.ekipa.pnes.models.token;
+package org.ekipa.pnes.models.elements.token;
 
 public class IntegerTokenValue extends TokenValue<Long> {
     public IntegerTokenValue(Long value) throws ValidationException {
