@@ -1,4 +1,4 @@
-package org.ekipa.pnes.models.token;
+package org.ekipa.pnes.models.elements.token;
 
 public abstract class TokenValue<V> {
     protected V value;

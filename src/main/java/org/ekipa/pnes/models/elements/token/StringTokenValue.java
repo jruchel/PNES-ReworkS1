@@ -1,4 +1,4 @@
-package org.ekipa.pnes.models.token;
+package org.ekipa.pnes.models.elements.token;
 
 public class StringTokenValue extends TokenValue<String> {
     public StringTokenValue(String value) throws ValidationException {
