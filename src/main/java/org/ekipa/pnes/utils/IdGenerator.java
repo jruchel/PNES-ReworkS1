@@ -23,7 +23,7 @@ public class IdGenerator {
     /**
      * Sprawdza czy lista posiada podany element, jeśli tak zwraca ten element, jeśli nie ustawia podanemu elementowi id,
      * następnie dodaje ten element do listy i zwraca go
-     * @param element pobiera element{@link org.ekipa.pnes.models.elements.NetElement}
+     * @param element {@link org.ekipa.pnes.models.elements.NetElement}, może nim Place lub Transition
      * @return Zwraca podany element
      */
     public static NetElement setId(NetElement element) {
@@ -34,8 +34,8 @@ public class IdGenerator {
     }
 
     /**
-     * Zlicza ilość wystąpień typu podanego elementu następnie zwraca policzoną liczbę wystąpień
-     * @param element Pobiera element {@link org.ekipa.pnes.models.elements.NetElement}
+     * Zlicza ilość wystąpień typu podanego elementu następnie ją zwraca
+     * @param element {@link org.ekipa.pnes.models.elements.NetElement}, może nim Place lub Transition
      * @return Zwraca liczbę wystąpień typu podanego elementu
      */
     private static long findOccurrencesOfSameType(NetElement element) {
