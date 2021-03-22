@@ -23,9 +23,9 @@ class IdGeneratorTest {
     public void initialize() throws ValidationException {
 
         IdGenerator.reset();
-        rectangle1 = new Transition("", "P", 2, 3, 20, rectangle1, rectangle2);
-        rectangle2 = new Transition("", "P", 4, 5, 20, rectangle2, rectangle3);
-        rectangle3 = new Transition("", "P", 4, 5, 20, rectangle3, rectangle1);
+        rectangle1 = new Transition("", "P", 2, 3, 20);
+        rectangle2 = new Transition("", "P", 4, 5, 20);
+        rectangle3 = new Transition("", "P", 4, 5, 20);
 
         circle1 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
         circle2 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
@@ -56,9 +56,9 @@ class IdGeneratorTest {
 
     @Test
     public void doesIdWillBeChangedForTheObjectWithTheSameFields() {
-        rectangle1 = new Transition("P0", "P", 2, 3, 20, rectangle1, rectangle2);
-        rectangle2 = new Transition("P0", "P", 2, 3, 20, rectangle1, rectangle2);
-        rectangle3 = new Transition("P0", "P", 2, 3, 20, rectangle1, rectangle2);
+        rectangle1 = new Transition("P0", "P", 2, 3, 20);
+        rectangle2 = new Transition("P0", "P", 2, 3, 20);
+        rectangle3 = new Transition("P0", "P", 2, 3, 20);
 
 
         IdGenerator.setId(rectangle1);
