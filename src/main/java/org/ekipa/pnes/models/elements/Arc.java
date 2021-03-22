@@ -30,9 +30,9 @@ public class Arc {
     /**Sprawdza czy elementy są tego samego typu, jeżeli tak to
      * zostanie wyrzucony wyjątek
      *
-     * @param start Przyjmuje element początkowy łuk rozpoczyna się w 1 elemencie
+     * @param start element początkowy łuk rozpoczyna się w 1 elemencie
      *{@link org.ekipa.pnes.models.elements.Transition} lub {@link org.ekipa.pnes.models.elements.Place}
-     * @param end Przyjmuje element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
+     * @param end element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
      * {@link org.ekipa.pnes.models.elements.Place}
      *
      * @throws Exception wypisuje komunikat ze elementy sa tego samego typu
