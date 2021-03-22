@@ -12,7 +12,7 @@ public abstract class TokenValue<V> {
     }
 
     /**
-     * Ustala wartość Tokena oraz przeprowadza walidację danych do niego przypisanych }
+     * Ustala wartość Tokena oraz przeprowadza walidację danych do niego przypisanych
      *
      * @param value wartość tokena
      * @throws ValidationException niepoprawna wartość tokena
