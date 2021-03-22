@@ -24,7 +24,7 @@ public class IdGenerator {
      * Sprawdza czy lista posiada podany element, jeśli tak zwraca ten element, jeśli nie ustawia podanemu elementowi id,
      * następnie dodaje ten element do listy i zwraca go
      * @param element {@link org.ekipa.pnes.models.elements.NetElement}, może nim Place lub Transition
-     * @return Zwraca podany element
+     * @return podany element z ustawionym poprawnym id
      */
     public static NetElement setId(NetElement element) {
         if (elementsList.contains(element)) return element;
@@ -36,7 +36,7 @@ public class IdGenerator {
     /**
      * Zlicza ilość wystąpień typu podanego elementu następnie ją zwraca
      * @param element {@link org.ekipa.pnes.models.elements.NetElement}, może nim Place lub Transition
-     * @return Zwraca liczbę wystąpień typu podanego elementu
+     * @return liczbę wystąpień typu podanego elementu
      */
     private static long findOccurrencesOfSameType(NetElement element) {
         return elementsList.stream().filter(e -> e.getClass().equals(element.getClass())).count();
