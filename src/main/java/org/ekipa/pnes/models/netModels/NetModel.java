@@ -2,13 +2,15 @@ package org.ekipa.pnes.models.netModels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetElement;
 import java.util.List;
 @Getter
 @AllArgsConstructor
 
 public abstract class NetModel {
-    private List<NetElement> netElements;
+    protected List<NetElement> netElements;
+    protected List<Arc> arcList;
 
     /**
      * Tworzy model obecnego typu na podstawie porównania parametry sieci z innym modelem i zamienia te parametry
