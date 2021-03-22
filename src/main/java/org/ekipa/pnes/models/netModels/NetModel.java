@@ -12,17 +12,20 @@ public abstract class NetModel {
 
     /**
      *
-     * @param model Pobiera model ({@link org.ekipa.pnes.models.netModels})
+     * @param model  Przyjmuje model {@link org.ekipa.pnes.models.netModels}
+     * Porównuje parametry sieci z innym modelem i zamienia te parametry które są możliwe do zmiany, w przeciwnym
+     * razie te dane których się nie da przetłumaczyć, to stworzy dla nich odpowiedniki i ustawi im wartości
+     *
      */
-
     public abstract void translate(NetModel model);
 
     /**
      *
-     *@param model Pobiera model ({@link org.ekipa.pnes.models.netModels})
-     *@throws ImpossibleTransformationException - wyrzuca komunikat ze jeden model nie moze byc transformowany w inny
+     *@param model Przyjmuje model ({@link org.ekipa.pnes.models.netModels})
+     * i zamienia ten model w inny model, jeżeli jest to możliwe, w przeciwnym razie wyrzuca wyjątek
+     * o niemożliwej transfomracji
+     *@throws ImpossibleTransformationException - wyjątek informujący o niemożliwej transformacji
      */
-
     public abstract void transform(NetModel model) throws ImpossibleTransformationException;
 
 
