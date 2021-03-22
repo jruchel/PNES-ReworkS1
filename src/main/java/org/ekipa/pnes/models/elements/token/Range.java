@@ -10,6 +10,10 @@ import lombok.Setter;
 public class Range {
     private double start, end;
 
+    /**
+     * Korzystając z początku i końca przedziału ustala jego rozpiętość
+     * @return Rozpiętość przedziału
+     */
     public double getRangeSize() {
         return end - start;
     }
