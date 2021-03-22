@@ -27,13 +27,14 @@ public class Arc {
         this.end = end;
     }
 
-    /**
-     *
-     * @param start Pobiera element początkowy łuk rozpoczyna się w 1 elemencie
-     *{@link org.ekipa.pnes.models.elements.Transition} lub {@link org.ekipa.pnes.models.elements.Place}
-     * @param end Pobiera element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
-     * {@link org.ekipa.pnes.models.elements.Place}, sprawdza czy elementy są tego samego typu, jeżeli tak to
+    /**Sprawdza czy elementy są tego samego typu, jeżeli tak to
      * zostanie wyrzucony wyjątek
+     *
+     * @param start Przyjmuje element początkowy łuk rozpoczyna się w 1 elemencie
+     *{@link org.ekipa.pnes.models.elements.Transition} lub {@link org.ekipa.pnes.models.elements.Place}
+     * @param end Przyjmuje element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
+     * {@link org.ekipa.pnes.models.elements.Place}
+     *
      * @throws Exception wypisuje komunikat ze elementy sa tego samego typu
      */
     private void validateElements(NetElement start, NetElement end) throws Exception {
