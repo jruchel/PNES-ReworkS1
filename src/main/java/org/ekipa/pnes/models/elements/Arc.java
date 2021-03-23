@@ -11,13 +11,18 @@ public class Arc {
     private NetElement end;
     private double weight;
 
-    public Arc(String id, NetElement start, NetElement end, double weight)throws Exception {
+    public Arc(String id, NetElement start, NetElement end, double weight){
         this.id = id;
         this.start = start;
         this.end = end;
         this.weight = weight;
     }
-
+    public Arc(NetElement start, NetElement end, double weight) {
+        this.id = "";
+        this.start = start;
+        this.end = end;
+        this.weight = weight;
+    }
 
     public void setStart(NetElement start) throws Exception {
         validateElements(start, this.end);

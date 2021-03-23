@@ -6,30 +6,31 @@ import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.elements.token.IntegerTokenValue;
 import org.ekipa.pnes.models.elements.token.Token;
-import org.ekipa.pnes.models.elements.token.TokenValue;
 import org.ekipa.pnes.models.elements.token.ValidationException;
+import org.ekipa.pnes.utils.IdGenerator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class PTNetModel extends NetModel {
 
-    public PTNetModel(List<NetElement> netElements, List<Arc> arcList) {
+    public PTNetModel(){
+        super();
+    }
+
+    private PTNetModel(List<NetElement> netElements, List<Arc> arcList) {
         super(netElements, arcList);
     }
 
-    public void createArc(String id, NetElement start, NetElement end, int weight) throws Exception {
-        addObject(new Arc(id, start, end, weight));
+    public void createArc(NetElement start, NetElement end, int weight) throws Exception {
+        addObject(IdGenerator.setArcId(new Arc(start, end, weight)));
     }
 
-    public void createTransition(String id, String name, double x, double y, double rotationAngle) {
-        addObject(new Transition(id, name, x, y, rotationAngle));
+    public void createTransition(String name, double x, double y, double rotationAngle) {
+        addObject(IdGenerator.setElementId(new Transition("",name, x, y, rotationAngle)));
     }
 
-    public void createPlace(String id, String name, double x, double y, int tokenCapacity, int tokenAmount) {
+    public void createPlace(String name, double x, double y, int tokenCapacity, int tokenAmount) {
         List<Token<IntegerTokenValue>> tokens = new ArrayList<>();
         for (int i = 0; i < tokenAmount; i++) {
             try {
@@ -37,7 +38,7 @@ public class PTNetModel extends NetModel {
             } catch (ValidationException ignored) {
             }
         }
-        addObject(new Place<>(id, name, x, y, tokenCapacity, tokens));
+        addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, tokens)));
     }
 
     public void deleteById(String id) {

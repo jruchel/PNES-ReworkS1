@@ -1,5 +1,6 @@
 package org.ekipa.pnes.models.netModels;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.ekipa.pnes.models.elements.Arc;
@@ -15,10 +16,14 @@ import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
-
 public abstract class NetModel {
     protected List<NetElement> netElements;
     protected List<Arc> arcList;
+
+    public NetModel(){
+        this.netElements = new ArrayList<>();
+        this.arcList = new ArrayList<>();
+    }
 
     /**
      * Tworzy model obecnego typu na podstawie porównania parametry sieci z innym modelem i zamienia te parametry
@@ -58,7 +63,16 @@ public abstract class NetModel {
         }
     }
 
-    protected List<Object> findObjects(Object object) {
+    /**
+     * Porównuje wartości pól wyszukiwanego elementu do wartości pól wszystkich istniejących obiektów w liście,
+     * jeśli jakakolwiek wartość pola obiektu jest równa wartości pola z listy, obiekt ten jest dodawany do poprzednio
+     * stworzonej listy, a następnie zwraca listę wszystkich znalezionych obiektów
+     * @param object wyszukiwany przez użytkownika obiekt, wartości jego pól są porównywane z wartościami pól obiektów
+     * z listy w celu znalezienia poszukiwanych obiektów
+     * @return listę znalezionych obiektów
+     */
+    //TODO publiczna do testów, po zakończeniu zmienić na protected
+    public List<Object> findObjects(Object object) {
         List<Object> objects = new ArrayList<>();
         Field[] objectfields = object.getClass().getDeclaredFields();
         for (Object o : getAllObjects()) {
