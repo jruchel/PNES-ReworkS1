@@ -6,6 +6,8 @@ import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.elements.token.IntegerTokenValue;
 import org.ekipa.pnes.models.elements.token.Token;
+import org.ekipa.pnes.models.elements.token.TokenValue;
+import org.ekipa.pnes.models.elements.token.ValidationException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,16 +21,23 @@ public class PTNetModel extends NetModel {
         super(netElements, arcList);
     }
 
-    private void createArc(String id, NetElement start, NetElement end, int weight) throws Exception {
-        arcList.add(new Arc(id, start, end, weight));
+    public void createArc(String id, NetElement start, NetElement end, int weight) throws Exception {
+        addObject(new Arc(id, start, end, weight));
     }
 
-    private void createTransition(String id, String name, double x, double y, double rotationAngle) {
-        netElements.add(new Transition(id, name, x, y, rotationAngle));
+    public void createTransition(String id, String name, double x, double y, double rotationAngle) {
+        addObject(new Transition(id, name, x, y, rotationAngle));
     }
 
-    private void createPlace(String id, String name, double x, double y, int tokenCapacity, List<Token<IntegerTokenValue>> tokens) {
-        netElements.add(new Place<>(id, name, x, y, tokenCapacity, tokens));
+    public void createPlace(String id, String name, double x, double y, int tokenCapacity, int tokenAmount) {
+        List<Token<IntegerTokenValue>> tokens = new ArrayList<>();
+        for (int i = 0; i < tokenAmount; i++) {
+            try {
+                tokens.add(new Token<>(null, new IntegerTokenValue(1L)));
+            } catch (ValidationException ignored) {
+            }
+        }
+        addObject(new Place<>(id, name, x, y, tokenCapacity, tokens));
     }
 
     public void deleteById(String id) {
@@ -39,16 +48,6 @@ public class PTNetModel extends NetModel {
     public void deleteByName(String name) {
         netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteObject);
     }
-
-    private void deleteObject(Object object) {
-        if (object instanceof Arc) {
-            arcList = arcList.stream().filter(e -> !e.equals(object)).collect(Collectors.toList());
-        }
-        if (object instanceof NetElement) {
-            netElements = netElements.stream().filter(net -> !net.equals(object)).collect(Collectors.toList());
-        }
-    }
-
 
 
     @Override
