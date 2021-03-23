@@ -11,16 +11,17 @@ public class Arc {
     private NetElement end;
     private double weight;
 
-    public Arc(String id, NetElement start, NetElement end, double weight){
+    public Arc(String id, NetElement start, NetElement end, double weight) throws Exception {
         this.id = id;
-        this.start = start;
-        this.end = end;
+        setStart(start);
+        setEnd(end);
         this.weight = weight;
     }
-    public Arc(NetElement start, NetElement end, double weight) {
+
+    public Arc(NetElement start, NetElement end, double weight) throws Exception {
         this.id = "";
-        this.start = start;
-        this.end = end;
+        setStart(start);
+        setEnd(end);
         this.weight = weight;
     }
 
@@ -34,14 +35,14 @@ public class Arc {
         this.end = end;
     }
 
-    /**Sprawdza czy elementy są tego samego typu, jeżeli tak to
+    /**
+     * Sprawdza czy elementy są tego samego typu, jeżeli tak to
      * zostanie wyrzucony wyjątek
      *
      * @param start element początkowy łuk rozpoczyna się w 1 elemencie
-     *{@link org.ekipa.pnes.models.elements.Transition} lub {@link org.ekipa.pnes.models.elements.Place}
-     * @param end element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
-     * {@link org.ekipa.pnes.models.elements.Place}
-     *
+     *              {@link org.ekipa.pnes.models.elements.Transition} lub {@link org.ekipa.pnes.models.elements.Place}
+     * @param end   element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
+     *              {@link org.ekipa.pnes.models.elements.Place}
      * @throws Exception wypisuje komunikat ze elementy sa tego samego typu
      */
     private void validateElements(NetElement start, NetElement end) throws Exception {
