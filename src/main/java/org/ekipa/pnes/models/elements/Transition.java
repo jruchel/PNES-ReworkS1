@@ -84,8 +84,13 @@ public class Transition extends NetElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transition that = (Transition) o;
-        if (Double.compare(that.getRotationAngle(), getRotationAngle()) != 0) return false;
-        return getState() == that.getState();
+        return super.getId().equals(that.getId()) &&
+                super.getName().equals(that.getName()) &&
+                super.getX() == that.getX() &&
+                super.getY() == that.getY() &&
+                super.getArcs().equals(that.getArcs())&&
+                getState().equals(that.getState()) &&
+                getRotationAngle()==that.getRotationAngle();
     }
 
     public enum TransitionState {
