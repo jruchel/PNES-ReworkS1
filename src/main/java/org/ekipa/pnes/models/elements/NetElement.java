@@ -32,5 +32,14 @@ public abstract class NetElement {
 
     }
 
-
+    @Override
+    public String toString() {
+        return "NetElement{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                ", arcs=" + arcs +
+                '}';
+    }
 }

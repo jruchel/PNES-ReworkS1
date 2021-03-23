@@ -20,7 +20,7 @@ public abstract class NetModel {
     protected List<NetElement> netElements;
     protected List<Arc> arcList;
 
-    public NetModel(){
+    public NetModel() {
         this.netElements = new ArrayList<>();
         this.arcList = new ArrayList<>();
     }
@@ -67,23 +67,29 @@ public abstract class NetModel {
      * Porównuje wartości pól wyszukiwanego elementu do wartości pól wszystkich istniejących obiektów w liście,
      * jeśli jakakolwiek wartość pola obiektu jest równa wartości pola z listy, obiekt ten jest dodawany do poprzednio
      * stworzonej listy, a następnie zwraca listę wszystkich znalezionych obiektów
+     *
      * @param object wyszukiwany przez użytkownika obiekt, wartości jego pól są porównywane z wartościami pól obiektów
-     * z listy w celu znalezienia poszukiwanych obiektów
+     *               z listy w celu znalezienia poszukiwanych obiektów
      * @return listę znalezionych obiektów
      */
     //TODO publiczna do testów, po zakończeniu zmienić na protected
     public List<Object> findObjects(Object object) {
         List<Object> objects = new ArrayList<>();
-        Field[] objectfields = object.getClass().getDeclaredFields();
+        List<Field> objectFields = getAllFields(object);
         for (Object o : getAllObjects()) {
-            if (Arrays.stream(o.getClass().getDeclaredFields()).anyMatch(field -> {
-                for (Field f : objectfields) {
+            if (getAllFields(o).stream().anyMatch(field -> {
+                for (Field f : objectFields) {
+                    boolean fAccessible = f.isAccessible();
+                    boolean fieldAccessible = field.isAccessible();
                     f.setAccessible(true);
+                    field.setAccessible(true);
                     try {
                         if (f.get(object).equals(field.get(o))) return true;
                     } catch (IllegalAccessException ignored) {
 
                     }
+                    f.setAccessible(fAccessible);
+                    field.setAccessible(fieldAccessible);
                 }
                 return false;
             })) {
@@ -91,6 +97,16 @@ public abstract class NetModel {
             }
         }
         return objects;
+    }
+
+    private List<Field> getAllFields(Object o) {
+        List<Field> fields = new ArrayList<>();
+        Class clazz = o.getClass();
+        while (clazz != Object.class) {
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+            clazz = clazz.getSuperclass();
+        }
+        return fields;
     }
 
     protected List<Object> getAllObjects() {
