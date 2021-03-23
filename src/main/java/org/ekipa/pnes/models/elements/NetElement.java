@@ -25,6 +25,10 @@ public abstract class NetElement {
         this.arcs = new ArrayList<>();
     }
 
+    public void addArc(Arc arc) {
+        this.arcs.add(arc);
+    }
+
     /**
      * Szukanie wszystkich elementow, gdzie poczatek i koniec sa tymi samymi elementami, sumowanie ich wag i zbieranie w jeden
      */

@@ -12,16 +12,19 @@ public class Arc {
     private double weight;
 
     public Arc(String id, NetElement start, NetElement end, double weight) throws Exception {
+        validateElements(start,end);
         this.id = id;
-        setStart(start);
-        setEnd(end);
+        this.start = start;
+        this.end = end;
         this.weight = weight;
     }
 
+
     public Arc(NetElement start, NetElement end, double weight) throws Exception {
+        validateElements(start,end);
         this.id = "";
-        setStart(start);
-        setEnd(end);
+        this.start = start;
+        this.end = end;
         this.weight = weight;
     }
 
@@ -62,5 +65,13 @@ public class Arc {
         return getEnd() != null ? getEnd().equals(arc.getEnd()) : arc.getEnd() == null;
     }
 
-
+    @Override
+    public String toString() {
+        return "Arc{" +
+                "id='" + id + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                ", weight=" + weight +
+                '}';
+    }
 }

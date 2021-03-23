@@ -20,6 +20,14 @@ public abstract class NetModel {
     protected List<NetElement> netElements;
     protected List<Arc> arcList;
 
+    protected NetElement getElement(int index) {
+        return netElements.get(index);
+    }
+
+    protected Arc getArc(int index) {
+        return arcList.get(index);
+    }
+
     public NetModel() {
         this.netElements = new ArrayList<>();
         this.arcList = new ArrayList<>();
