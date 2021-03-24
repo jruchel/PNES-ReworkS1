@@ -64,6 +64,7 @@ public class Transition extends NetElement {
         this.state = TransitionState.Running;
         return true;
     }
+
     /**
      * Ustawia stan tranzycji na niegotowy jesli został poprawnie ustawiony lub już taki był zwraca true, jeśli
      * nie, false.
@@ -78,9 +79,24 @@ public class Transition extends NetElement {
         return true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transition that = (Transition) o;
+        return super.getId().equals(that.getId()) &&
+                super.getName().equals(that.getName()) &&
+                super.getX() == that.getX() &&
+                super.getY() == that.getY() &&
+                super.getArcs().equals(that.getArcs())&&
+                getState().equals(that.getState()) &&
+                getRotationAngle()==that.getRotationAngle();
+    }
+
     public enum TransitionState {
         Unready,
         Ready,
         Running
     }
+
 }

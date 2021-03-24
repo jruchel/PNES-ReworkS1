@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -24,6 +25,10 @@ public abstract class NetElement {
         this.arcs = new ArrayList<>();
     }
 
+    public void addArc(Arc arc) {
+        this.arcs.add(arc);
+    }
+
     /**
      * Szukanie wszystkich elementow, gdzie poczatek i koniec sa tymi samymi elementami, sumowanie ich wag i zbieranie w jeden
      */
@@ -31,4 +36,38 @@ public abstract class NetElement {
 
     }
 
+    @Override
+    public String toString() {
+        return "NetElement{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NetElement that = (NetElement) o;
+        if (Double.compare(that.getX(), getX()) != 0) return false;
+        if (Double.compare(that.getY(), getY()) != 0) return false;
+        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+        return !(getName() != null ? !getName().equals(that.getName()) : that.getName() != null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        temp = Double.doubleToLongBits(getX());
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(getY());
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + getArcs().hashCode();
+        return result;
+    }
 }

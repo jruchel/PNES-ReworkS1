@@ -7,6 +7,6 @@ public class IntegerTokenValue extends TokenValue<Long> {
 
     @Override
     protected boolean validateValue(Long value) {
-        return value >= 0 && value <= 100;
+        return value >= 0;
     }
 }
