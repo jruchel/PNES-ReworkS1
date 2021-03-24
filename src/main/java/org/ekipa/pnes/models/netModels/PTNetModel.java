@@ -22,15 +22,15 @@ public class PTNetModel extends NetModel {
         super(netElements, arcList);
     }
 
-    public void createArc(NetElement start, NetElement end, int weight) throws Exception {
-        addObject(IdGenerator.setArcId(new Arc(start, end, weight)));
+    public Arc createArc(NetElement start, NetElement end, int weight) throws Exception {
+        return (Arc) addObject(IdGenerator.setArcId(new Arc(start, end, weight)));
     }
 
-    public void createTransition(String name, double x, double y, double rotationAngle) {
-        addObject(IdGenerator.setElementId(new Transition("",name, x, y, rotationAngle)));
+    public Transition createTransition(String name, double x, double y, double rotationAngle) {
+        return (Transition) addObject(IdGenerator.setElementId(new Transition("",name, x, y, rotationAngle)));
     }
 
-    public void createPlace(String name, double x, double y, int tokenCapacity, int tokenAmount) {
+    public Place<IntegerTokenValue> createPlace(String name, double x, double y, int tokenCapacity, int tokenAmount) {
         List<Token<IntegerTokenValue>> tokens = new ArrayList<>();
         for (int i = 0; i < tokenAmount; i++) {
             try {
@@ -38,7 +38,7 @@ public class PTNetModel extends NetModel {
             } catch (ValidationException ignored) {
             }
         }
-        addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, tokens)));
+        return (Place<IntegerTokenValue>) addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, tokens)));
     }
 
     public void deleteById(String id) {
