@@ -17,15 +17,13 @@ public class Arc {
         this.start = start;
         this.end = end;
         this.weight = weight;
+        this.start.addArc(this);
+        this.end.addArc(this);
     }
 
 
     public Arc(NetElement start, NetElement end, double weight) throws Exception {
-        validateElements(start,end);
-        this.id = "";
-        this.start = start;
-        this.end = end;
-        this.weight = weight;
+        this("",start,end,weight);
     }
 
     public void setStart(NetElement start) throws Exception {

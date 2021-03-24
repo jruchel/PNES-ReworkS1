@@ -87,6 +87,7 @@ public abstract class NetModel {
         for (Object o : getAllObjects()) {
             if (getAllFields(o).stream().anyMatch(field -> {
                 for (Field f : objectFields) {
+                    if (!f.getName().equals(field.getName())) continue;
                     boolean fAccessible = f.isAccessible();
                     boolean fieldAccessible = field.isAccessible();
                     f.setAccessible(true);

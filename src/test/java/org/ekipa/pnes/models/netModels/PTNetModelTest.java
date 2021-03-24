@@ -17,12 +17,12 @@ class PTNetModelTest {
     @BeforeEach
     public void initialize() {
         ptNetModel = new PTNetModel();
-        ptNetModel.createPlace("Marcin", 3, 6, 13, 2);
-        ptNetModel.createPlace("Kuba", 7, 6, 10, 4);
+        ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
+        ptNetModel.createPlace("Sebastian0", 742, 641, 101, 46);
         ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
         ptNetModel.createTransition("Kuba", 5, 1, 10);
         ptNetModel.createTransition("Kacper", 3, 2, 20);
-        ptNetModel.createTransition("Rafał", 9, 5, 10);
+        ptNetModel.createTransition("Adrian", 91, 5000, 1022);
         try {
             ptNetModel.createArc(ptNetModel.getElement(0),ptNetModel.getElement(5),5);
             ptNetModel.createArc(ptNetModel.getElement(1),ptNetModel.getElement(4),7);
@@ -32,23 +32,11 @@ class PTNetModelTest {
         }
     }
 
-    public void addArcsToElements() {
- //       System.out.println(ptNetModel.getArc(0));
-//        ptNetModel.getElement(0).addArc(ptNetModel.getArc(0));
-//        ptNetModel.getElement(5).addArc(ptNetModel.getArc(0));
-//        ptNetModel.getElement(1).addArc(ptNetModel.getArc(1));
-//        ptNetModel.getElement(4).addArc(ptNetModel.getArc(1));
-//        ptNetModel.getElement(2).addArc(ptNetModel.getArc(2));
-//        ptNetModel.getElement(3).addArc(ptNetModel.getArc(2));
-    }
-
     @Test
     public void checkNumberOfFoundObjects() {
         Place place = new Place("", "Kuba", 3, 5, 13);
-        //addArcsToElements();
-
-        System.out.println(ptNetModel.findObjects(place));
-        int expected = 5;
+        
+        int expected = 2;
         int actual = ptNetModel.findObjects(place).size();
 
         assertEquals(expected, actual);
@@ -58,10 +46,11 @@ class PTNetModelTest {
     @Test
     public void checkForNothingToFind() {
         Transition transition = new Transition("", "Bartosz", 0, 0, 0);
+        transition.setReady();
 
         int expected = 0;
         int actual = ptNetModel.findObjects(transition).size();
 
-        assertTrue(expected == actual);
+        assertEquals(expected, actual);
     }
 }

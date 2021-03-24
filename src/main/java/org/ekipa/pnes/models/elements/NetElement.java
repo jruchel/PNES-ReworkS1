@@ -43,7 +43,6 @@ public abstract class NetElement {
                 ", name='" + name + '\'' +
                 ", x=" + x +
                 ", y=" + y +
-                ", arcs=" + arcs +
                 '}';
     }
 
@@ -55,8 +54,7 @@ public abstract class NetElement {
         if (Double.compare(that.getX(), getX()) != 0) return false;
         if (Double.compare(that.getY(), getY()) != 0) return false;
         if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
-        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
-        return getArcs().equals(that.getArcs());
+        return !(getName() != null ? !getName().equals(that.getName()) : that.getName() != null);
     }
 
     @Override
