@@ -60,15 +60,16 @@ public abstract class NetModel {
         }
     }
 
-    protected void addObject(Object object) {
+    protected Object addObject(Object object) {
         if (object instanceof Arc) {
             arcList.add((Arc) object);
-            return;
+            return object;
         }
         if (object instanceof NetElement) {
             netElements.add((NetElement) object);
-            return;
+            return object;
         }
+        return object;
     }
 
     /**
@@ -80,8 +81,7 @@ public abstract class NetModel {
      *               z listy w celu znalezienia poszukiwanych obiektów
      * @return listę znalezionych obiektów
      */
-    //TODO publiczna do testów, po zakończeniu zmienić na protected
-    public List<Object> findObjects(Object object) {
+    protected List<Object> findObjects(Object object) {
         List<Object> objects = new ArrayList<>();
         List<Field> objectFields = getAllFields(object);
         for (Object o : getAllObjects()) {
