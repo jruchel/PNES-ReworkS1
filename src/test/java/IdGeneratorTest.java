@@ -21,9 +21,9 @@ class IdGeneratorTest {
     public void initialize() {
 
         IdGenerator.resetElements();
-        rectangle1 = new Transition("", "P", 2, 3, 20);
-        rectangle2 = new Transition("", "P", 4, 5, 20);
-        rectangle3 = new Transition("", "P", 4, 5, 20);
+        rectangle1 = new Transition("", "P", 2, 3);
+        rectangle2 = new Transition("", "P", 4, 5);
+        rectangle3 = new Transition("", "P", 4, 5);
 
         circle1 = new Place<Integer>("", "K", 2, 3, 5);
         circle2 = new Place<Integer>("", "K", 2, 3, 5);
@@ -54,9 +54,9 @@ class IdGeneratorTest {
 
     @Test
     public void doesIdWillBeChangedForTheObjectWithTheSameFields() {
-        rectangle1 = new Transition("P0", "P", 2, 3, 20);
-        rectangle2 = new Transition("P0", "P", 2, 3, 20);
-        rectangle3 = new Transition("P0", "P", 2, 3, 20);
+        rectangle1 = new Transition("P0", "P", 2, 3);
+        rectangle2 = new Transition("P0", "P", 2, 3);
+        rectangle3 = new Transition("P0", "P", 2, 3);
 
 
         IdGenerator.setElementId(rectangle1);
