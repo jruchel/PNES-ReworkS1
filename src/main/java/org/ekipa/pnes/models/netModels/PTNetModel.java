@@ -22,8 +22,8 @@ public class PTNetModel<TokenValue> extends NetModel {
         return (Arc) addObject(IdGenerator.setArcId(new Arc(start, end, weight)));
     }
 
-    public Transition createTransition(String name, double x, double y, double rotationAngle) {
-        return (Transition) addObject(IdGenerator.setElementId(new Transition("", name, x, y, rotationAngle)));
+    public Transition createTransition(String name, double x, double y) {
+        return (Transition) addObject(IdGenerator.setElementId(new Transition("", name, x, y)));
     }
 
     public Place<TokenValue> createPlace(String name, double x, double y, int tokenCapacity, int token) {

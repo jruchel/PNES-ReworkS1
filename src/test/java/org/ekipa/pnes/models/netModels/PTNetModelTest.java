@@ -16,9 +16,9 @@ class PTNetModelTest {
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Sebastian0", 742, 641, 101, 46);
         ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
-        ptNetModel.createTransition("Kuba", 5, 1, 10);
-        ptNetModel.createTransition("Kacper", 3, 2, 20);
-        ptNetModel.createTransition("Adrian", 91, 5000, 1022);
+        ptNetModel.createTransition("Kuba", 5, 1);
+        ptNetModel.createTransition("Kacper", 3, 2);
+        ptNetModel.createTransition("Adrian", 91, 5000);
         try {
             ptNetModel.createArc(ptNetModel.getElement(0), ptNetModel.getElement(5), 5);
             ptNetModel.createArc(ptNetModel.getElement(1), ptNetModel.getElement(4), 7);
@@ -41,7 +41,7 @@ class PTNetModelTest {
 
     @Test
     public void checkForNothingToFind() {
-        Transition transition = new Transition("", "Bartosz", 0, 0, 0);
+        Transition transition = new Transition("", "Bartosz", 0, 0);
         transition.setReady();
 
         int expected = 0;

@@ -3,29 +3,14 @@ package org.ekipa.pnes.models.elements;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class Transition extends NetElement {
-    private double rotationAngle;
     private TransitionState state;
 
 
-    public Transition(String id, String name, double x, double y, List<Arc> arcs, double rotationAngle) {
-        super(id, name, x, y, arcs);
-        this.rotationAngle = (rotationAngle % 360);
-        this.state = TransitionState.Unready;
-    }
-
-    public void setRotationAngle(double rotationAngle) {
-        this.rotationAngle = (rotationAngle % 360);
-    }
-
-
-    public Transition(String id, String name, double x, double y, double rotationAngle) {
+    public Transition(String id, String name, double x, double y) {
         super(id, name, x, y);
-        this.rotationAngle = (rotationAngle % 360);
         this.state = TransitionState.Unready;
     }
 
@@ -88,9 +73,7 @@ public class Transition extends NetElement {
                 super.getName().equals(that.getName()) &&
                 super.getX() == that.getX() &&
                 super.getY() == that.getY() &&
-                super.getArcs().equals(that.getArcs())&&
-                getState().equals(that.getState()) &&
-                getRotationAngle()==that.getRotationAngle();
+                getState().equals(that.getState());
     }
 
     public enum TransitionState {
