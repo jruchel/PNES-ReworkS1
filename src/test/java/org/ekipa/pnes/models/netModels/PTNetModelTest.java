@@ -1,22 +1,18 @@
 package org.ekipa.pnes.models.netModels;
 
-import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class PTNetModelTest {
-    private PTNetModel ptNetModel;
+    private PTNetModel<Integer> ptNetModel;
 
     @BeforeEach
     public void initialize() {
-        ptNetModel = new PTNetModel();
+        ptNetModel = new PTNetModel<>();
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Sebastian0", 742, 641, 101, 46);
         ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
@@ -24,9 +20,9 @@ class PTNetModelTest {
         ptNetModel.createTransition("Kacper", 3, 2, 20);
         ptNetModel.createTransition("Adrian", 91, 5000, 1022);
         try {
-            ptNetModel.createArc(ptNetModel.getElement(0),ptNetModel.getElement(5),5);
-            ptNetModel.createArc(ptNetModel.getElement(1),ptNetModel.getElement(4),7);
-            ptNetModel.createArc(ptNetModel.getElement(2),ptNetModel.getElement(3),1);
+            ptNetModel.createArc(ptNetModel.getElement(0), ptNetModel.getElement(5), 5);
+            ptNetModel.createArc(ptNetModel.getElement(1), ptNetModel.getElement(4), 7);
+            ptNetModel.createArc(ptNetModel.getElement(2), ptNetModel.getElement(3), 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -34,8 +30,8 @@ class PTNetModelTest {
 
     @Test
     public void checkNumberOfFoundObjects() {
-        Place place = new Place("", "Kuba", 3, 5, 13);
-        
+        Place<Integer> place = new Place<>("", "Kuba", 3, 5, 13);
+
         int expected = 2;
         int actual = ptNetModel.findObjects(place).size();
 

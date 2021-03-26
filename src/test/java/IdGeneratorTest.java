@@ -1,8 +1,6 @@
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.Transition;
-import org.ekipa.pnes.models.elements.token.IntegerTokenValue;
-import org.ekipa.pnes.models.elements.token.ValidationException;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,16 +18,16 @@ class IdGeneratorTest {
 
 
     @BeforeEach
-    public void initialize() throws ValidationException {
+    public void initialize() {
 
         IdGenerator.resetElements();
         rectangle1 = new Transition("", "P", 2, 3, 20);
         rectangle2 = new Transition("", "P", 4, 5, 20);
         rectangle3 = new Transition("", "P", 4, 5, 20);
 
-        circle1 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
-        circle2 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
-        circle3 = new Place<IntegerTokenValue>("", "K", 2, 3, 5);
+        circle1 = new Place<Integer>("", "K", 2, 3, 5);
+        circle2 = new Place<Integer>("", "K", 2, 3, 5);
+        circle3 = new Place<Integer>("", "K", 2, 3, 5);
 
 
     }

@@ -94,8 +94,8 @@ public abstract class NetModel {
                     field.setAccessible(true);
                     try {
                         if (f.get(object).equals(field.get(o))) return true;
-                    } catch (IllegalAccessException ignored) {
-
+                    } catch (Exception ignored) {
+                        
                     }
                     f.setAccessible(fAccessible);
                     field.setAccessible(fieldAccessible);
