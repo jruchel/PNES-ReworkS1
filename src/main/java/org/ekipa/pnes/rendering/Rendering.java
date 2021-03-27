@@ -1,11 +1,11 @@
-package org.ekipa.pnes.Rendering;
+package org.ekipa.pnes.rendering;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class main extends Application {
+public class Rendering extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Rendering");
