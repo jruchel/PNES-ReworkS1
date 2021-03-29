@@ -2,6 +2,8 @@ plugins {
     id 'org.springframework.boot' version '2.4.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+        id 'application'
+        id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 group = 'org.ekipa'
@@ -10,6 +12,11 @@ sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
+}
+
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls' ]
 }
 
 dependencies {
