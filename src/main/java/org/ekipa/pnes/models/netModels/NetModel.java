@@ -108,14 +108,16 @@ public abstract class NetModel {
         return objects;
     }
 
-    protected void editObject(Object beforeChange, Object afterChange) throws IllegalAccessException {
-        if (!beforeChange.getClass().equals(afterChange.getClass())) return;
-        List<Field> fieldsBefore = getAllFields(beforeChange);
-        for (Field f : fieldsBefore) {
+    protected Object editObject(Object actualObject, Object newObject) throws IllegalAccessException {
+        if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
+        List<Field> fieldsBefore = getAllFields(actualObject);
+        List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
+        for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
             f.setAccessible(true);
-            f.set(beforeChange, f.get(afterChange));
+            f.set(actualObject, f.get(newObject));
             f.setAccessible(false);
         }
+        return actualObject;
     }
 
     private List<Field> getAllFields(Object o) {
