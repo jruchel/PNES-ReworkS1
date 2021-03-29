@@ -39,6 +39,10 @@ public class PTNetModel<TokenValue> extends NetModel {
         netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteObject);
     }
 
+    public Object edit(Object actualObject, Object newObject) {
+        return editObject(actualObject, newObject);
+    }
+
     @Override
     public void translate(NetModel model) {
 
