@@ -8,7 +8,7 @@ import org.ekipa.pnes.utils.IdGenerator;
 
 import java.util.List;
 
-public class PTNetModel<TokenValue> extends NetModel {
+public class PTNetModel extends NetModel {
 
     public PTNetModel() {
         super();
@@ -26,8 +26,8 @@ public class PTNetModel<TokenValue> extends NetModel {
         return (Transition) addObject(IdGenerator.setElementId(new Transition("", name, x, y)));
     }
 
-    public Place<TokenValue> createPlace(String name, double x, double y, int tokenCapacity, int token) {
-        return (Place<TokenValue>) addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
+    public Place<Integer> createPlace(String name, double x, double y, int tokenCapacity, int token) {
+        return (Place<Integer>) addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
     }
 
     public void deleteById(String id) {
