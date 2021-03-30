@@ -13,6 +13,10 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'org.openjfx', name: 'javafx-controls', version: '11'
+    implementation group: 'org.openjfx', name: 'javafx-fxml', version: '11'
+    implementation group: 'org.openjfx', name: 'javafx-base', version: '11'
+    implementation group: 'org.openjfx', name: 'javafx-graphics', version: '11'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.18'
     annotationProcessor 'org.projectlombok:lombok:1.18.8'

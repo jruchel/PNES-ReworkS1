@@ -4,19 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
+
 public abstract class NetElement {
     private String id;
     private String name;
     private double x, y;
     private Set<Arc> arcs;
+
+    public NetElement(){
+        this.arcs = new HashSet<>();
+    }
 
     public NetElement(String id, String name, double x, double y) {
         this.id = id;

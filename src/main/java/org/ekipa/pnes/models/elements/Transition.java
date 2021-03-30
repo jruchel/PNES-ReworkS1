@@ -5,9 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
+
 public class Transition extends NetElement {
     private TransitionState state;
 
+    public Transition(){
+
+    }
 
     public Transition(String id, String name, double x, double y) {
         super(id, name, x, y);

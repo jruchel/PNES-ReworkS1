@@ -6,12 +6,10 @@ import lombok.Getter;
 import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetElement;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
@@ -61,6 +59,7 @@ public abstract class NetModel {
     }
 
     protected Object addObject(Object object) {
+        if (!validateObject(object)) return object;
         if (object instanceof Arc) {
             arcList.add((Arc) object);
             return object;
@@ -95,7 +94,7 @@ public abstract class NetModel {
                     try {
                         if (f.get(object).equals(field.get(o))) return true;
                     } catch (Exception ignored) {
-                        
+
                     }
                     f.setAccessible(fAccessible);
                     field.setAccessible(fieldAccessible);
@@ -108,10 +107,29 @@ public abstract class NetModel {
         return objects;
     }
 
+    protected Object editObject(Object actualObject, Object newObject) {
+        if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
+        if (!validateObject(newObject)) return actualObject;
+        List<Field> fieldsBefore = getAllFields(actualObject);
+        List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
+        for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
+            f.setAccessible(true);
+            try {
+                f.set(actualObject, f.get(newObject));
+            } catch (IllegalAccessException ignored) {
+
+            }
+            f.setAccessible(false);
+        }
+        return actualObject;
+    }
+
+    protected abstract boolean validateObject(Object o);
+
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
         Class clazz = o.getClass();
-        while (clazz != Object.class) {
+        while (!clazz.equals(Object.class)) {
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
             clazz = clazz.getSuperclass();
         }

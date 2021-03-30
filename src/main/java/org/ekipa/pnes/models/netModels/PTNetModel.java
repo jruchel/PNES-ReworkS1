@@ -8,7 +8,7 @@ import org.ekipa.pnes.utils.IdGenerator;
 
 import java.util.List;
 
-public class PTNetModel<TokenValue> extends NetModel {
+public class PTNetModel extends NetModel {
 
     public PTNetModel() {
         super();
@@ -26,8 +26,8 @@ public class PTNetModel<TokenValue> extends NetModel {
         return (Transition) addObject(IdGenerator.setElementId(new Transition("", name, x, y)));
     }
 
-    public Place<TokenValue> createPlace(String name, double x, double y, int tokenCapacity, int token) {
-        return (Place<TokenValue>) addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
+    public Place<Integer> createPlace(String name, double x, double y, int tokenCapacity, int token) {
+        return (Place<Integer>) addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
     }
 
     public void deleteById(String id) {
@@ -39,6 +39,10 @@ public class PTNetModel<TokenValue> extends NetModel {
         netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteObject);
     }
 
+    public Object edit(Object actualObject, Object newObject) {
+        return editObject(actualObject, newObject);
+    }
+
     @Override
     public void translate(NetModel model) {
 
@@ -47,5 +51,40 @@ public class PTNetModel<TokenValue> extends NetModel {
     @Override
     public void transform(NetModel model) throws ImpossibleTransformationException {
 
+    }
+
+    @Override
+    protected boolean validateObject(Object o) {
+        boolean wasValidated = false;
+        if (o instanceof Arc) {
+            wasValidated = true;
+            Arc arc = (Arc) o;
+            if (arc.getWeight() <= 0) return false;
+            try {
+                if (arc.getEnd().getClass().equals(arc.getStart().getClass())) return false;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        if (o instanceof Place) {
+            wasValidated = true;
+            try {
+                Place<Integer> place = (Place<Integer>) o;
+                if (place.getTokenCapacity() < 0) return false;
+                if (place.getToken() > place.getTokenCapacity()) return false;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        if (o instanceof Transition) {
+            wasValidated = true;
+            Transition transition = (Transition) o;
+            if (!transition.getState().equals(Transition.TransitionState.Unready)) return false;
+        }
+        if (o instanceof NetElement) {
+            NetElement netElement = (NetElement) o;
+            if (netElement.getX() < 0 || netElement.getY() < 0) return false;
+        }
+        return wasValidated;
     }
 }

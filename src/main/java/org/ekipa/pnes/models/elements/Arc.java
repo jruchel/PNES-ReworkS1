@@ -5,14 +5,19 @@ import lombok.Setter;
 
 @Getter
 @Setter
+
 public class Arc {
     private String id;
     private NetElement start;
     private NetElement end;
     private double weight;
 
+    public Arc() {
+
+    }
+
     public Arc(String id, NetElement start, NetElement end, double weight) throws Exception {
-        validateElements(start,end);
+        validateElements(start, end);
         this.id = id;
         this.start = start;
         this.end = end;
@@ -23,7 +28,7 @@ public class Arc {
 
 
     public Arc(NetElement start, NetElement end, double weight) throws Exception {
-        this("",start,end,weight);
+        this("", start, end, weight);
     }
 
     public void setStart(NetElement start) throws Exception {
