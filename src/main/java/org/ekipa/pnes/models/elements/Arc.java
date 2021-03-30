@@ -5,12 +5,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
+
 public class Arc {
     private String id;
     private NetElement start;
     private NetElement end;
     private double weight;
 
+    public Arc(){
+
+    }
     public Arc(String id, NetElement start, NetElement end, double weight) throws Exception {
         validateElements(start,end);
         this.id = id;

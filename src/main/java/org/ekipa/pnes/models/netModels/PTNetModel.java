@@ -52,4 +52,9 @@ public class PTNetModel extends NetModel {
     public void transform(NetModel model) throws ImpossibleTransformationException {
 
     }
+
+    @Override
+    protected boolean validateObject(Object o) {
+        return false;
+    }
 }

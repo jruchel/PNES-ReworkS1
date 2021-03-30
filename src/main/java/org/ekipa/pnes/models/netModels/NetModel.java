@@ -6,12 +6,10 @@ import lombok.Getter;
 import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetElement;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
@@ -61,6 +59,7 @@ public abstract class NetModel {
     }
 
     protected Object addObject(Object object) {
+        if (!validateObject(object)) return object;
         if (object instanceof Arc) {
             arcList.add((Arc) object);
             return object;
@@ -110,6 +109,7 @@ public abstract class NetModel {
 
     protected Object editObject(Object actualObject, Object newObject) {
         if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
+        if(!validateObject(newObject)) return actualObject;
         List<Field> fieldsBefore = getAllFields(actualObject);
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
         for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
@@ -123,6 +123,8 @@ public abstract class NetModel {
         }
         return actualObject;
     }
+
+    protected abstract boolean validateObject (Object o);
 
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
