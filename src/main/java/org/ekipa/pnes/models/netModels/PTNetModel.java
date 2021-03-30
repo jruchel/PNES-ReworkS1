@@ -55,6 +55,36 @@ public class PTNetModel extends NetModel {
 
     @Override
     protected boolean validateObject(Object o) {
-        return false;
+        boolean wasValidated = false;
+        if (o instanceof Arc) {
+            wasValidated = true;
+            Arc arc = (Arc) o;
+            if (arc.getWeight() <= 0) return false;
+            try {
+                if (arc.getEnd().getClass().equals(arc.getStart().getClass())) return false;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        if (o instanceof Place) {
+            wasValidated = true;
+            try {
+                Place<Integer> place = (Place<Integer>) o;
+                if (place.getTokenCapacity() < 0) return false;
+                if (place.getToken() > place.getTokenCapacity()) return false;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        if (o instanceof Transition) {
+            wasValidated = true;
+            Transition transition = (Transition) o;
+            if (!transition.getState().equals(Transition.TransitionState.Unready)) return false;
+        }
+        if (o instanceof NetElement) {
+            NetElement netElement = (NetElement) o;
+            if (netElement.getX() < 0 || netElement.getY() < 0) return false;
+        }
+        return wasValidated;
     }
 }

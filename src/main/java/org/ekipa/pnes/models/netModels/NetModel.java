@@ -94,7 +94,7 @@ public abstract class NetModel {
                     try {
                         if (f.get(object).equals(field.get(o))) return true;
                     } catch (Exception ignored) {
-                        
+
                     }
                     f.setAccessible(fAccessible);
                     field.setAccessible(fieldAccessible);
@@ -109,7 +109,7 @@ public abstract class NetModel {
 
     protected Object editObject(Object actualObject, Object newObject) {
         if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
-        if(!validateObject(newObject)) return actualObject;
+        if (!validateObject(newObject)) return actualObject;
         List<Field> fieldsBefore = getAllFields(actualObject);
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
         for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
@@ -124,7 +124,7 @@ public abstract class NetModel {
         return actualObject;
     }
 
-    protected abstract boolean validateObject (Object o);
+    protected abstract boolean validateObject(Object o);
 
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
