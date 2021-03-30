@@ -7,8 +7,13 @@ import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.utils.IdGenerator;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PTNetModel extends NetModel {
+    private Transition selectedTransition;
 
     public PTNetModel() {
         super();
@@ -95,5 +100,37 @@ public class PTNetModel extends NetModel {
             int newTokens = (Integer) tokens;
             if (placeTokens + newTokens <= place.getTokenCapacity()) place.setTokens(placeTokens + newTokens);
         }
+    }
+
+    @Override
+    protected NetModel nextStep() {
+        // Ustawianie na gotowe wszystkich tranzycji, które mogą zostać ustawione na gotowe
+        getUnreadyTransitions().stream().filter(this::canTransitionBeReady).forEach(Transition::setReady);
+        return null;
+    }
+
+    private boolean canTransitionBeReady(Transition transition) {
+        if (transition.getArcs().isEmpty()) return false;
+        Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
+        Set<Arc> arcs = transitionArcs.stream().filter(arc -> {
+            try {
+                return arc.getWeight() <= (Integer) ((Place) arc.getStart()).getTokens();
+            } catch (Exception ignored) {
+                return false;
+            }
+        }).collect(Collectors.toSet());
+        return arcs.size() > 0;
+    }
+
+    private List<Transition> getUnreadyTransitions() {
+        return netElements.stream()
+                .filter(element -> element instanceof Transition)
+                .filter(transition -> ((Transition) transition).getState().equals(Transition.TransitionState.Unready))
+                .map(netElement -> {
+                    if (netElement instanceof Transition) return (Transition) netElement;
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }

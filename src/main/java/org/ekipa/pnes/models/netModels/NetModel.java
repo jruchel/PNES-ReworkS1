@@ -50,6 +50,15 @@ public abstract class NetModel {
      */
     public abstract void transform(NetModel model) throws ImpossibleTransformationException;
 
+    public static List<NetModel> simulate(NetModel netModel, int steps) {
+        List<NetModel> netModels = new ArrayList<>();
+        netModels.add(netModel.nextStep());
+        for (int i = 0; i < steps - 1; i++) {
+            netModels.add(netModels.get(i));
+        }
+        return netModels;
+    }
+
     protected void deleteObject(Object object) {
         if (object instanceof Arc) {
             arcList = arcList.stream().filter(e -> !e.equals(object)).collect(Collectors.toList());
@@ -128,6 +137,8 @@ public abstract class NetModel {
     protected abstract boolean validateObject(Object o);
 
     protected abstract void addTokens(Place place, Object tokens);
+
+    protected abstract NetModel nextStep();
 
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
