@@ -193,9 +193,9 @@ class PTNetModelTest {
         assertEquals(expected, actual);
         if (ptNetModel.getElement(0).getClass().equals(new Place<Integer>().getClass())) {
             expected = 25;
-            actual =((Place<Integer>) ptNetModel.getElement(0)).getToken();
+            actual =((Place<Integer>) ptNetModel.getElement(0)).getTokens();
         }else {
-            assertThrows(Exception.class, () -> ((Place<Integer>) ptNetModel.getElement(0)).getToken());
+            assertThrows(Exception.class, () -> ((Place<Integer>) ptNetModel.getElement(0)).getTokens());
         }
         assertEquals(expected, actual);
     }

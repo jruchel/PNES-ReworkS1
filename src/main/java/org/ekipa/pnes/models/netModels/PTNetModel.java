@@ -71,7 +71,7 @@ public class PTNetModel extends NetModel {
             try {
                 Place<Integer> place = (Place<Integer>) o;
                 if (place.getTokenCapacity() < 0) return false;
-                if (place.getToken() > place.getTokenCapacity()) return false;
+                if (place.getTokens() > place.getTokenCapacity()) return false;
             } catch (Exception e) {
                 return false;
             }
@@ -86,5 +86,14 @@ public class PTNetModel extends NetModel {
             if (netElement.getX() < 0 || netElement.getY() < 0) return false;
         }
         return wasValidated;
+    }
+
+    @Override
+    protected void addTokens(Place place, Object tokens) {
+        if (tokens instanceof Integer && (Integer) tokens > 0 && place.getTokens() instanceof Integer) {
+            int placeTokens = (Integer) place.getTokens();
+            int newTokens = (Integer) tokens;
+            if (placeTokens + newTokens <= place.getTokenCapacity()) place.setTokens(placeTokens + newTokens);
+        }
     }
 }

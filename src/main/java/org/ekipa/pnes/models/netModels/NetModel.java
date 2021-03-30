@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetElement;
+import org.ekipa.pnes.models.elements.Place;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -125,6 +126,8 @@ public abstract class NetModel {
     }
 
     protected abstract boolean validateObject(Object o);
+
+    protected abstract void addTokens(Place place, Object tokens);
 
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
