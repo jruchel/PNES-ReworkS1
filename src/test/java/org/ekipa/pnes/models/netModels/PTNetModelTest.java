@@ -15,7 +15,7 @@ class PTNetModelTest {
     public void initialize() {
         ptNetModel = new PTNetModel();
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
-        ptNetModel.createPlace("Sebastian0", 742, 641, 101, 46);
+        ptNetModel.createPlace("Sebastian420", 742, 641, 101, 46);
         ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
         ptNetModel.createTransition("Kuba", 5, 1);
         ptNetModel.createTransition("Kacper", 3, 2);
