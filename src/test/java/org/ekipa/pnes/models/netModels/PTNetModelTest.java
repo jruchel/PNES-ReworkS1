@@ -17,9 +17,9 @@ class PTNetModelTest {
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Sebastian420", 742, 641, 101, 46);
         ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
-        ptNetModel.createTransition("Kuba", 5, 1);
-        ptNetModel.createTransition("Kacper", 3, 2);
-        ptNetModel.createTransition("Adrian", 91, 5000);
+        ptNetModel.createTransition("Kuba", 5, 1).setUnready();
+        ptNetModel.createTransition("Kacper", 3, 2).setUnready();
+        ptNetModel.createTransition("Adrian", 91, 5000).setUnready();
 
         try {
             ptNetModel.createArc(ptNetModel.getElement(0), ptNetModel.getElement(5), 5);
@@ -206,6 +206,19 @@ class PTNetModelTest {
         ptNetModel.addTokens(place, 35);
         int expected = 20;
         int actual = place.getTokens();
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    public void validationForSetTransitionReady() {
+        Transition transition = ptNetModel.createTransition("Fludu", 10, 20);
+        Enum actual = transition.getState();
+        Enum expected = Transition.TransitionState.Ready;
+        transition.setUnready();
+        assertNotEquals(expected, actual);
+        ptNetModel.nextStep();
+        actual = ((Transition) ptNetModel.getElement(3)).getState();
         assertEquals(expected, actual);
 
     }
