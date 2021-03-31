@@ -98,8 +98,11 @@ public class PTNetModel extends NetModel {
         if (tokens instanceof Integer && (Integer) tokens > 0 && place.getTokens() instanceof Integer) {
             int placeTokens = (Integer) place.getTokens();
             int newTokens = (Integer) tokens;
-            if (placeTokens + newTokens <= place.getTokenCapacity()) place.setTokens(placeTokens + newTokens);
+            int tokenSet = placeTokens + newTokens;
+            place.setTokens(tokenSet);
+            if (tokenSet > place.getTokenCapacity()) place.setTokens(place.getTokenCapacity());
         }
+
     }
 
     @Override
