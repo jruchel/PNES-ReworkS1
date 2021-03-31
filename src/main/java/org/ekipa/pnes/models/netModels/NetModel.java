@@ -6,11 +6,13 @@ import lombok.Getter;
 import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.Place;
+import org.ekipa.pnes.models.elements.Transition;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
@@ -37,7 +39,7 @@ public abstract class NetModel {
      * które są możliwe do zmiany, w przeciwnym razie te dane których się nie da przetłumaczyć
      * to stworzy dla nich odpowiedniki i ustawi im wartości
      *
-     * @param model model {@link org.ekipa.pnes.models.netModels}
+     * @param model model {@link org.ekipa.pnes.models.netModels.NetModel}
      */
     public abstract void translate(NetModel model);
 
@@ -45,11 +47,17 @@ public abstract class NetModel {
      * Tworzy model obecnego typu na podstawie przekazanego modelu,jeżeli jest to możliwe
      * w przeciwnym razie wyrzuca wyjątek o niemożliwej transfomracji
      *
-     * @param model model {@link org.ekipa.pnes.models.netModels}
+     * @param model model {@link org.ekipa.pnes.models.netModels.NetModel}
      * @throws ImpossibleTransformationException - wyjątek informujący o niemożliwej transformacji
      */
     public abstract void transform(NetModel model) throws ImpossibleTransformationException;
 
+    /**
+     * Wykonuje podaną ilość kroków symulacji dla podanej sieci
+     * @param netModel sieć do symulowania
+     * @param steps ilość kroków
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji
+     */
     public static List<NetModel> simulate(NetModel netModel, int steps) {
         List<NetModel> netModels = new ArrayList<>();
         netModels.add(netModel.nextStep());
@@ -59,6 +67,11 @@ public abstract class NetModel {
         return netModels;
     }
 
+    /**
+     * Usuwa podany obiekt z całego modelu sieci.
+     * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     * @param object Obiekt do usunięcia
+     */
     protected void deleteObject(Object object) {
         if (object instanceof Arc) {
             arcList = arcList.stream().filter(e -> !e.equals(object)).collect(Collectors.toList());
@@ -68,6 +81,12 @@ public abstract class NetModel {
         }
     }
 
+    /**
+     * Dodaje podany obiekt do modelu sieci jeśli przejdzie walidacje.
+     * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     * @param object Obiekt do dodania
+     * @return Dodany obiekt
+     */
     protected Object addObject(Object object) {
         if (!validateObject(object)) return object;
         if (object instanceof Arc) {
@@ -117,6 +136,13 @@ public abstract class NetModel {
         return objects;
     }
 
+    /**
+     * Edytuje obiekt z całego modelu jeśli przejdzie walidacje.
+     * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     * @param actualObject Dokładny obiekt, który ma zostać zaktualizowany.
+     * @param newObject Obiekt, z którego ma zamienić wartości.
+     * @return Zwraca zaktualizowany obiekt.
+     */
     protected Object editObject(Object actualObject, Object newObject) {
         if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
         if (!validateObject(newObject)) return actualObject;
@@ -134,11 +160,79 @@ public abstract class NetModel {
         return actualObject;
     }
 
+    /**
+     * Przeprowadza walidacje dowolnych elementów w modelu sieci.
+     * Metoda musi być nadpisana poprawnie, aby móc korzystać z sieci.
+     * @param o Obiekt do walidacji.
+     * @return Wynik walidacji.
+     */
     protected abstract boolean validateObject(Object o);
 
+    /**
+     * Dodaje podaje tokeny do podanego miejsca.
+     * @param place Miejsce do którego mają zostać dodane tokeny.
+     * @param tokens Tokeny.
+     */
     protected abstract void addTokens(Place place, Object tokens);
 
-    protected abstract NetModel nextStep();
+    /**
+     * Wykonuje pojedynczy krok symulacji.
+     * @return Model po wykonaniu kroku.
+     */
+    protected NetModel nextStep() {
+        List<Transition> readyTransitions = prepareTransitions();
+        List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
+        transitionsToRun.forEach(this::runTransition);
+        return this;
+    }
+
+    /**
+     * Uruchamia podaną tranzycję.
+     * @param transition Tranzycja do uruchomienia.
+     * @return Czy uruchomiono.
+     */
+    protected abstract boolean runTransition(Transition transition);
+
+    /**
+     * Odnajduje te tranzycje, które mogą zostać przygotowane, następnie ustawia je jako gotowe.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista gotowych tranzycji.
+     */
+    protected abstract List<Transition> prepareTransitions();
+
+    /**
+     * Wybiera te tranzycje spośród gotowych, które mają zostać uruchomione.
+     * @param transitions {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}>Lista tranzycji do wybrania.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji do uruchomienia.
+     */
+    protected abstract List<Transition> selectTransitionsToRun(List<Transition> transitions);
+
+    /**
+     * Zwraca te tranzycje sieci, które znajdują się w podanym stanie.
+     * @param state {@link org.ekipa.pnes.models.elements.Transition.TransitionState}
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> lista tranzycji.
+     */
+    protected List<Transition> getTransitionsWithState(Transition.TransitionState state) {
+        return netElements.stream()
+                .filter(element -> element instanceof Transition)
+                .filter(transition -> ((Transition) transition).getState().equals(state))
+                .map(netElement -> {
+                    if (netElement instanceof Transition) return (Transition) netElement;
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Zwraca wszystkie obiekty w sieci.
+     * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     * @return {@link java.util.List}<{@link java.lang.Object}> Lista obiektów w sieci.
+     */
+    protected List<Object> getAllObjects() {
+        List<Object> objects = new ArrayList<>(arcList);
+        objects.addAll(netElements);
+        return objects;
+    }
 
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
@@ -148,11 +242,5 @@ public abstract class NetModel {
             clazz = clazz.getSuperclass();
         }
         return fields;
-    }
-
-    protected List<Object> getAllObjects() {
-        List<Object> objects = new ArrayList<>(arcList);
-        objects.addAll(netElements);
-        return objects;
     }
 }

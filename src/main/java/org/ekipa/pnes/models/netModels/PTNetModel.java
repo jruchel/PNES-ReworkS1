@@ -7,9 +7,7 @@ import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.MyRandom;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -106,13 +104,8 @@ public class PTNetModel extends NetModel {
 
     }
 
-    private Transition selectTransitionToActivate() {
-        if (selectedTransition != null && selectedTransition.getState().equals(Transition.TransitionState.Ready))
-            return selectedTransition;
-        return MyRandom.getRandom(getTransitionsWithState(Transition.TransitionState.Ready));
-    }
-
-    private boolean runTransition(Transition transition) {
+    @Override
+    protected boolean runTransition(Transition transition) {
         if (!transition.getState().equals(Transition.TransitionState.Ready)) return false;
         if (!transition.setRunning()) return false;
         List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd() == transition).collect(Collectors.toList());
@@ -128,28 +121,20 @@ public class PTNetModel extends NetModel {
     }
 
     @Override
-    protected NetModel nextStep() {
-        List<Transition> readyTransitions = getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(this::canTransitionBeReady).collect(Collectors.toList());
-        readyTransitions.forEach(Transition::setReady);
-        runTransition(selectTransitionToActivate());
-        return this;
+    protected List<Transition> prepareTransitions() {
+        return getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(this::canTransitionBeReady).collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<Transition> selectTransitionsToRun(List<Transition> transitions) {
+        if (selectedTransition != null && selectedTransition.getState().equals(Transition.TransitionState.Ready))
+            return Collections.singletonList(selectedTransition);
+        return Collections.singletonList(MyRandom.getRandom(transitions));
     }
 
     private boolean canTransitionBeReady(Transition transition) {
         if (transition.getArcs().isEmpty()) return false;
         Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
         return transitionArcs.stream().noneMatch(arc -> ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight());
-    }
-
-    private List<Transition> getTransitionsWithState(Transition.TransitionState state) {
-        return netElements.stream()
-                .filter(element -> element instanceof Transition)
-                .filter(transition -> ((Transition) transition).getState().equals(state))
-                .map(netElement -> {
-                    if (netElement instanceof Transition) return (Transition) netElement;
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
     }
 }
