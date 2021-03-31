@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @NoArgsConstructor
 public class Endpoint {
     private String path;
-    private String role;
+    private String[] role;
     private RequestMethod[] method;
 }

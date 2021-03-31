@@ -1,5 +1,6 @@
 package org.ekipa.pnes.api.configs.security;
 
+import lombok.RequiredArgsConstructor;
 import org.ekipa.pnes.api.configs.security.fillters.JwtFillter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +16,14 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends MySecurityConfig {
-
+    private final JwtFillter jwtFillter;
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Autowired
-    private JwtFillter jwtFillter;
 
     static {
         setWhitelist(Arrays.asList("/swagger-resources/**",

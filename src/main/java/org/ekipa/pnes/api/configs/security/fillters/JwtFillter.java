@@ -1,5 +1,6 @@
 package org.ekipa.pnes.api.configs.security.fillters;
 
+import lombok.RequiredArgsConstructor;
 import org.ekipa.pnes.api.models.User;
 import org.ekipa.pnes.api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFillter extends OncePerRequestFilter {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

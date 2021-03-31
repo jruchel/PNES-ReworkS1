@@ -5,10 +5,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class MySecurityConfig extends WebSecurityConfigurerAdapter {
@@ -66,7 +63,7 @@ public abstract class MySecurityConfig extends WebSecurityConfigurerAdapter {
         List<Endpoint> roleEndpoints = new ArrayList<>();
         for (int i = endpoints.size() - 1; i >= 0; i--) {
             Endpoint endpoint = endpoints.get(i);
-            if (endpoint.getRole().equals(role)) {
+            if (Arrays.asList(endpoint.getRole()).contains(role)) {
                 roleEndpoints.add(endpoint);
             }
         }
@@ -74,7 +71,11 @@ public abstract class MySecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected Set<String> getRoles(List<Endpoint> endpoints) {
-        return endpoints.stream().map(Endpoint::getRole).collect(Collectors.toSet());
+        Set<String> endpointList = new HashSet<>();
+        endpoints.forEach(endpoint -> {
+            endpointList.addAll(Arrays.asList(endpoint.getRole()));
+        });
+        return endpointList;
     }
 
     protected static void addToWhitelist(String s) {

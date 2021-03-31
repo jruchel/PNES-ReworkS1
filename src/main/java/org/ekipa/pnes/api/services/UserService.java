@@ -1,6 +1,7 @@
 package org.ekipa.pnes.api.services;
 
 
+import lombok.RequiredArgsConstructor;
 import org.ekipa.pnes.api.models.Role;
 import org.ekipa.pnes.api.models.User;
 import org.ekipa.pnes.api.repositories.UserRepository;
@@ -12,10 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public User findById(Integer id) {
         Optional<User> optional = userRepository.findById(id);

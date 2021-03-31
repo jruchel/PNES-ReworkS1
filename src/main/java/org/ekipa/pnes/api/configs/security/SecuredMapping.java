@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @RequestMapping
 public @interface SecuredMapping {
-    String role() default "";
+    String[] role() default "";
     @AliasFor(annotation = RequestMapping.class)
     RequestMethod[] method();
     @AliasFor(annotation = RequestMapping.class)

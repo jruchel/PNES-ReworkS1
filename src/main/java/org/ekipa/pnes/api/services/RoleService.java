@@ -1,5 +1,6 @@
 package org.ekipa.pnes.api.services;
 
+import lombok.RequiredArgsConstructor;
 import org.ekipa.pnes.api.models.Role;
 import org.ekipa.pnes.api.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,9 @@ import java.util.Optional;
 
 
 @Service
+@RequiredArgsConstructor
 public class RoleService {
-
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     public Role findById(Integer id) {
         Optional<Role> optional = roleRepository.findById(id);

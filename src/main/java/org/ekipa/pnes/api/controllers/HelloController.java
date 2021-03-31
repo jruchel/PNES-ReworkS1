@@ -14,5 +14,4 @@ public class HelloController extends Controller {
     public String hello() {
         return "Hello";
     }
-
 }
