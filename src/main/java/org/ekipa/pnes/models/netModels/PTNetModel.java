@@ -115,13 +115,11 @@ public class PTNetModel extends NetModel {
     private boolean runTransition(Transition transition) {
         if (!transition.getState().equals(Transition.TransitionState.Ready)) return false;
         if (!transition.setRunning()) return false;
-        //Pobiera token ze wszystkich powiazanych miejsc
         List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd() == transition).collect(Collectors.toList());
         consumeTokenArcs.forEach(arc -> {
             Place<Integer> place = (Place<Integer>) arc.getStart();
             place.setTokens((place.getTokens() - (int) arc.getWeight()));
         });
-        //Przekazuje tokeny do wszystkich polaczonych miejsc według wagi lukow
         List<Arc> forwardTokenArcs = transition.getArcs().stream().filter(arc -> arc.getStart() == transition).collect(Collectors.toList());
         forwardTokenArcs.forEach(arc -> {
             addTokens((Place) arc.getEnd(), arc.getWeight());

@@ -213,8 +213,8 @@ class PTNetModelTest {
     @Test
     public void validationForSetTransitionReady() {
         Transition transition = ptNetModel.createTransition("Fludu", 10, 20);
-        Enum actual = transition.getState();
-        Enum expected = Transition.TransitionState.Ready;
+        Transition.TransitionState actual = transition.getState();
+        Transition.TransitionState expected = Transition.TransitionState.Ready;
         transition.setUnready();
         assertNotEquals(expected, actual);
         ptNetModel.nextStep();
