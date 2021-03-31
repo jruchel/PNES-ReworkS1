@@ -10,6 +10,7 @@ import org.ekipa.pnes.utils.MyRandom;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PTNetModel extends NetModel {
@@ -139,14 +140,7 @@ public class PTNetModel extends NetModel {
     private boolean canTransitionBeReady(Transition transition) {
         if (transition.getArcs().isEmpty()) return false;
         Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
-        Set<Arc> arcs = transitionArcs.stream().filter(arc -> {
-            try {
-                return arc.getWeight() <= (Integer) ((Place) arc.getStart()).getTokens();
-            } catch (Exception ignored) {
-                return false;
-            }
-        }).collect(Collectors.toSet());
-        return arcs.size() > 0;
+        return transitionArcs.stream().noneMatch(arc -> ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight());
     }
 
     private List<Transition> getTransitionsWithState(Transition.TransitionState state) {
