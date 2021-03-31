@@ -5,11 +5,11 @@ import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.utils.IdGenerator;
+import org.ekipa.pnes.utils.MyRandom;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PTNetModel extends NetModel {
@@ -105,11 +105,35 @@ public class PTNetModel extends NetModel {
 
     }
 
+    private Transition selectTransitionToActivate() {
+        if (selectedTransition != null && selectedTransition.getState().equals(Transition.TransitionState.Ready))
+            return selectedTransition;
+        return MyRandom.getRandom(getTransitionsWithState(Transition.TransitionState.Ready));
+    }
+
+    private boolean runTransition(Transition transition) {
+        if (!transition.getState().equals(Transition.TransitionState.Ready)) return false;
+        if (!transition.setRunning()) return false;
+        //Pobiera token ze wszystkich powiazanych miejsc
+        List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd() == transition).collect(Collectors.toList());
+        consumeTokenArcs.forEach(arc -> {
+            Place<Integer> place = (Place<Integer>) arc.getStart();
+            place.setTokens((place.getTokens() - (int) arc.getWeight()));
+        });
+        //Przekazuje tokeny do wszystkich polaczonych miejsc według wagi lukow
+        List<Arc> forwardTokenArcs = transition.getArcs().stream().filter(arc -> arc.getStart() == transition).collect(Collectors.toList());
+        forwardTokenArcs.forEach(arc -> {
+            addTokens((Place) arc.getEnd(), arc.getWeight());
+        });
+        return transition.setUnready();
+    }
+
     @Override
     protected NetModel nextStep() {
-        // Ustawianie na gotowe wszystkich tranzycji, które mogą zostać ustawione na gotowe
-        getUnreadyTransitions().stream().filter(this::canTransitionBeReady).forEach(Transition::setReady);
-        return null;
+        List<Transition> readyTransitions = getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(this::canTransitionBeReady).collect(Collectors.toList());
+        readyTransitions.forEach(Transition::setReady);
+        runTransition(selectTransitionToActivate());
+        return this;
     }
 
     private boolean canTransitionBeReady(Transition transition) {
@@ -125,10 +149,10 @@ public class PTNetModel extends NetModel {
         return arcs.size() > 0;
     }
 
-    private List<Transition> getUnreadyTransitions() {
+    private List<Transition> getTransitionsWithState(Transition.TransitionState state) {
         return netElements.stream()
                 .filter(element -> element instanceof Transition)
-                .filter(transition -> ((Transition) transition).getState().equals(Transition.TransitionState.Unready))
+                .filter(transition -> ((Transition) transition).getState().equals(state))
                 .map(netElement -> {
                     if (netElement instanceof Transition) return (Transition) netElement;
                     return null;
