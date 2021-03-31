@@ -173,7 +173,7 @@ class PTNetModelTest {
 
     @Test
     public void validationForNegativeValues() {
-        Place<Integer> newplace = new Place<>("", "name", 3,5,-30,-4);
+        Place<Integer> newplace = new Place<>("", "name", 3, 5, -30, -4);
         ptNetModel.edit(ptNetModel.getElement(0), newplace);
 
 
@@ -193,10 +193,20 @@ class PTNetModelTest {
         assertEquals(expected, actual);
         if (ptNetModel.getElement(0).getClass().equals(new Place<Integer>().getClass())) {
             expected = 25;
-            actual =((Place<Integer>) ptNetModel.getElement(0)).getTokens();
-        }else {
+            actual = ((Place<Integer>) ptNetModel.getElement(0)).getTokens();
+        } else {
             assertThrows(Exception.class, () -> ((Place<Integer>) ptNetModel.getElement(0)).getTokens());
         }
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void validationForAddingTokens() {
+        Place<Integer> place = ptNetModel.createPlace("", 2.5, 2, 20, 2);
+        ptNetModel.addTokens(place, 35);
+        int expected = 20;
+        int actual = place.getTokens();
+        assertEquals(expected, actual);
+
     }
 }
