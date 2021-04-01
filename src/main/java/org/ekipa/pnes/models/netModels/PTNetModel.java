@@ -8,7 +8,6 @@ import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.MyRandom;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PTNetModel extends NetModel {
