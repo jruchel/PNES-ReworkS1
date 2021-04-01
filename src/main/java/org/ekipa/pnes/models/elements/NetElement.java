@@ -1,5 +1,6 @@
 package org.ekipa.pnes.models.elements;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,9 +16,10 @@ public abstract class NetElement {
     private String id;
     private String name;
     private double x, y;
+    @JsonIgnore
     private Set<Arc> arcs;
 
-    public NetElement(){
+    public NetElement() {
         this.arcs = new HashSet<>();
     }
 

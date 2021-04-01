@@ -8,9 +8,9 @@ import lombok.Setter;
 
 public class Place<V> extends NetElement {
     private int tokenCapacity;
-    private V token;
+    private V tokens;
 
-    public Place(){
+    public Place() {
 
     }
 
@@ -18,9 +18,9 @@ public class Place<V> extends NetElement {
         this(id, name, x, y, tokenCapacity, null);
     }
 
-    public Place(String id, String name, double x, double y, int tokenCapacity, V token) {
+    public Place(String id, String name, double x, double y, int tokenCapacity, V tokens) {
         super(id, name, x, y);
         this.tokenCapacity = tokenCapacity;
-        this.token = token;
+        this.tokens = tokens;
     }
 }
