@@ -54,15 +54,16 @@ public abstract class NetModel {
 
     /**
      * Wykonuje podaną ilość kroków symulacji dla podanej sieci
+     *
      * @param netModel sieć do symulowania
-     * @param steps ilość kroków
+     * @param steps    ilość kroków
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji
      */
     public static List<NetModel> simulate(NetModel netModel, int steps) {
         List<NetModel> netModels = new ArrayList<>();
         netModels.add(netModel.nextStep());
         for (int i = 0; i < steps - 1; i++) {
-            netModels.add(netModels.get(i));
+            netModels.add(netModels.get(i).nextStep());
         }
         return netModels;
     }
@@ -70,6 +71,7 @@ public abstract class NetModel {
     /**
      * Usuwa podany obiekt z całego modelu sieci.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     *
      * @param object Obiekt do usunięcia
      */
     protected void deleteObject(Object object) {
@@ -84,6 +86,7 @@ public abstract class NetModel {
     /**
      * Dodaje podany obiekt do modelu sieci jeśli przejdzie walidacje.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     *
      * @param object Obiekt do dodania
      * @return Dodany obiekt
      */
@@ -139,8 +142,9 @@ public abstract class NetModel {
     /**
      * Edytuje obiekt z całego modelu jeśli przejdzie walidacje.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     *
      * @param actualObject Dokładny obiekt, który ma zostać zaktualizowany.
-     * @param newObject Obiekt, z którego ma zamienić wartości.
+     * @param newObject    Obiekt, z którego ma zamienić wartości.
      * @return Zwraca zaktualizowany obiekt.
      */
     protected Object editObject(Object actualObject, Object newObject) {
@@ -163,6 +167,7 @@ public abstract class NetModel {
     /**
      * Przeprowadza walidacje dowolnych elementów w modelu sieci.
      * Metoda musi być nadpisana poprawnie, aby móc korzystać z sieci.
+     *
      * @param o Obiekt do walidacji.
      * @return Wynik walidacji.
      */
@@ -170,13 +175,15 @@ public abstract class NetModel {
 
     /**
      * Dodaje podaje tokeny do podanego miejsca.
-     * @param place Miejsce do którego mają zostać dodane tokeny.
+     *
+     * @param place  Miejsce do którego mają zostać dodane tokeny.
      * @param tokens Tokeny.
      */
     protected abstract void addTokens(Place place, Object tokens);
 
     /**
      * Wykonuje pojedynczy krok symulacji.
+     *
      * @return Model po wykonaniu kroku.
      */
     protected NetModel nextStep() {
@@ -188,6 +195,7 @@ public abstract class NetModel {
 
     /**
      * Uruchamia podaną tranzycję.
+     *
      * @param transition Tranzycja do uruchomienia.
      * @return Czy uruchomiono.
      */
@@ -195,12 +203,14 @@ public abstract class NetModel {
 
     /**
      * Odnajduje te tranzycje, które mogą zostać przygotowane, następnie ustawia je jako gotowe.
+     *
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista gotowych tranzycji.
      */
     protected abstract List<Transition> prepareTransitions();
 
     /**
      * Wybiera te tranzycje spośród gotowych, które mają zostać uruchomione.
+     *
      * @param transitions {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}>Lista tranzycji do wybrania.
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji do uruchomienia.
      */
@@ -208,6 +218,7 @@ public abstract class NetModel {
 
     /**
      * Zwraca te tranzycje sieci, które znajdują się w podanym stanie.
+     *
      * @param state {@link org.ekipa.pnes.models.elements.Transition.TransitionState}
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> lista tranzycji.
      */
@@ -226,6 +237,7 @@ public abstract class NetModel {
     /**
      * Zwraca wszystkie obiekty w sieci.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     *
      * @return {@link java.util.List}<{@link java.lang.Object}> Lista obiektów w sieci.
      */
     protected List<Object> getAllObjects() {
