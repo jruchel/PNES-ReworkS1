@@ -24,7 +24,7 @@
                                 <Insets left="50.0" right="50.0" />
                             </opaqueInsets>
                         </Button>
-                        <Button fx:id="deleteElementButton" lineSpacing="20.0" mnemonicParsing="false" onAction="#deleteElement" text="Usuń" />
+                        <Button fx:id="deleteElementButton" lineSpacing="20.0" mnemonicParsing="false" onAction="#selectDelete" text="Usuń" />
                     </children>
                     <opaqueInsets>
                         <Insets left="50.0" right="50.0" />

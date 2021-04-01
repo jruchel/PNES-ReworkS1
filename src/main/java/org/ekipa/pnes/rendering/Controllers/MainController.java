@@ -19,13 +19,13 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
+import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.netModels.PTNetModel;
+import org.hibernate.sql.Delete;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 
 public class MainController {
@@ -43,7 +43,7 @@ public class MainController {
 
     private PTNetModel netModel;
 
-    private List<Pair<Object, Object>> netElements;
+    private Map<Object, Object> netElements;
 
     private final double circleRadius = 25;
     private final double rectangleWidth = 50;
@@ -51,7 +51,7 @@ public class MainController {
 
 
     public void initialize() {
-        netElements = new ArrayList<>();
+        netElements = new HashMap<>();
         netModel = new PTNetModel();
         gridPane.setBackground(new Background(
                         new BackgroundFill(createGridPattern(),
@@ -71,6 +71,11 @@ public class MainController {
                             }
                             if (selectedElement instanceof Transition) {
                                 drawRectangle(getMousePosition(event));
+                            }
+                        }
+                        else {
+                            if (selectedElement instanceof Delete) {
+                                delete(getMousePosition(event));
                             }
                         }
 
@@ -114,7 +119,19 @@ public class MainController {
         Circle circle = new Circle(position.getKey(), position.getValue(), 25);
         gridPane.getChildren().add(circle);
         Place place = netModel.createPlace("", position.getKey(), position.getValue(), 0, 0);
-        netElements.add(new Pair<>(place, circle));
+        netElements.put(place, circle);
+    }
+
+    private void delete(Pair<Double, Double> position) {
+        Object gridObject = getElementAt(position);
+        Object netElement = netElements.keySet().stream().filter(netElem -> netElements.get(netElem).equals(gridObject)).findFirst().orElse(null);
+        if (gridObject == null || netElement == null) return;
+        netModel.deleteById(((NetElement) (netElement)).getId());
+        deleteGridElement(gridObject);
+    }
+
+    private void deleteGridElement(Object element) {
+        this.gridPane.getChildren().remove(element);
     }
 
     private void drawRectangle(Pair<Double, Double> position) {
@@ -123,7 +140,7 @@ public class MainController {
         double height = 32;
         Rectangle rectangle = new Rectangle(position.getKey() - width / 2, position.getValue() - height / 2, 50, 35);
         gridPane.getChildren().add(rectangle);
-        netElements.add(new Pair<>(transition, rectangle));
+        netElements.put(transition, rectangle);
     }
 
     private void showAlert(String title, String message) {
@@ -157,18 +174,18 @@ public class MainController {
     }
 
     private Object getElementAt(Pair<Double, Double> position) {
-        List<Object> elements = netElements.stream().map(Pair::getKey).collect(Collectors.toList());
+        Set<Object> elements = netElements.keySet();
         for (Object element : elements) {
             if (element instanceof Place) {
                 Place place = (Place) element;
                 if (isInsidePlace(new Pair<>(place.getX(), place.getY()), position)) {
-                    return place;
+                    return netElements.get(place);
                 }
             }
             if (element instanceof Transition) {
                 Transition transition = (Transition) element;
                 if (isInsideTransition(new Pair<>(transition.getX(), transition.getY()), position)) {
-                    return transition;
+                    return netElements.get(transition);
                 }
             }
         }
@@ -188,7 +205,7 @@ public class MainController {
 
     }
 
-    public void deleteElement() {
-
+    public void selectDelete() {
+        this.selectedElement = new Delete();
     }
 }
