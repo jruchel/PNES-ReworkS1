@@ -116,7 +116,10 @@ public class MainController {
     }
 
     private void createPlace(Pair<Double, Double> position) {
-        Circle circle = new Circle(position.getKey(), position.getValue(), 25);
+        Circle circle = new Circle(position.getKey(), position.getValue(), 25, Color.TRANSPARENT);
+        circle.setStroke(Color.BLACK);
+        circle.setStrokeWidth(2);
+        
         gridPane.getChildren().add(circle);
         Place place = netModel.createPlace("", position.getKey(), position.getValue(), 0, 0);
         netElements.put(place, circle);
@@ -139,6 +142,9 @@ public class MainController {
         double width = 50;
         double height = 32;
         Rectangle rectangle = new Rectangle(position.getKey() - width / 2, position.getValue() - height / 2, 50, 35);
+        rectangle.setFill(Color.TRANSPARENT);
+        rectangle.setStroke(Color.BLACK);
+        rectangle.setStrokeWidth(2);
         gridPane.getChildren().add(rectangle);
         netElements.put(transition, rectangle);
     }
