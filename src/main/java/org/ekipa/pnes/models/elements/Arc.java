@@ -6,17 +6,16 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class Arc {
-    private String id;
-    private NetElement start;
-    private NetElement end;
+public class Arc extends NetElement {
+    private NetObject start;
+    private NetObject end;
     private double weight;
 
     public Arc() {
 
     }
 
-    public Arc(String id, NetElement start, NetElement end, double weight) throws Exception {
+    public Arc(String id, NetObject start, NetObject end, double weight) throws Exception {
         validateElements(start, end);
         this.id = id;
         this.start = start;
@@ -27,16 +26,16 @@ public class Arc {
     }
 
 
-    public Arc(NetElement start, NetElement end, double weight) throws Exception {
+    public Arc(NetObject start, NetObject end, double weight) throws Exception {
         this("", start, end, weight);
     }
 
-    public void setStart(NetElement start) throws Exception {
+    public void setStart(NetObject start) throws Exception {
         validateElements(start, this.end);
         this.start = start;
     }
 
-    public void setEnd(NetElement end) throws Exception {
+    public void setEnd(NetObject end) throws Exception {
         validateElements(this.start, end);
         this.end = end;
     }
@@ -51,7 +50,7 @@ public class Arc {
      *              {@link org.ekipa.pnes.models.elements.Place}
      * @throws Exception wypisuje komunikat ze elementy sa tego samego typu
      */
-    private void validateElements(NetElement start, NetElement end) throws Exception {
+    private void validateElements(NetObject start, NetObject end) throws Exception {
         if (start.getClass().equals(end.getClass()))
             throw new Exception(String.format("Start and end of an arc cannot both be %s", start.getClass().getSimpleName()));
 

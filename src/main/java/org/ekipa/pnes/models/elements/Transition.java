@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class Transition extends NetElement {
+public class Transition extends NetObject {
     private TransitionState state;
 
     public Transition(){

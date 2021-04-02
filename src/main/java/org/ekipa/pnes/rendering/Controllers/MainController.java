@@ -19,7 +19,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
-import org.ekipa.pnes.models.elements.NetElement;
+import org.ekipa.pnes.models.elements.NetObject;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.netModels.PTNetModel;
@@ -126,7 +126,7 @@ public class MainController {
         Object gridObject = getElementAt(position);
         Object netElement = netElements.keySet().stream().filter(netElem -> netElements.get(netElem).equals(gridObject)).findFirst().orElse(null);
         if (gridObject == null || netElement == null) return;
-        netModel.deleteById(((NetElement) (netElement)).getId());
+        netModel.deleteById(((NetObject) (netElement)).getId());
         deleteGridElement(gridObject);
     }
 

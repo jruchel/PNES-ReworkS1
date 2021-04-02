@@ -1,9 +1,6 @@
 package org.ekipa.pnes.models.netModels;
 
-import org.ekipa.pnes.models.elements.Arc;
-import org.ekipa.pnes.models.elements.NetElement;
-import org.ekipa.pnes.models.elements.Place;
-import org.ekipa.pnes.models.elements.Transition;
+import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.MyRandom;
 
@@ -17,33 +14,32 @@ public class PTNetModel extends NetModel {
         super();
     }
 
-    private PTNetModel(List<NetElement> netElements, List<Arc> arcList) {
-        super(netElements, arcList);
+    private PTNetModel(List<NetElement> netElements) {
+        super(netElements);
     }
 
-    public Arc createArc(NetElement start, NetElement end, int weight) throws Exception {
-        return (Arc) addObject(IdGenerator.setArcId(new Arc(start, end, weight)));
+    public Arc createArc(NetObject start, NetObject end, int weight) throws Exception {
+        return (Arc) addElement(IdGenerator.setElementId(new Arc(start, end, weight)));
     }
 
     public Transition createTransition(String name, double x, double y) {
-        return (Transition) addObject(IdGenerator.setElementId(new Transition("", name, x, y)));
+        return (Transition) addElement(IdGenerator.setElementId(new Transition("", name, x, y)));
     }
 
     public Place<Integer> createPlace(String name, double x, double y, int tokenCapacity, int token) {
-        return (Place<Integer>) addObject(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
+        return (Place<Integer>) addElement(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
     }
 
     public void deleteById(String id) {
-        netElements.stream().filter(net -> net.getId().equals(id)).forEach(this::deleteObject);
-        arcList.stream().filter(arc -> arc.getId().equals(id)).forEach(this::deleteObject);
+        netElements.stream().filter(net -> net.getId().equals(id)).forEach(this::deleteElement);
     }
 
     public void deleteByName(String name) {
-        netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteObject);
+        netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteElement);
     }
 
-    public Object edit(Object actualObject, Object newObject) {
-        return editObject(actualObject, newObject);
+    public NetElement edit(NetElement actualObject, NetElement newObject) {
+        return editElement(actualObject, newObject);
     }
 
     @Override
@@ -57,7 +53,7 @@ public class PTNetModel extends NetModel {
     }
 
     @Override
-    protected boolean validateObject(Object o) {
+    protected boolean validateElement(NetElement o) {
         boolean wasValidated = false;
         if (o instanceof Arc) {
             wasValidated = true;
@@ -84,9 +80,9 @@ public class PTNetModel extends NetModel {
             Transition transition = (Transition) o;
             if (!transition.getState().equals(Transition.TransitionState.Unready)) return false;
         }
-        if (o instanceof NetElement) {
-            NetElement netElement = (NetElement) o;
-            if (netElement.getX() < 0 || netElement.getY() < 0) return false;
+        if (o instanceof NetObject) {
+            NetObject netObject = (NetObject) o;
+            if (netObject.getX() < 0 || netObject.getY() < 0) return false;
         }
         return wasValidated;
     }

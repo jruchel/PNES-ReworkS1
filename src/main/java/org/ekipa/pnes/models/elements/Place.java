@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class Place<V> extends NetElement {
+public class Place<V> extends NetObject {
     private int tokenCapacity;
     private V tokens;
 

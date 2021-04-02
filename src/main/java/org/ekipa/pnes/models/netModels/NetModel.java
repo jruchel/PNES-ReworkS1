@@ -3,10 +3,7 @@ package org.ekipa.pnes.models.netModels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.ekipa.pnes.models.elements.Arc;
-import org.ekipa.pnes.models.elements.NetElement;
-import org.ekipa.pnes.models.elements.Place;
-import org.ekipa.pnes.models.elements.Transition;
+import org.ekipa.pnes.models.elements.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -19,19 +16,21 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public abstract class NetModel {
     protected List<NetElement> netElements;
-    protected List<Arc> arcList;
 
-    protected NetElement getElement(int index) {
-        return netElements.get(index);
+    protected NetElement getElement(String id) {
+        return netElements.stream().filter(element -> element.getId().equals(id)).findFirst().orElse(null);
     }
 
-    protected Arc getArc(int index) {
-        return arcList.get(index);
+    protected NetObject getObject(String id) {
+        return netElements.stream()
+                .filter(element -> element instanceof NetObject)
+                .filter(netObject -> netObject.getId().equals(id))
+                .map(netElement -> (NetObject) netElement).findFirst().orElse(null);
     }
+
 
     public NetModel() {
         this.netElements = new ArrayList<>();
-        this.arcList = new ArrayList<>();
     }
 
     /**
@@ -72,35 +71,23 @@ public abstract class NetModel {
      * Usuwa podany obiekt z całego modelu sieci.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
      *
-     * @param object Obiekt do usunięcia
+     * @param element Obiekt do usunięcia
      */
-    protected void deleteObject(Object object) {
-        if (object instanceof Arc) {
-            arcList = arcList.stream().filter(e -> !e.equals(object)).collect(Collectors.toList());
-        }
-        if (object instanceof NetElement) {
-            netElements = netElements.stream().filter(net -> !net.equals(object)).collect(Collectors.toList());
-        }
+    protected void deleteElement(NetElement element) {
+        netElements = netElements.stream().filter(net -> !net.equals(element)).collect(Collectors.toList());
     }
 
     /**
      * Dodaje podany obiekt do modelu sieci jeśli przejdzie walidacje.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
      *
-     * @param object Obiekt do dodania
+     * @param element Obiekt do dodania
      * @return Dodany obiekt
      */
-    protected Object addObject(Object object) {
-        if (!validateObject(object)) return object;
-        if (object instanceof Arc) {
-            arcList.add((Arc) object);
-            return object;
-        }
-        if (object instanceof NetElement) {
-            netElements.add((NetElement) object);
-            return object;
-        }
-        return object;
+    protected NetElement addElement(NetElement element) {
+        if (!validateElement(element)) return element;
+        netElements.add(element);
+        return element;
     }
 
     /**
@@ -108,23 +95,23 @@ public abstract class NetModel {
      * jeśli jakakolwiek wartość pola obiektu jest równa wartości pola z listy, obiekt ten jest dodawany do poprzednio
      * stworzonej listy, a następnie zwraca listę wszystkich znalezionych obiektów
      *
-     * @param object wyszukiwany przez użytkownika obiekt, wartości jego pól są porównywane z wartościami pól obiektów
-     *               z listy w celu znalezienia poszukiwanych obiektów
+     * @param element wyszukiwany przez użytkownika obiekt, wartości jego pól są porównywane z wartościami pól obiektów
+     *                z listy w celu znalezienia poszukiwanych obiektów
      * @return listę znalezionych obiektów
      */
-    protected List<Object> findObjects(Object object) {
-        List<Object> objects = new ArrayList<>();
-        List<Field> objectFields = getAllFields(object);
-        for (Object o : getAllObjects()) {
+    protected List<NetElement> findObjects(NetElement element) {
+        List<NetElement> elements = new ArrayList<>();
+        List<Field> elementFields = getAllFields(element);
+        for (NetElement o : getNetElements()) {
             if (getAllFields(o).stream().anyMatch(field -> {
-                for (Field f : objectFields) {
+                for (Field f : elementFields) {
                     if (!f.getName().equals(field.getName())) continue;
                     boolean fAccessible = f.isAccessible();
                     boolean fieldAccessible = field.isAccessible();
                     f.setAccessible(true);
                     field.setAccessible(true);
                     try {
-                        if (f.get(object).equals(field.get(o))) return true;
+                        if (f.get(element).equals(field.get(o))) return true;
                     } catch (Exception ignored) {
 
                     }
@@ -133,10 +120,10 @@ public abstract class NetModel {
                 }
                 return false;
             })) {
-                objects.add(o);
+                elements.add(o);
             }
         }
-        return objects;
+        return elements;
     }
 
     /**
@@ -147,9 +134,9 @@ public abstract class NetModel {
      * @param newObject    Obiekt, z którego ma zamienić wartości.
      * @return Zwraca zaktualizowany obiekt.
      */
-    protected Object editObject(Object actualObject, Object newObject) {
+    protected NetElement editElement(NetElement actualObject, NetElement newObject) {
         if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
-        if (!validateObject(newObject)) return actualObject;
+        if (!validateElement(newObject)) return actualObject;
         List<Field> fieldsBefore = getAllFields(actualObject);
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
         for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
@@ -171,7 +158,7 @@ public abstract class NetModel {
      * @param o Obiekt do walidacji.
      * @return Wynik walidacji.
      */
-    protected abstract boolean validateObject(Object o);
+    protected abstract boolean validateElement(NetElement o);
 
     /**
      * Dodaje podaje tokeny do podanego miejsca.
@@ -226,25 +213,11 @@ public abstract class NetModel {
         return netElements.stream()
                 .filter(element -> element instanceof Transition)
                 .filter(transition -> ((Transition) transition).getState().equals(state))
-                .map(netElement -> {
-                    if (netElement instanceof Transition) return (Transition) netElement;
-                    return null;
-                })
+                .map(netElement -> (Transition) netElement)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Zwraca wszystkie obiekty w sieci.
-     * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
-     *
-     * @return {@link java.util.List}<{@link java.lang.Object}> Lista obiektów w sieci.
-     */
-    protected List<Object> getAllObjects() {
-        List<Object> objects = new ArrayList<>(arcList);
-        objects.addAll(netElements);
-        return objects;
-    }
 
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();

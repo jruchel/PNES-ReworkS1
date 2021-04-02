@@ -1,5 +1,5 @@
 import org.ekipa.pnes.models.elements.Place;
-import org.ekipa.pnes.models.elements.NetElement;
+import org.ekipa.pnes.models.elements.NetObject;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,12 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IdGeneratorTest {
 
-    private NetElement rectangle1;
-    private NetElement rectangle2;
-    private NetElement rectangle3;
-    private NetElement circle1;
-    private NetElement circle2;
-    private NetElement circle3;
+    private NetObject rectangle1;
+    private NetObject rectangle2;
+    private NetObject rectangle3;
+    private NetObject circle1;
+    private NetObject circle2;
+    private NetObject circle3;
 
 
     @BeforeEach
