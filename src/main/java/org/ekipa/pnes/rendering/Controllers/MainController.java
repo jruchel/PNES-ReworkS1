@@ -21,7 +21,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 import org.ekipa.pnes.models.elements.NetElement;
-import org.ekipa.pnes.models.elements.NetObject;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.netModels.PTNetModel;
@@ -41,12 +40,11 @@ public class MainController {
     public Button selectArcButton;
     public Button deleteElementButton;
 
-    private Object selectedElement;
-
+    private Shape mouseOverElement;
+    private Shape selectedElement;
+    private Object selectedAction;
     private PTNetModel netModel;
-
     private Map<NetElement, Shape> netElements;
-
     private final double circleRadius = 25;
     private final double rectangleWidth = 50;
     private final double rectangleHeight = 32;
@@ -64,22 +62,20 @@ public class MainController {
         gridPane.setOnMouseClicked(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
-                    if (selectedElement == null) {
+                    if (selectedAction == null) {
                         showAlert("Nie wybrano elementu sieci do narysowania", "Nie wybrano elementu sieci do narysowania");
                     } else {
-                        if (selectedElement instanceof Place) {
+                        if (selectedAction instanceof Place) {
+                            if (mouseOverElement == null)
                             createPlace(getMousePosition(event));
                         }
-                        if (selectedElement instanceof Transition) {
+                        if (selectedAction instanceof Transition) {
+                            if (mouseOverElement == null)
                             createTransition(getMousePosition(event));
-                        }
-                        if (selectedElement instanceof Delete) {
-                            delete(getMousePosition(event));
                         }
                     }
                     break;
                 case SECONDARY:
-
                     break;
             }
         });
@@ -91,26 +87,28 @@ public class MainController {
     }
 
     private void createPlace(Pair<Double, Double> position) {
-        if (getElementAt(position) != null) return;
         Circle circle = new Circle(position.getKey(), position.getValue(), 25, Color.TRANSPARENT);
         circle.setStroke(Color.BLACK);
         circle.setStrokeWidth(2);
+        circle.setOnMouseClicked(event -> {
+            selectedElement = circle;
+            if (selectedAction instanceof Delete) {
+                delete(circle);
+                selectedElement = null;
+            }
+        });
+        circle.setOnMouseEntered(event -> mouseOverElement = circle);
+        circle.setOnMouseExited(event -> mouseOverElement = null);
         gridPane.getChildren().add(circle);
-
         Place place = netModel.createPlace("", position.getKey(), position.getValue(), 0, 0);
         netElements.put(place, circle);
     }
 
-    private boolean canPlacePlace(Pair<Double, Double> place, Pair<Double, Double> point) {
+    private boolean isInsidePlace(Pair<Double, Double> place, Pair<Double, Double> point) {
         return distanceBetweenPoints(place, point) < circleRadius * 2;
     }
 
-    private boolean canDeletePlace(Pair<Double, Double> place, Pair<Double, Double> point) {
-        return distanceBetweenPoints(place, point) < circleRadius;
-    }
-
     private void createTransition(Pair<Double, Double> position) {
-        if (getElementAt(position) != null) return;
         Transition transition = netModel.createTransition("", position.getKey(), position.getValue());
         double width = 50;
         double height = 32;
@@ -118,11 +116,20 @@ public class MainController {
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.BLACK);
         rectangle.setStrokeWidth(2);
+        rectangle.setOnMouseClicked(event -> {
+            selectedElement = rectangle;
+            if (selectedAction instanceof Delete) {
+                delete(rectangle);
+                selectedElement = null;
+            }
+        });
+        rectangle.setOnMouseEntered(event -> mouseOverElement = rectangle);
+        rectangle.setOnMouseExited(event -> mouseOverElement = null);
         gridPane.getChildren().add(rectangle);
         netElements.put(transition, rectangle);
     }
 
-    private boolean canPlaceTransition(Pair<Double, Double> transitionPos, Pair<Double, Double> point) {
+    private boolean isInsideTransition(Pair<Double, Double> transitionPos, Pair<Double, Double> point) {
         double transX = transitionPos.getKey();
         double transY = transitionPos.getValue();
         double pointX = point.getKey();
@@ -133,23 +140,12 @@ public class MainController {
         return !(pointY < transY - rectangleHeight);
     }
 
-    private boolean canDeleteTransition(Pair<Double, Double> transitionPos, Pair<Double, Double> point) {
-        double transX = transitionPos.getKey();
-        double transY = transitionPos.getValue();
-        double pointX = point.getKey();
-        double pointY = point.getValue();
-        if (pointX > transX + rectangleWidth / 2) return false;
-        if (pointX < transX - rectangleWidth / 2) return false;
-        if (pointY > transY + rectangleHeight / 2) return false;
-        return !(pointY < transY - rectangleHeight / 2);
-    }
-
-    private void delete(Pair<Double, Double> position) {
-        Shape gridObject = getElementAt(position);
-        Object netElement = netElements.keySet().stream().filter(netElem -> netElements.get(netElem).equals(gridObject)).findFirst().orElse(null);
-        if (gridObject == null || netElement == null) return;
-        netModel.deleteById(((NetObject) (netElement)).getId());
-        deleteGridElement(gridObject);
+    private void delete(Shape shape) {
+        NetElement netElement = netElements.keySet().stream().filter(netElem -> netElements.get(netElem).equals(shape)).findFirst().orElse(null);
+        if (shape == null || netElement == null)
+            return;
+        netModel.deleteById(((netElement)).getId());
+        deleteGridElement(shape);
         netElements.remove(netElement);
     }
 
@@ -160,40 +156,14 @@ public class MainController {
     private double distanceBetweenPoints(Pair<Double, Double> p1, Pair<Double, Double> p2) {
         return Math.sqrt(Math.pow(p2.getKey() - p1.getKey(), 2) + Math.pow(p2.getValue() - p1.getValue(), 2));
     }
-    
-    private Shape getElementAt(Pair<Double, Double> position) {
-        Set<NetElement> elements = netElements.keySet();
-        for (NetElement element : elements) {
-            if (element instanceof Place) {
-                Place place = (Place) element;
-                if (this.selectedElement instanceof Delete) {
-                    if (canDeletePlace(new Pair<>(place.getX(), place.getY()), position)) {
-                        return netElements.get(place);
-                    }
-                } else if (canPlacePlace(new Pair<>(place.getX(), place.getY()), position)) {
-                    return netElements.get(place);
-                }
-            }
-            if (element instanceof Transition) {
-                Transition transition = (Transition) element;
-                if (this.selectedElement instanceof Delete) {
-                    if (canDeleteTransition(new Pair<>(transition.getX(), transition.getY()), position)) {
-                        return netElements.get(transition);
-                    }
-                } else if (canPlaceTransition(new Pair<>(transition.getX(), transition.getY()), position)) {
-                    return netElements.get(transition);
-                }
-            }
-        }
-        return null;
-    }
+
 
     public void selectPlace() {
-        this.selectedElement = new Place<Integer>();
+        this.selectedAction = new Place<Integer>();
     }
 
     public void selectTransition() {
-        this.selectedElement = new Transition();
+        this.selectedAction = new Transition();
     }
 
     public void selectArc() {
@@ -201,7 +171,7 @@ public class MainController {
     }
 
     public void selectDelete() {
-        this.selectedElement = new Delete();
+        this.selectedAction = new Delete();
     }
 
     private void showAlert(String title, String message) {
