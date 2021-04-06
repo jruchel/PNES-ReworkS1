@@ -50,7 +50,7 @@ public class IdGenerator {
      * @return liczbę wystąpień typu podanego elementu
      */
     private static long findOccurrencesOfSameTypeOfNetElement(NetElement element) {
-        return elementsList.stream().filter(e -> e.getClass().equals(element.getClass())).count();
+        return elementsList.stream().filter(e -> e.getClass().equals(element.getClass())).count()+1;
     }
 
 }

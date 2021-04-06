@@ -73,7 +73,7 @@ public abstract class NetModel {
      *
      * @param element Obiekt do usunięcia
      */
-    protected void deleteElement(NetElement element) {
+    public void deleteElement(NetElement element) {
         netElements = netElements.stream().filter(net -> !net.equals(element)).collect(Collectors.toList());
     }
 
@@ -84,10 +84,27 @@ public abstract class NetModel {
      * @param element Obiekt do dodania
      * @return Dodany obiekt
      */
-    protected NetElement addElement(NetElement element) {
+    public NetElement addElement(NetElement element) {
         if (!validateElement(element)) return element;
         netElements.add(element);
         return element;
+    }
+
+    // TODO: dokumentacja
+    /**
+     *
+     * @param id
+     */
+    public void deleteById(String id) {
+        netElements.stream().filter(net -> net.getId().equals(id)).forEach(this::deleteElement);
+    }
+
+    /**
+     *
+     * @param name
+     */
+    public void deleteByName(String name) {
+        netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteElement);
     }
 
     /**
@@ -134,7 +151,7 @@ public abstract class NetModel {
      * @param newObject    Obiekt, z którego ma zamienić wartości.
      * @return Zwraca zaktualizowany obiekt.
      */
-    protected NetElement editElement(NetElement actualObject, NetElement newObject) {
+    public NetElement editElement(NetElement actualObject, NetElement newObject) {
         if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
         if (!validateElement(newObject)) return actualObject;
         List<Field> fieldsBefore = getAllFields(actualObject);
