@@ -25,6 +25,7 @@ import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.netModels.PTNetModel;
 import org.ekipa.pnes.rendering.shapes.GridNetElement;
+import org.ekipa.pnes.rendering.shapes.GridPlace;
 import org.ekipa.pnes.rendering.shapes.OnGridElementAction;
 import org.hibernate.sql.Delete;
 
@@ -72,8 +73,11 @@ public class MainController {
                         showAlert("Nie wybrano elementu sieci do narysowania", "Nie wybrano elementu sieci do narysowania");
                     } else {
                         if (selectedAction instanceof Place) {
-                            if (mouseOverElement == null)
-                                createPlace(getMousePosition(event));
+                            if (mouseOverElement == null) {
+                                double x = getMousePosition(event).getKey();
+                                double y = getMousePosition(event).getValue();
+                                gridNetElements.add(new GridPlace(x, y, null, 0, null, onDelete, onCreate));
+                            }
                         }
                         if (selectedAction instanceof Transition) {
                             if (mouseOverElement == null)
@@ -121,7 +125,7 @@ public class MainController {
     }
 
     private void createTransition(Pair<Double, Double> position) {
-        Transition transition = netModel.createTransition("", position.getKey(), position.getValue());
+        /*Transition transition = netModel.createTransition("", position.getKey(), position.getValue());
 
         Rectangle rectangle = new Rectangle(position.getKey() - rectangleWidth / 2, position.getValue() - rectangleHeight / 2, 50, 35);
         rectangle.setFill(Color.TRANSPARENT);
@@ -135,28 +139,13 @@ public class MainController {
             }
         });
         rectangle.setOnMouseEntered(event -> mouseOverElement = rectangle);
-        rectangle.setOnMouseExited(event -> mouseOverElement = null);
-        gridPane.getChildren().add(rectangle);
-        netElements.put(transition, rectangle);
+        rectangle.setOnMouseExited(event -> mouseOverElement = null);*/
     }
-
-    private void delete(Shape shape) {
-        NetElement netElement = netElements.keySet().stream().filter(netElem -> netElements.get(netElem).equals(shape)).findFirst().orElse(null);
-        if (shape == null || netElement == null)
-            return;
-        deleteGridElement(shape);
-        deleteNetElement(netElement);
-    }
-
 
     private void deleteGridElement(Shape element) {
         this.gridPane.getChildren().remove(element);
     }
 
-    private void deleteNetElement(NetElement netElement) {
-        netElements.remove(netElement);
-        netModel.deleteById(((netElement)).getId());
-    }
 
     public void selectPlace() {
         this.selectedAction = new Place<Integer>();
@@ -179,6 +168,10 @@ public class MainController {
         alert.setTitle(title);
         alert.setHeaderText(message);
         alert.showAndWait();
+    }
+
+    private GridNetElement findElementById(String id) {
+        return gridNetElements.stream().filter(gridNetElement -> gridNetElement.getId().equals(id)).findFirst().orElse(null);
     }
 
     private ImagePattern createGridPattern() {
