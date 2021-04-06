@@ -1,4 +1,4 @@
-package org.ekipa.pnes.rendering.Controllers;
+package org.ekipa.pnes.rendering.controllers;
 
 
 import javafx.fxml.FXML;
@@ -24,9 +24,12 @@ import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.netModels.PTNetModel;
+import org.ekipa.pnes.rendering.shapes.GridNetElement;
+import org.ekipa.pnes.rendering.shapes.OnGridElementAction;
 import org.hibernate.sql.Delete;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainController {
@@ -44,14 +47,17 @@ public class MainController {
     private Shape selectedElement;
     private Object selectedAction;
     private PTNetModel netModel;
-    private Map<NetElement, Shape> netElements;
+    private List<GridNetElement> gridNetElements;
     private final double circleRadius = 25;
     private final double rectangleWidth = 50;
     private final double rectangleHeight = 32;
 
+    private OnGridElementAction onDelete;
+    private OnGridElementAction onCreate;
+
 
     public void initialize() {
-        netElements = new HashMap<>();
+        gridNetElements = new ArrayList<>();
         netModel = new PTNetModel();
         gridPane.setBackground(new Background(
                         new BackgroundFill(createGridPattern(),
@@ -79,6 +85,18 @@ public class MainController {
                     break;
             }
         });
+        onDelete = gridNetElement -> {
+            Shape shape = gridNetElement.getShape();
+            NetElement netElement = gridNetElement.getNetElement();
+
+            gridPane.getChildren().remove(shape);
+            netModel.deleteById(netElement.getId());
+        };
+
+        onCreate = gridNetElement -> {
+            gridPane.getChildren().add(gridNetElement.getShape());
+            netModel.addElement(gridNetElement.getNetElement());
+        };
 
     }
 
@@ -86,7 +104,7 @@ public class MainController {
         return new Pair<>(event.getX(), event.getY());
     }
 
-    private void createPlace(Pair<Double, Double> position) {
+    private Circle createPlace(Pair<Double, Double> position) {
         Circle circle = new Circle(position.getKey(), position.getValue(), circleRadius, Color.TRANSPARENT);
         circle.setStroke(Color.BLACK);
         circle.setStrokeWidth(2);
@@ -99,9 +117,7 @@ public class MainController {
         });
         circle.setOnMouseEntered(event -> mouseOverElement = circle);
         circle.setOnMouseExited(event -> mouseOverElement = null);
-        gridPane.getChildren().add(circle);
-        Place place = netModel.createPlace("", position.getKey(), position.getValue(), 0, 0);
-        netElements.put(place, circle);
+        return circle;
     }
 
     private void createTransition(Pair<Double, Double> position) {

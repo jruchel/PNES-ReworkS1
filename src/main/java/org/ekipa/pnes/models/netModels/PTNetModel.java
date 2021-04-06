@@ -30,14 +30,6 @@ public class PTNetModel extends NetModel {
         return (Place<Integer>) addElement(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
     }
 
-    public void deleteById(String id) {
-        netElements.stream().filter(net -> net.getId().equals(id)).forEach(this::deleteElement);
-    }
-
-    public void deleteByName(String name) {
-        netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteElement);
-    }
-
     public NetElement edit(NetElement actualObject, NetElement newObject) {
         return editElement(actualObject, newObject);
     }
