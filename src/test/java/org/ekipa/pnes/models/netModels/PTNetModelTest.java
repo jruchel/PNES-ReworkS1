@@ -4,17 +4,21 @@ import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetObject;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
+import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.*;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PTNetModelTest {
     private PTNetModel ptNetModel;
-    private PTNetModel ptNetModel2;
 
     @BeforeEach
     public void initialize() {
+        IdGenerator.resetElements();
         ptNetModel = new PTNetModel();
 
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
@@ -25,7 +29,6 @@ class PTNetModelTest {
         ptNetModel.createTransition("Kacper", 3, 2);
         ptNetModel.createTransition("Adrian", 91, 5000);
 
-        ptNetModel2 = new PTNetModel();
         //ptNetModel2.createPlace("Wojcieche", 300, 600, 131, 25);
         //ptNetModel2.createTransition("Kubae", 5, 1);
 
@@ -44,9 +47,10 @@ class PTNetModelTest {
 
     @Test
     public void checkNumberOfFoundObjects() {
+
         Place<Integer> place = new Place<>("", "Kuba", 3, 5, 13);
 
-        int expected = 2;
+        int expected = 3;
         int actual = ptNetModel.findObjects(place).size();
 
         assertEquals(expected, actual);
@@ -55,7 +59,9 @@ class PTNetModelTest {
 
     @Test
     public void checkForNothingToFind() {
+
         Transition transition = new Transition("", "Bartosz", 0, 0);
+
         transition.setReady();
 
         int expected = 0;
@@ -68,6 +74,7 @@ class PTNetModelTest {
 
     @Test
     public void doesEditObjectChangeFieldsForPlace() {
+
         ptNetModel.edit(ptNetModel.getObject("P1"), ptNetModel.getObject("P2"));
 
         String expectedID = ptNetModel.getObject("P1").getId();
@@ -89,6 +96,7 @@ class PTNetModelTest {
 
     @Test
     public void doesEditObjectChangeFieldsForTransition() {
+
         ptNetModel.editElement(ptNetModel.getObject("T1"), ptNetModel.getObject("T2"));
 
         String expectedID = ptNetModel.getObject("T1").getId();
@@ -111,6 +119,7 @@ class PTNetModelTest {
 
     @Test
     public void EditObjectBehaveiorForObjectsOfDifferentClass() {
+
         ptNetModel.edit(ptNetModel.getObject("P1"), ptNetModel.getObject("T3"));
 
         String expectedID = ptNetModel.getObject("P1").getId();
@@ -132,12 +141,14 @@ class PTNetModelTest {
 
     @Test
     public void doesEditObjectForTheSameObjects() {
+
         ptNetModel.editElement(ptNetModel.getObject("P1"), ptNetModel.getObject("P1"));
         assertEquals(ptNetModel.getObject("P1"), ptNetModel.getObject("P1"));
     }
 
     @Test
     public void doesEditObjectChangeFieldsForArcs() {
+
         ptNetModel.editElement(ptNetModel.getElement("A1"), ptNetModel.getElement("A2"));
 
         String expectedID = ptNetModel.getElement("A1").getId();
@@ -160,6 +171,7 @@ class PTNetModelTest {
 
     @Test
     public void doesEditObjectTurnsStartAndEndInArc() throws Exception {
+
         ptNetModel.edit(ptNetModel.getElement("P1"), ptNetModel.createArc(ptNetModel.getObject("P2"), ptNetModel.getObject("T1"), 3));
 
         Object expectedStart = ptNetModel.getObject("P1");
@@ -174,6 +186,7 @@ class PTNetModelTest {
 
     @Test
     public void validationForNegativeValues() {
+
         Place<Integer> newplace = new Place<>("", "name", 3, 5, -30, -4);
         ptNetModel.edit(ptNetModel.getObject("P1"), newplace);
 
@@ -203,6 +216,7 @@ class PTNetModelTest {
 
     @Test
     public void validationForAddingTokens() {
+
         Place<Integer> place = ptNetModel.createPlace("", 2.5, 2, 20, 2);
         ptNetModel.addTokens(place, 35);
         int expected = 20;
@@ -213,6 +227,7 @@ class PTNetModelTest {
 
     @Test
     public void validationForSetTransitionReady() {
+
         Transition transition = ptNetModel.createTransition("Fludu", 10, 20);
         Transition.TransitionState actual = transition.getState();
         Transition.TransitionState expected = Transition.TransitionState.Ready;
@@ -221,9 +236,11 @@ class PTNetModelTest {
 
     @Test
     public void checkTransitionsCanBeReadyUsingNextStep() {
+
         Transition.TransitionState actual = Transition.TransitionState.Unready;
         Transition.TransitionState expected = Transition.TransitionState.Ready;
-        ptNetModel.wholeStep();
+
+
 
         Transition.TransitionState[] transitionStates = new Transition.TransitionState[3];
         transitionStates[0] = ((Transition) (ptNetModel.getElement("T2"))).getState();
@@ -239,30 +256,18 @@ class PTNetModelTest {
 
     }
 
-    @Test
-    public void checkTransitionsCanBeReadyUsingNextStep2() {
-        Transition.TransitionState expected = Transition.TransitionState.Ready;
 
-
-        ptNetModel2.wholeStep();
-
-        Transition.TransitionState actual = ((Transition) (ptNetModel2.getElement("T1"))).getState();
-
-        assertEquals(expected, actual);
-
-
-    }
 
     @Test
     public void checkTransitionCanBeReadyUsingNextStepWithoutArc() {
+
         Transition transition = ptNetModel.createTransition("Fludu", 10, 20);
 
-        System.out.println(ptNetModel2.getNetElements());
+        System.out.println(transition.getId());
 
-        //ptNetModel.nextStep();
 
         Transition.TransitionState actual = transition.getState();
-        Transition.TransitionState expected = Transition.TransitionState.Ready;
+        Transition.TransitionState expected = Transition.TransitionState.Unready;
 
         assertEquals(expected, actual);
 
