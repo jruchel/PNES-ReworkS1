@@ -4,6 +4,7 @@ package org.ekipa.pnes.models.netModels;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.ekipa.pnes.models.elements.*;
+import sun.nio.ch.Net;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -58,13 +59,16 @@ public abstract class NetModel {
      * @param steps    ilość kroków
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji
      */
-    public static List<NetModel> simulate(NetModel netModel, int steps) {
-        List<NetModel> netModels = new ArrayList<>();
-        netModels.addAll(netModel.wholeStep());
+    public static List<List<NetModel>> simulate(NetModel netModel, int steps) {
+        List<List<NetModel>> cycles = new ArrayList<>();
+
+        cycles.add(netModel.wholeStep());
         for (int i = 0; i < steps - 1; i++) {
-            netModels.addAll(netModels.get(i).wholeStep());
+            List<NetModel> previousCycle = cycles.get(i);
+            NetModel lastInCycle = previousCycle.get(previousCycle.size() - 1);
+            cycles.add(lastInCycle.wholeStep());
         }
-        return netModels;
+        return cycles;
     }
 
     /**
