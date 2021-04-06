@@ -103,6 +103,7 @@ public class PTNetModel extends NetModel {
     @Override
     protected boolean runTransition(Transition transition) {
         if (!transition.getState().equals(Transition.TransitionState.Ready)) return false;
+        if (transition.getArcs().stream().noneMatch(arc -> arc.getStart().equals(transition))) return false;
         if (!transition.setRunning()) return false;
         List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd() == transition).collect(Collectors.toList());
         consumeTokenArcs.forEach(arc -> {

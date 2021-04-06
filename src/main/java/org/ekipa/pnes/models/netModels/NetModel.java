@@ -177,6 +177,7 @@ public abstract class NetModel {
         List<Transition> readyTransitions = prepareTransitions();
         List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
         transitionsToRun.forEach(transition -> runTransition(transition));
+        getTransitionsWithState(Transition.TransitionState.Ready).forEach(Transition::setUnready);
         return this;
     }
 
