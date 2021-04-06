@@ -176,7 +176,7 @@ public abstract class NetModel {
     protected NetModel nextStep() {
         List<Transition> readyTransitions = prepareTransitions();
         List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
-        transitionsToRun.forEach(this::runTransition);
+        transitionsToRun.forEach(transition -> runTransition(transition));
         return this;
     }
 

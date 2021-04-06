@@ -1,5 +1,6 @@
 package org.ekipa.pnes.models.netModels;
 
+import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetObject;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
@@ -10,21 +11,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PTNetModelTest {
     private PTNetModel ptNetModel;
+    private PTNetModel ptNetModel2;
 
     @BeforeEach
     public void initialize() {
         ptNetModel = new PTNetModel();
+
+        ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Sebastian420", 742, 641, 101, 46);
         ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
-        ptNetModel.createTransition("Kuba", 5, 1).setUnready();
-        ptNetModel.createTransition("Kacper", 3, 2).setUnready();
-        ptNetModel.createTransition("Adrian", 91, 5000).setUnready();
+        ptNetModel.createTransition("Kuba", 5, 1);
+        ptNetModel.createTransition("Kacper", 3, 2);
+        ptNetModel.createTransition("Adrian", 91, 5000);
+
+        ptNetModel2 = new PTNetModel();
+        //ptNetModel2.createPlace("Wojcieche", 300, 600, 131, 25);
+        //ptNetModel2.createTransition("Kubae", 5, 1);
 
         try {
-            ptNetModel.createArc(ptNetModel.getObject(0), ptNetModel.getObject(5), 5);
-            ptNetModel.createArc(ptNetModel.getObject(1), ptNetModel.getObject(4), 7);
-            ptNetModel.createArc(ptNetModel.getObject(2), ptNetModel.getObject(3), 1);
+            ptNetModel.createArc(ptNetModel.getObject("P1"), ptNetModel.getObject("T3"), 1);
+            ptNetModel.createArc(ptNetModel.getObject("P2"), ptNetModel.getObject("T2"), 1);
+            ptNetModel.createArc(ptNetModel.getObject("P3"), ptNetModel.getObject("T1"), 1);
+
+           // ptNetModel2.createArc(ptNetModel2.getObject("P1"), ptNetModel2.getObject("T1"), 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -58,115 +68,106 @@ class PTNetModelTest {
 
     @Test
     public void doesEditObjectChangeFieldsForPlace() {
-        ptNetModel.edit(ptNetModel.getObject(0), ptNetModel.getObject(1));
+        ptNetModel.edit(ptNetModel.getObject("P1"), ptNetModel.getObject("P2"));
 
-        String expectedID = ptNetModel.getObject(0).getId();
-        String actualID = ptNetModel.getObject(1).getId();
+        String expectedID = ptNetModel.getObject("P1").getId();
+        String actualID = ptNetModel.getObject("P2").getId();
         assertNotEquals(expectedID, actualID);
 
-        String expectedName = ptNetModel.getObject(0).getName();
-        String actualName = ptNetModel.getObject(1).getName();
+        String expectedName = ptNetModel.getObject("P1").getName();
+        String actualName = ptNetModel.getObject("P2").getName();
         assertEquals(expectedName, actualName);
 
-        double expectedX = ptNetModel.getObject(0).getX();
-        double actualX = ptNetModel.getObject(1).getX();
+        double expectedX = ptNetModel.getObject("P1").getX();
+        double actualX = ptNetModel.getObject("P2").getX();
         assertEquals(expectedX, actualX);
 
-        double expectedY = ptNetModel.getObject(0).getY();
-        double actualY = ptNetModel.getObject(1).getY();
+        double expectedY = ptNetModel.getObject("P1").getY();
+        double actualY = ptNetModel.getObject("P2").getY();
         assertEquals(expectedY, actualY);
     }
 
     @Test
     public void doesEditObjectChangeFieldsForTransition() {
-        ptNetModel.editElement(ptNetModel.getObject(3), ptNetModel.getObject(4));
+        ptNetModel.editElement(ptNetModel.getObject("T1"), ptNetModel.getObject("T2"));
 
-        String expectedID = ptNetModel.getObject(3).getId();
-        String actualID = ptNetModel.getObject(4).getId();
+        String expectedID = ptNetModel.getObject("T1").getId();
+        String actualID = ptNetModel.getObject("T2").getId();
         assertNotEquals(expectedID, actualID);
 
-        String expectedName = ptNetModel.getObject(3).getName();
-        String actualName = ptNetModel.getObject(4).getName();
+        String expectedName = ptNetModel.getObject("T1").getName();
+        String actualName = ptNetModel.getObject("T2").getName();
         assertEquals(expectedName, actualName);
 
-        double expectedX = ptNetModel.getObject(3).getX();
-        double actualX = ptNetModel.getObject(4).getX();
+        double expectedX = ptNetModel.getObject("T1").getX();
+        double actualX = ptNetModel.getObject("T2").getX();
         assertEquals(expectedX, actualX);
 
-        double expectedY = ptNetModel.getObject(3).getY();
-        double actualY = ptNetModel.getObject(4).getY();
+        double expectedY = ptNetModel.getObject("T1").getY();
+        double actualY = ptNetModel.getObject("T2").getY();
         assertEquals(expectedY, actualY);
 
     }
 
     @Test
     public void EditObjectBehaveiorForObjectsOfDifferentClass() {
-        ptNetModel.edit(ptNetModel.getObject(0), ptNetModel.getObject(5));
+        ptNetModel.edit(ptNetModel.getObject("P1"), ptNetModel.getObject("T3"));
 
-        String expectedID = ptNetModel.getObject(0).getId();
-        String actualID = ptNetModel.getObject(5).getId();
+        String expectedID = ptNetModel.getObject("P1").getId();
+        String actualID = ptNetModel.getObject("T3").getId();
         assertNotEquals(expectedID, actualID);
 
-        String expectedName = ptNetModel.getObject(0).getName();
-        String actualName = ptNetModel.getObject(5).getName();
+        String expectedName = ptNetModel.getObject("P1").getName();
+        String actualName = ptNetModel.getObject("T3").getName();
         assertNotEquals(expectedName, actualName);
 
-        double expectedX = ptNetModel.getObject(0).getX();
-        double actualX = ptNetModel.getObject(5).getX();
+        double expectedX = ptNetModel.getObject("P1").getX();
+        double actualX = ptNetModel.getObject("T3").getX();
         assertNotEquals(expectedX, actualX);
 
-        double expectedY = ptNetModel.getObject(0).getY();
-        double actualY = ptNetModel.getObject(5).getY();
+        double expectedY = ptNetModel.getObject("P1").getY();
+        double actualY = ptNetModel.getObject("T3").getY();
         assertNotEquals(expectedY, actualY);
     }
 
     @Test
     public void doesEditObjectForTheSameObjects() {
-        ptNetModel.editElement(ptNetModel.getObject(0), ptNetModel.getObject(0));
-        assertEquals(ptNetModel.getObject(0), ptNetModel.getObject(0));
+        ptNetModel.editElement(ptNetModel.getObject("P1"), ptNetModel.getObject("P1"));
+        assertEquals(ptNetModel.getObject("P1"), ptNetModel.getObject("P1"));
     }
 
     @Test
     public void doesEditObjectChangeFieldsForArcs() {
-        ptNetModel.editElement(ptNetModel.getElement(0), ptNetModel.getElement(1));
+        ptNetModel.editElement(ptNetModel.getElement("A1"), ptNetModel.getElement("A2"));
 
-        String expectedID = ptNetModel.getElement(0).getId();
-        String actualID = ptNetModel.getElement(1).getId();
+        String expectedID = ptNetModel.getElement("A1").getId();
+        String actualID = ptNetModel.getElement("A2").getId();
         assertNotEquals(expectedID, actualID);
 
-        NetObject expectedStart = ptNetModel.getElement(0).getStart();
-        NetObject actualStart = ptNetModel.getElement(1).getStart();
+        NetObject expectedStart = ((Arc) (ptNetModel.getElement("A1"))).getStart();
+        NetObject actualStart = ((Arc) (ptNetModel.getElement("A2"))).getStart();
         assertNotEquals(expectedStart, actualStart);
 
-        NetObject expectedEnd = ptNetModel.getElement(0).getEnd();
-        NetObject actualEnd = ptNetModel.getElement(1).getEnd();
+        NetObject expectedEnd = ((Arc) (ptNetModel.getElement("A1"))).getEnd();
+        NetObject actualEnd = ((Arc) (ptNetModel.getElement("A2"))).getEnd();
         assertNotEquals(expectedEnd, actualEnd);
 
-        double expectedWeight = ptNetModel.getElement(0).getWeight();
-        double actualWeight = ptNetModel.getElement(1).getWeight();
+        double expectedWeight = ((Arc) (ptNetModel.getElement("A1"))).getWeight();
+        double actualWeight = ((Arc) (ptNetModel.getElement("A2"))).getWeight();
         assertEquals(expectedWeight, actualWeight);
     }
 
-    @Test
-    public void changingArcWeightForNegativeValue() throws Exception {
-
-        ptNetModel.edit(ptNetModel.getElement(), ptNetModel.createArc(ptNetModel.getObject(1), ptNetModel.getObject(3), -5));
-
-        int expected = 5;
-
-        assertEquals(expected, ptNetModel.getElement(3).getWeight());
-    }
 
     @Test
     public void doesEditObjectTurnsStartAndEndInArc() throws Exception {
-        ptNetModel.edit(ptNetModel.getElement(0), ptNetModel.createArc(ptNetModel.getObject(1), ptNetModel.getObject(3), 3));
+        ptNetModel.edit(ptNetModel.getElement("P1"), ptNetModel.createArc(ptNetModel.getObject("P2"), ptNetModel.getObject("T1"), 3));
 
-        Object expectedStart = ptNetModel.getObject(0);
-        Object actualStart = ptNetModel.getObject(1);
+        Object expectedStart = ptNetModel.getObject("P1");
+        Object actualStart = ptNetModel.getObject("P2");
         assertNotEquals(expectedStart, actualStart);
 
-        Object expectedEnd = ptNetModel.getObject(5);
-        Object actualEnd = ptNetModel.getObject(3);
+        Object expectedEnd = ptNetModel.getObject("T3");
+        Object actualEnd = ptNetModel.getObject("T1");
         assertNotEquals(expectedEnd, actualEnd);
 
     }
@@ -174,28 +175,28 @@ class PTNetModelTest {
     @Test
     public void validationForNegativeValues() {
         Place<Integer> newplace = new Place<>("", "name", 3, 5, -30, -4);
-        ptNetModel.edit(ptNetModel.getObject(0), newplace);
+        ptNetModel.edit(ptNetModel.getObject("P1"), newplace);
 
 
         double expectedX = 300;
-        double actualX = ptNetModel.getObject(0).getX();
+        double actualX = ptNetModel.getObject("P1").getX();
 
         assertEquals(expectedX, actualX);
 
         double expectedY = 600;
-        double actualY = ptNetModel.getObject(0).getY();
+        double actualY = ptNetModel.getObject("P1").getY();
 
         assertEquals(expectedY, actualY);
 
         int expected = 131;
-        int actual = ((Place) ptNetModel.getObject(0)).getTokenCapacity();
+        int actual = ((Place) ptNetModel.getObject("P1")).getTokenCapacity();
 
         assertEquals(expected, actual);
-        if (ptNetModel.getObject(0).getClass().equals(new Place<Integer>().getClass())) {
+        if (ptNetModel.getObject("P1").getClass().equals(new Place<Integer>().getClass())) {
             expected = 25;
-            actual = ((Place<Integer>) ptNetModel.getObject(0)).getTokens();
+            actual = ((Place<Integer>) ptNetModel.getObject("P1")).getTokens();
         } else {
-            assertThrows(Exception.class, () -> ((Place<Integer>) ptNetModel.getObject(0)).getTokens());
+            assertThrows(Exception.class, () -> ((Place<Integer>) ptNetModel.getObject("P1")).getTokens());
         }
         assertEquals(expected, actual);
     }
@@ -215,11 +216,57 @@ class PTNetModelTest {
         Transition transition = ptNetModel.createTransition("Fludu", 10, 20);
         Transition.TransitionState actual = transition.getState();
         Transition.TransitionState expected = Transition.TransitionState.Ready;
-        transition.setUnready();
         assertNotEquals(expected, actual);
+    }
+
+    @Test
+    public void checkTransitionsCanBeReadyUsingNextStep() {
+        Transition.TransitionState actual = Transition.TransitionState.Unready;
+        Transition.TransitionState expected = Transition.TransitionState.Ready;
         ptNetModel.nextStep();
-        actual = ((Transition) ptNetModel.getObject(3)).getState();
+
+        Transition.TransitionState[] transitionStates = new Transition.TransitionState[3];
+        transitionStates[0] = ((Transition) (ptNetModel.getElement("T2"))).getState();
+        transitionStates[1] = ((Transition) (ptNetModel.getElement("T1"))).getState();
+        transitionStates[2] = ((Transition) (ptNetModel.getElement("T3"))).getState();
+
+        System.out.println(transitionStates[0]);
+        System.out.println(transitionStates[1]);
+        System.out.println(transitionStates[2]);
+
+        //assertEquals(expected, actual);
+
+
+    }
+
+    @Test
+    public void checkTransitionsCanBeReadyUsingNextStep2() {
+        Transition.TransitionState expected = Transition.TransitionState.Ready;
+
+
+        ptNetModel2.nextStep();
+
+        Transition.TransitionState actual = ((Transition) (ptNetModel2.getElement("T1"))).getState();
+
+        assertEquals(expected, actual);
+
+
+    }
+
+    @Test
+    public void checkTransitionCanBeReadyUsingNextStepWithoutArc() {
+        Transition transition = ptNetModel.createTransition("Fludu", 10, 20);
+
+        System.out.println(ptNetModel2.getNetElements());
+
+        //ptNetModel.nextStep();
+
+        Transition.TransitionState actual = transition.getState();
+        Transition.TransitionState expected = Transition.TransitionState.Ready;
+
         assertEquals(expected, actual);
 
     }
+
+
 }

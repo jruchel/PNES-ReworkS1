@@ -5,6 +5,7 @@ import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.MyRandom;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PTNetModel extends NetModel {
@@ -117,7 +118,12 @@ public class PTNetModel extends NetModel {
 
     @Override
     protected List<Transition> prepareTransitions() {
-        return getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(this::canTransitionBeReady).collect(Collectors.toList());
+        return getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(new Predicate<Transition>() {
+            @Override
+            public boolean test(Transition transition) {
+                return PTNetModel.this.canTransitionBeReady(transition);
+            }
+        }).peek(Transition::setReady).collect(Collectors.toList());
     }
 
     @Override
