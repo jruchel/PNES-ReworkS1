@@ -1,7 +1,6 @@
 package org.ekipa.pnes.rendering.shapes;
 
 import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +19,6 @@ public class GridPlace<V> extends GridNetElement {
     }
 
     public GridPlace(double x, double y, V tokens, int tokenCapacity, double radius, Label label, OnGridElementAction onDelete, OnGridElementAction onCreate) {
-
         super(
                 new Place<>("", "", x, y, tokenCapacity, tokens),
                 new Circle(x, y, radius),

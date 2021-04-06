@@ -1,7 +1,5 @@
 package org.ekipa.pnes.rendering.controllers;
 
-
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
@@ -17,8 +15,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 import org.ekipa.pnes.models.elements.NetElement;
@@ -40,7 +36,6 @@ public class MainController {
     @FXML
     public Pane gridPane;
 
-    //Buttons
     public Button placeButton;
     public Button transitionButton;
     public Button selectArcButton;
@@ -51,13 +46,9 @@ public class MainController {
     private Object selectedAction;
     private PTNetModel netModel;
     private List<GridNetElement> gridNetElements;
-    private final double circleRadius = 25;
-    private final double rectangleWidth = 50;
-    private final double rectangleHeight = 32;
 
     private OnGridElementAction onDelete;
     private OnGridElementAction onCreate;
-    private EventHandler<MouseEvent> onHover;
 
 
     public void initialize() {
@@ -107,8 +98,6 @@ public class MainController {
             gridPane.getChildren().add(gridNetElement.getShape());
             netModel.addElement(gridNetElement.getNetElement());
         };
-
-
     }
 
     private void setClickHandling(GridNetElement element) {
@@ -125,25 +114,6 @@ public class MainController {
 
     private Pair<Double, Double> getMousePosition(MouseEvent event) {
         return new Pair<>(event.getX(), event.getY());
-    }
-
-
-    private void createTransition(Pair<Double, Double> position) {
-        /*Transition transition = netModel.createTransition("", position.getKey(), position.getValue());
-
-        Rectangle rectangle = new Rectangle(position.getKey() - rectangleWidth / 2, position.getValue() - rectangleHeight / 2, 50, 35);
-        rectangle.setFill(Color.TRANSPARENT);
-        rectangle.setStroke(Color.BLACK);
-        rectangle.setStrokeWidth(2);
-        rectangle.setOnMouseClicked(event -> {
-            selectedElement = rectangle;
-            if (selectedAction instanceof Delete) {
-                delete(rectangle);
-                selectedElement = null;
-            }
-        });
-        rectangle.setOnMouseEntered(event -> mouseOverElement = rectangle);
-        rectangle.setOnMouseExited(event -> mouseOverElement = null);*/
     }
 
     private void deleteGridElement(Shape element) {

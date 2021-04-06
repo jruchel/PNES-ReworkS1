@@ -37,7 +37,6 @@ public abstract class GridNetElement {
 
     public GridNetElement(NetElement netElement, Shape shape, OnGridElementAction onDelete, OnGridElementAction onCreate) {
         this(netElement, shape, null, onDelete, onCreate);
-
     }
 
     public void setMouseClicked(EventHandler<MouseEvent> event) {
