@@ -20,6 +20,7 @@ public class GridPlace<V> extends GridNetElement {
     }
 
     public GridPlace(double x, double y, V tokens, int tokenCapacity, double radius, Label label, OnGridElementAction onDelete, OnGridElementAction onCreate) {
+
         super(
                 new Place<>("", "", x, y, tokenCapacity, tokens),
                 new Circle(x, y, radius),
@@ -27,6 +28,7 @@ public class GridPlace<V> extends GridNetElement {
                 onDelete,
                 onCreate
         );
+
     }
 
     public GridPlace(double x, double y, V tokens, int tokenCapacity, Label label, OnGridElementAction onDelete, OnGridElementAction onCreate) {

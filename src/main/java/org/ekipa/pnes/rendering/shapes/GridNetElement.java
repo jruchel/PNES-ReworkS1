@@ -3,9 +3,9 @@ package org.ekipa.pnes.rendering.shapes;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.ekipa.pnes.models.elements.NetElement;
@@ -30,6 +30,9 @@ public abstract class GridNetElement {
         this.onCreate = onCreate;
         this.onDelete = onDelete;
         this.onCreate.run(this);
+        shape.setStroke(Color.BLACK);
+        shape.setStrokeWidth(2);
+        shape.setFill(Color.TRANSPARENT);
     }
 
     public GridNetElement(NetElement netElement, Shape shape, OnGridElementAction onDelete, OnGridElementAction onCreate) {

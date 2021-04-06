@@ -1,6 +1,7 @@
 package org.ekipa.pnes.rendering.controllers;
 
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
@@ -26,6 +27,7 @@ import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.models.netModels.PTNetModel;
 import org.ekipa.pnes.rendering.shapes.GridNetElement;
 import org.ekipa.pnes.rendering.shapes.GridPlace;
+import org.ekipa.pnes.rendering.shapes.GridTransition;
 import org.ekipa.pnes.rendering.shapes.OnGridElementAction;
 import org.hibernate.sql.Delete;
 
@@ -44,8 +46,8 @@ public class MainController {
     public Button selectArcButton;
     public Button deleteElementButton;
 
-    private Shape mouseOverElement;
-    private Shape selectedElement;
+    private GridNetElement mouseOverElement;
+    private GridNetElement selectedElement;
     private Object selectedAction;
     private PTNetModel netModel;
     private List<GridNetElement> gridNetElements;
@@ -55,6 +57,7 @@ public class MainController {
 
     private OnGridElementAction onDelete;
     private OnGridElementAction onCreate;
+    private EventHandler<MouseEvent> onHover;
 
 
     public void initialize() {
@@ -76,12 +79,15 @@ public class MainController {
                             if (mouseOverElement == null) {
                                 double x = getMousePosition(event).getKey();
                                 double y = getMousePosition(event).getValue();
-                                gridNetElements.add(new GridPlace(x, y, null, 0, null, onDelete, onCreate));
+                                setClickHandling(new GridPlace(x, y, null, 0, null, onDelete, onCreate));
                             }
                         }
                         if (selectedAction instanceof Transition) {
-                            if (mouseOverElement == null)
-                                createTransition(getMousePosition(event));
+                            if (mouseOverElement == null) {
+                                double x = getMousePosition(event).getKey();
+                                double y = getMousePosition(event).getValue();
+                                setClickHandling(new GridTransition(x, y, null, onDelete, onCreate));
+                            }
                         }
                     }
                     break;
@@ -102,27 +108,25 @@ public class MainController {
             netModel.addElement(gridNetElement.getNetElement());
         };
 
+
+    }
+
+    private void setClickHandling(GridNetElement element) {
+        element.setMouseEntered(event1 -> mouseOverElement = element);
+        element.setMouseExited(event12 -> mouseOverElement = null);
+        element.setMouseClicked(event13 -> {
+            selectedElement = element;
+            if (selectedAction instanceof Delete) {
+                element.delete();
+                selectedElement = null;
+            }
+        });
     }
 
     private Pair<Double, Double> getMousePosition(MouseEvent event) {
         return new Pair<>(event.getX(), event.getY());
     }
 
-    private Circle createPlace(Pair<Double, Double> position) {
-        Circle circle = new Circle(position.getKey(), position.getValue(), circleRadius, Color.TRANSPARENT);
-        circle.setStroke(Color.BLACK);
-        circle.setStrokeWidth(2);
-        circle.setOnMouseClicked(event -> {
-            selectedElement = circle;
-            if (selectedAction instanceof Delete) {
-                delete(circle);
-                selectedElement = null;
-            }
-        });
-        circle.setOnMouseEntered(event -> mouseOverElement = circle);
-        circle.setOnMouseExited(event -> mouseOverElement = null);
-        return circle;
-    }
 
     private void createTransition(Pair<Double, Double> position) {
         /*Transition transition = netModel.createTransition("", position.getKey(), position.getValue());
