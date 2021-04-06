@@ -67,11 +67,11 @@ public class MainController {
                     } else {
                         if (selectedAction instanceof Place) {
                             if (mouseOverElement == null)
-                            createPlace(getMousePosition(event));
+                                createPlace(getMousePosition(event));
                         }
                         if (selectedAction instanceof Transition) {
                             if (mouseOverElement == null)
-                            createTransition(getMousePosition(event));
+                                createTransition(getMousePosition(event));
                         }
                     }
                     break;
@@ -144,13 +144,18 @@ public class MainController {
         NetElement netElement = netElements.keySet().stream().filter(netElem -> netElements.get(netElem).equals(shape)).findFirst().orElse(null);
         if (shape == null || netElement == null)
             return;
-        netModel.deleteById(((netElement)).getId());
         deleteGridElement(shape);
-        netElements.remove(netElement);
+        deleteNetElement(netElement);
     }
+
 
     private void deleteGridElement(Shape element) {
         this.gridPane.getChildren().remove(element);
+    }
+
+    private void deleteNetElement(NetElement netElement) {
+        netElements.remove(netElement);
+        netModel.deleteById(((netElement)).getId());
     }
 
     private double distanceBetweenPoints(Pair<Double, Double> p1, Pair<Double, Double> p2) {
