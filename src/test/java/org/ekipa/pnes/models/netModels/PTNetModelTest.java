@@ -223,7 +223,7 @@ class PTNetModelTest {
     public void checkTransitionsCanBeReadyUsingNextStep() {
         Transition.TransitionState actual = Transition.TransitionState.Unready;
         Transition.TransitionState expected = Transition.TransitionState.Ready;
-        ptNetModel.nextStep();
+        ptNetModel.wholeStep();
 
         Transition.TransitionState[] transitionStates = new Transition.TransitionState[3];
         transitionStates[0] = ((Transition) (ptNetModel.getElement("T2"))).getState();
@@ -244,7 +244,7 @@ class PTNetModelTest {
         Transition.TransitionState expected = Transition.TransitionState.Ready;
 
 
-        ptNetModel2.nextStep();
+        ptNetModel2.wholeStep();
 
         Transition.TransitionState actual = ((Transition) (ptNetModel2.getElement("T1"))).getState();
 

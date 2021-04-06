@@ -60,9 +60,9 @@ public abstract class NetModel {
      */
     public static List<NetModel> simulate(NetModel netModel, int steps) {
         List<NetModel> netModels = new ArrayList<>();
-        netModels.add(netModel.nextStep());
+        netModels.addAll(netModel.wholeStep());
         for (int i = 0; i < steps - 1; i++) {
-            netModels.add(netModels.get(i).nextStep());
+            netModels.addAll(netModels.get(i).wholeStep());
         }
         return netModels;
     }
@@ -173,12 +173,16 @@ public abstract class NetModel {
      *
      * @return Model po wykonaniu kroku.
      */
-    protected NetModel nextStep() {
+    protected List<NetModel> wholeStep() {
+        List<NetModel> currentSimulationSteps = new ArrayList<>();
         List<Transition> readyTransitions = prepareTransitions();
+        currentSimulationSteps.add(this);
         List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
         transitionsToRun.forEach(transition -> runTransition(transition));
+        currentSimulationSteps.add(this);
         getTransitionsWithState(Transition.TransitionState.Ready).forEach(Transition::setUnready);
-        return this;
+        currentSimulationSteps.add(this);
+        return currentSimulationSteps;
     }
 
     /**
