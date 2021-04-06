@@ -87,7 +87,7 @@ public class MainController {
     }
 
     private void createPlace(Pair<Double, Double> position) {
-        Circle circle = new Circle(position.getKey(), position.getValue(), 25, Color.TRANSPARENT);
+        Circle circle = new Circle(position.getKey(), position.getValue(), circleRadius, Color.TRANSPARENT);
         circle.setStroke(Color.BLACK);
         circle.setStrokeWidth(2);
         circle.setOnMouseClicked(event -> {
@@ -104,15 +104,10 @@ public class MainController {
         netElements.put(place, circle);
     }
 
-    private boolean isInsidePlace(Pair<Double, Double> place, Pair<Double, Double> point) {
-        return distanceBetweenPoints(place, point) < circleRadius * 2;
-    }
-
     private void createTransition(Pair<Double, Double> position) {
         Transition transition = netModel.createTransition("", position.getKey(), position.getValue());
-        double width = 50;
-        double height = 32;
-        Rectangle rectangle = new Rectangle(position.getKey() - width / 2, position.getValue() - height / 2, 50, 35);
+
+        Rectangle rectangle = new Rectangle(position.getKey() - rectangleWidth / 2, position.getValue() - rectangleHeight / 2, 50, 35);
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Color.BLACK);
         rectangle.setStrokeWidth(2);
@@ -127,17 +122,6 @@ public class MainController {
         rectangle.setOnMouseExited(event -> mouseOverElement = null);
         gridPane.getChildren().add(rectangle);
         netElements.put(transition, rectangle);
-    }
-
-    private boolean isInsideTransition(Pair<Double, Double> transitionPos, Pair<Double, Double> point) {
-        double transX = transitionPos.getKey();
-        double transY = transitionPos.getValue();
-        double pointX = point.getKey();
-        double pointY = point.getValue();
-        if (pointX > transX + rectangleWidth) return false;
-        if (pointX < transX - rectangleWidth) return false;
-        if (pointY > transY + rectangleHeight) return false;
-        return !(pointY < transY - rectangleHeight);
     }
 
     private void delete(Shape shape) {
@@ -157,11 +141,6 @@ public class MainController {
         netElements.remove(netElement);
         netModel.deleteById(((netElement)).getId());
     }
-
-    private double distanceBetweenPoints(Pair<Double, Double> p1, Pair<Double, Double> p2) {
-        return Math.sqrt(Math.pow(p2.getKey() - p1.getKey(), 2) + Math.pow(p2.getValue() - p1.getValue(), 2));
-    }
-
 
     public void selectPlace() {
         this.selectedAction = new Place<Integer>();
@@ -189,21 +168,15 @@ public class MainController {
     private ImagePattern createGridPattern() {
         double gridSize = 20;
 
-        double weight = gridSize;
-        double height = gridSize;
-
-        Canvas canvas = new Canvas(weight, height);
+        Canvas canvas = new Canvas(gridSize, gridSize);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.setStroke(Color.GRAY);
         gc.setFill(Color.WHITE.deriveColor(1, 1, 1, 0.2));
-        gc.fillRect(0, 0, weight, height);
-        gc.strokeRect(0.5, 0.5, weight, height);
+        gc.fillRect(0, 0, gridSize, gridSize);
+        gc.strokeRect(0.5, 0.5, gridSize, gridSize);
 
         Image image = canvas.snapshot(new SnapshotParameters(), null);
-        ImagePattern pattern = new ImagePattern(image, 0, 0, weight, height, false);
-
-
-        return pattern;
+        return new ImagePattern(image, 0, 0, gridSize, gridSize, false);
     }
 }
