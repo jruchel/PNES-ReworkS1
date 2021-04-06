@@ -16,7 +16,7 @@ public class GridTransition extends GridNetElement {
     public GridTransition(double x, double y, double width, double height, Label label, OnGridElementAction onDelete, OnGridElementAction onCreate) {
         super(
                 new Transition("", "", x, y),
-                new Rectangle(x, y, width, height),
+                new Rectangle(x - width / 2, y - height / 2, width, height),
                 label,
                 onDelete,
                 onCreate
