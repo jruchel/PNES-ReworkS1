@@ -5,10 +5,13 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.ekipa.pnes.models.elements.NetElement;
+import org.ekipa.pnes.models.elements.NetObject;
+import org.ekipa.pnes.rendering.exceptions.NoCenterException;
 
 
 @Setter
@@ -22,7 +25,7 @@ public abstract class GridNetElement {
     @Getter(AccessLevel.NONE)
     private OnGridElementAction onCreate;
 
-    public GridNetElement(NetElement netElement, Shape shape, Label label, OnGridElementAction onDelete, OnGridElementAction onCreate) {
+    public GridNetElement(NetElement netElement, Shape shape, Label label, OnGridElementAction onCreate, OnGridElementAction onDelete) {
         this.netElement = netElement;
         this.shape = shape;
         this.label = label;
@@ -35,8 +38,18 @@ public abstract class GridNetElement {
         shape.setFill(Color.TRANSPARENT);
     }
 
-    public GridNetElement(NetElement netElement, Shape shape, OnGridElementAction onDelete, OnGridElementAction onCreate) {
-        this(netElement, shape, null, onDelete, onCreate);
+    public GridNetElement(NetElement netElement, Shape shape, OnGridElementAction onCreate, OnGridElementAction onDelete) {
+        this(netElement, shape, null, onCreate, onDelete);
+    }
+
+    public Pair<Double, Double> getPosition() throws NoCenterException {
+        try {
+            return new Pair<>(((NetObject) netElement).getX(), ((NetObject) netElement).getY());
+        } catch (ClassCastException exception) {
+            throw new NoCenterException(String.format("Obiekt typu %s nie posiada środka", netElement.getClass().getSimpleName()));
+        } catch (Exception exception) {
+            throw new NoCenterException(exception.getMessage());
+        }
     }
 
     public void setMouseClicked(EventHandler<MouseEvent> event) {

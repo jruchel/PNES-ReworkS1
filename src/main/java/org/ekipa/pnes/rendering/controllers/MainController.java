@@ -2,6 +2,7 @@ package org.ekipa.pnes.rendering.controllers;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -15,20 +16,21 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
-import org.ekipa.pnes.models.elements.NetElement;
-import org.ekipa.pnes.models.elements.Place;
-import org.ekipa.pnes.models.elements.Transition;
+import org.ekipa.pnes.models.elements.*;
+import org.ekipa.pnes.models.exceptions.NetIntegrityException;
 import org.ekipa.pnes.models.netModels.PTNetModel;
-import org.ekipa.pnes.rendering.shapes.GridNetElement;
-import org.ekipa.pnes.rendering.shapes.GridPlace;
-import org.ekipa.pnes.rendering.shapes.GridTransition;
-import org.ekipa.pnes.rendering.shapes.OnGridElementAction;
+import org.ekipa.pnes.rendering.shapes.*;
 import org.hibernate.sql.Delete;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 public class MainController {
@@ -47,6 +49,9 @@ public class MainController {
     private PTNetModel netModel;
     private List<GridNetElement> gridNetElements;
 
+    private GridNetElement currentArcStart;
+    private Line temporaryLine;
+
     private OnGridElementAction onDelete;
     private OnGridElementAction onCreate;
 
@@ -60,7 +65,7 @@ public class MainController {
                                 new Insets(4, 4, 4, 4))
                 )
         );
-        gridPane.setOnMouseClicked(event -> {
+        gridPane.setOnMousePressed(event -> {
             switch (event.getButton()) {
                 case PRIMARY:
                     if (selectedAction == null) {
@@ -70,20 +75,31 @@ public class MainController {
                             if (mouseOverElement == null) {
                                 double x = getMousePosition(event).getKey();
                                 double y = getMousePosition(event).getValue();
-                                setClickHandling(new GridPlace(x, y, null, 0, null, onDelete, onCreate));
+                                setClickHandling(new GridPlace(x, y, null, 0, null, onCreate, onDelete));
                             }
                         }
                         if (selectedAction instanceof Transition) {
                             if (mouseOverElement == null) {
                                 double x = getMousePosition(event).getKey();
                                 double y = getMousePosition(event).getValue();
-                                setClickHandling(new GridTransition(x, y, null, onDelete, onCreate));
+                                setClickHandling(new GridTransition(x, y, null, onCreate, onDelete));
                             }
                         }
+
                     }
                     break;
                 case SECONDARY:
+                    if (selectedAction instanceof Arc && temporaryLine != null) {
+                        gridPane.getChildren().removeIf(node -> node.equals(temporaryLine));
+                        temporaryLine = null;
+                    }
                     break;
+            }
+        });
+        gridPane.setOnMouseMoved(e -> {
+            if (temporaryLine != null) {
+                temporaryLine.setEndX(getMousePosition(e).getKey() - 5);
+                temporaryLine.setEndY(getMousePosition(e).getValue() - 5);
             }
         });
         onDelete = gridNetElement -> {
@@ -94,32 +110,63 @@ public class MainController {
             netModel.deleteById(netElement.getId());
         };
 
-        onCreate = gridNetElement -> {
-            gridPane.getChildren().add(gridNetElement.getShape());
-            netModel.addElement(gridNetElement.getNetElement());
-        };
+        onCreate = this::addGridElement;
     }
 
     private void setClickHandling(GridNetElement element) {
         element.setMouseEntered(event1 -> mouseOverElement = element);
-        element.setMouseExited(event12 -> mouseOverElement = null);
-        element.setMouseClicked(event13 -> {
+        element.setMouseExited(event2 -> mouseOverElement = null);
+        element.setMouseClicked(event3 -> {
             selectedElement = element;
             if (selectedAction instanceof Delete) {
-                element.delete();
+                if (element instanceof GridArc) {
+                    element.delete();
+                } else if (element instanceof GridPlace || element instanceof GridTransition) {
+                    NetElement netElement = element.getNetElement();
+                    Set<Arc> connectedArcs = netModel.getArcsByNetObject((NetObject) netElement);
+                    Set<GridArc> connectedGridArcs = findGridArcs(connectedArcs);
+                    connectedGridArcs.forEach(GridNetElement::delete);
+                }
                 selectedElement = null;
+            } else if (selectedAction instanceof Arc) {
+                try {
+                    if (temporaryLine == null) {
+                        currentArcStart = element;
+                        temporaryLine = new Line();
+                        temporaryLine.setStartX(element.getPosition().getKey());
+                        temporaryLine.setStartY(element.getPosition().getValue());
+                        temporaryLine.setEndX(getMousePosition(event3).getKey());
+                        temporaryLine.setEndY(getMousePosition(event3).getValue());
+                        gridPane.getChildren().add(temporaryLine);
+                    } else {
+                        new GridArc(currentArcStart, element, onCreate, onDelete);
+                        gridPane.getChildren().removeIf(node -> node.equals(temporaryLine));
+                        temporaryLine = null;
+                    }
+                } catch (NetIntegrityException e) {
+                    showAlert(e.getClass().getSimpleName(), e.getMessage());
+                }
             }
         });
+    }
+
+    private Set<GridArc> findGridArcs(Set<Arc> arcs) {
+        return gridNetElements.stream()
+                .filter(gridNetElement -> gridNetElement instanceof GridArc)
+                .filter(gridNetElement -> arcs.contains(gridNetElement.getNetElement()))
+                .map(gridNetElement -> (GridArc) gridNetElement)
+                .collect(Collectors.toSet());
+    }
+
+    private void addGridElement(GridNetElement element) {
+        gridNetElements.add(element);
+        gridPane.getChildren().add(element.getShape());
+        netModel.addElement(element.getNetElement());
     }
 
     private Pair<Double, Double> getMousePosition(MouseEvent event) {
         return new Pair<>(event.getX(), event.getY());
     }
-
-    private void deleteGridElement(Shape element) {
-        this.gridPane.getChildren().remove(element);
-    }
-
 
     public void selectPlace() {
         this.selectedAction = new Place<Integer>();
@@ -130,7 +177,7 @@ public class MainController {
     }
 
     public void selectArc() {
-
+        this.selectedAction = new Arc();
     }
 
     public void selectDelete() {

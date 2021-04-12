@@ -1,16 +1,17 @@
 package org.ekipa.pnes.models.netModels;
 
 
+import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.ekipa.pnes.models.elements.*;
+import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
@@ -141,6 +142,37 @@ public abstract class NetModel {
             }
         }
         return elements;
+    }
+
+    /**
+     * Odnajduje wszystkie łuki, które są połączone z obiektem sieci.
+     * @param netObject Obiekt sieci
+     * @return Łuk
+     */
+    public Set<Arc> getArcsByNetObject(NetObject netObject) {
+        return netObject.getArcs();
+    }
+
+    /**
+     * Odnajduje pare obiektów sieci, z którymi połączony jest łuk
+     * @param arc Łuk
+     * @return Para obiektów połączone łukiem (początek, koniec)
+     */
+    public Pair<NetObject, NetObject> getNetObjectsByArc(Arc arc) {
+        Stream<NetElement> netElementStream = netElements.stream()
+                .filter(netElement -> !(netElement instanceof Arc));
+
+        NetObject start = (NetObject) netElementStream
+                .filter(netElement -> arc.getStart().equals(netElement))
+                .findFirst()
+                .orElse(null);
+
+        NetObject end = (NetObject) netElementStream
+                .filter(netElement -> arc.getEnd().equals(netElement))
+                .findFirst()
+                .orElse(null);
+
+        return new Pair<>(start, end);
     }
 
     /**

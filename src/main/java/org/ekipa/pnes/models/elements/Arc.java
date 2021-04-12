@@ -2,6 +2,7 @@ package org.ekipa.pnes.models.elements;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.ekipa.pnes.models.exceptions.ProhibitedConnectionException;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class Arc extends NetElement {
 
     }
 
-    public Arc(String id, NetObject start, NetObject end, double weight) throws Exception {
+    public Arc(String id, NetObject start, NetObject end, double weight) throws ProhibitedConnectionException {
         validateElements(start, end);
         this.id = id;
         this.start = start;
@@ -26,16 +27,16 @@ public class Arc extends NetElement {
     }
 
 
-    public Arc(NetObject start, NetObject end, double weight) throws Exception {
+    public Arc(NetObject start, NetObject end, double weight) throws ProhibitedConnectionException {
         this("", start, end, weight);
     }
 
-    public void setStart(NetObject start) throws Exception {
+    public void setStart(NetObject start) throws ProhibitedConnectionException {
         validateElements(start, this.end);
         this.start = start;
     }
 
-    public void setEnd(NetObject end) throws Exception {
+    public void setEnd(NetObject end) throws ProhibitedConnectionException {
         validateElements(this.start, end);
         this.end = end;
     }
@@ -48,11 +49,11 @@ public class Arc extends NetElement {
      *              {@link org.ekipa.pnes.models.elements.Transition} lub {@link org.ekipa.pnes.models.elements.Place}
      * @param end   element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
      *              {@link org.ekipa.pnes.models.elements.Place}
-     * @throws Exception wypisuje komunikat ze elementy sa tego samego typu
+     * @throws ProhibitedConnectionException wypisuje komunikat ze elementy sa tego samego typu
      */
-    private void validateElements(NetObject start, NetObject end) throws Exception {
+    private void validateElements(NetObject start, NetObject end) throws ProhibitedConnectionException {
         if (start.getClass().equals(end.getClass()))
-            throw new Exception(String.format("Start and end of an arc cannot both be %s", start.getClass().getSimpleName()));
+            throw new ProhibitedConnectionException(String.format("Start and end of an arc cannot both be %s", start.getClass().getSimpleName()));
 
     }
 
