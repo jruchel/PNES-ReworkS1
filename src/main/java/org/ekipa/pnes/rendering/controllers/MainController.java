@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
+import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.Place;
 import org.ekipa.pnes.models.elements.Transition;
@@ -80,6 +81,9 @@ public class MainController {
                                 setClickHandling(new GridTransition(x, y, null, onDelete, onCreate));
                             }
                         }
+                        if (selectedAction instanceof Arc) {
+
+                        }
                     }
                     break;
                 case SECONDARY:
@@ -115,11 +119,6 @@ public class MainController {
     private Pair<Double, Double> getMousePosition(MouseEvent event) {
         return new Pair<>(event.getX(), event.getY());
     }
-
-    private void deleteGridElement(Shape element) {
-        this.gridPane.getChildren().remove(element);
-    }
-
 
     public void selectPlace() {
         this.selectedAction = new Place<Integer>();

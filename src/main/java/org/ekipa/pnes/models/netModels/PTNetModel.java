@@ -1,6 +1,8 @@
 package org.ekipa.pnes.models.netModels;
 
 import org.ekipa.pnes.models.elements.*;
+import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
+import org.ekipa.pnes.models.exceptions.ProhibitedConnectionException;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.MyRandom;
 
@@ -18,7 +20,7 @@ public class PTNetModel extends NetModel {
         super(netElements);
     }
 
-    public Arc createArc(NetObject start, NetObject end, int weight) throws Exception {
+    public Arc createArc(NetObject start, NetObject end, int weight) throws ProhibitedConnectionException {
         return (Arc) addElement(IdGenerator.setElementId(new Arc(start, end, weight)));
     }
 

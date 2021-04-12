@@ -4,6 +4,7 @@ package org.ekipa.pnes.models.netModels;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.ekipa.pnes.models.elements.*;
+import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
