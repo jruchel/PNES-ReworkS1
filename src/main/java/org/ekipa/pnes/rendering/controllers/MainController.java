@@ -19,10 +19,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
-import org.ekipa.pnes.models.elements.Arc;
-import org.ekipa.pnes.models.elements.NetElement;
-import org.ekipa.pnes.models.elements.Place;
-import org.ekipa.pnes.models.elements.Transition;
+import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.NetIntegrityException;
 import org.ekipa.pnes.models.netModels.PTNetModel;
 import org.ekipa.pnes.rendering.shapes.*;
@@ -30,7 +27,10 @@ import org.hibernate.sql.Delete;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 public class MainController {
@@ -119,7 +119,14 @@ public class MainController {
         element.setMouseClicked(event3 -> {
             selectedElement = element;
             if (selectedAction instanceof Delete) {
-                element.delete();
+                if (element instanceof GridArc) {
+                    element.delete();
+                } else if (element instanceof GridPlace || element instanceof GridTransition) {
+                    NetElement netElement = element.getNetElement();
+                    Set<Arc> connectedArcs = netModel.getArcsByNetObject((NetObject) netElement);
+                    Set<GridArc> connectedGridArcs = findGridArcs(connectedArcs);
+                    connectedGridArcs.forEach(GridNetElement::delete);
+                }
                 selectedElement = null;
             } else if (selectedAction instanceof Arc) {
                 try {
@@ -141,6 +148,14 @@ public class MainController {
                 }
             }
         });
+    }
+
+    private Set<GridArc> findGridArcs(Set<Arc> arcs) {
+        return gridNetElements.stream()
+                .filter(gridNetElement -> gridNetElement instanceof GridArc)
+                .filter(gridNetElement -> arcs.contains(gridNetElement.getNetElement()))
+                .map(gridNetElement -> (GridArc) gridNetElement)
+                .collect(Collectors.toSet());
     }
 
     private void addGridElement(GridNetElement element) {
