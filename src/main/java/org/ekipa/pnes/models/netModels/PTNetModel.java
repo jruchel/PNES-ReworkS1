@@ -139,4 +139,11 @@ public class PTNetModel extends NetModel {
         Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
         return transitionArcs.stream().noneMatch(arc -> ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight());
     }
+
+    @Override
+    public String toString() {
+        return "PTNetModel{" +
+                ", selectedTransition=" + selectedTransition +
+                '}';
+    }
 }

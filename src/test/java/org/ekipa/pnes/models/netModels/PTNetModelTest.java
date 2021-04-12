@@ -15,11 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PTNetModelTest {
     private PTNetModel ptNetModel;
+    private  PTNetModel ptNetModel1;
 
     @BeforeEach
     public void initialize() {
         IdGenerator.resetElements();
         ptNetModel = new PTNetModel();
+        ptNetModel1 = new PTNetModel();
 
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
@@ -235,25 +237,24 @@ class PTNetModelTest {
     }
 
     @Test
-    public void checkTransitionsCanBeReadyUsingNextStep() {
+    public void validationOfPrepareTransitions(){
+        List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
+        List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
+        List<Transition> actual = example.get(0).get(0).prepareTransitions();
+        for(int i = 0; i < expected.size(); i++){
+            expected.get(i).setReady();
+        }
+        assertEquals(expected, actual);
+    }
 
-        Transition.TransitionState actual = Transition.TransitionState.Unready;
-        Transition.TransitionState expected = Transition.TransitionState.Ready;
+    //Zrobić test dla losowania stanu ready na running
 
-
-
-        Transition.TransitionState[] transitionStates = new Transition.TransitionState[3];
-        transitionStates[0] = ((Transition) (ptNetModel.getElement("T2"))).getState();
-        transitionStates[1] = ((Transition) (ptNetModel.getElement("T1"))).getState();
-        transitionStates[2] = ((Transition) (ptNetModel.getElement("T3"))).getState();
-
-        System.out.println(transitionStates[0]);
-        System.out.println(transitionStates[1]);
-        System.out.println(transitionStates[2]);
-
-        //assertEquals(expected, actual);
-
-
+    @Test
+    public void validationOfUnreadyTransitionStatesAfterSimulation() {
+        List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
+        List<Transition> actual = example.get(0).get(0).getTransitionsWithState(Transition.TransitionState.Unready);
+        List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
+        assertEquals(expected, actual);
     }
 
 
