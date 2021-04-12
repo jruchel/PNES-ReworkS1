@@ -110,7 +110,12 @@ public class MainController {
             netModel.deleteById(netElement.getId());
         };
 
-        onCreate = this::addGridElement;
+        onCreate = new OnGridElementAction() {
+            @Override
+            public void run(GridNetElement gridNetElement) {
+                addGridElement(gridNetElement);
+            }
+        };
     }
 
     private void setClickHandling(GridNetElement element) {
@@ -137,7 +142,7 @@ public class MainController {
                         temporaryLine = null;
                     }
                 } catch (NetIntegrityException e) {
-                    e.printStackTrace();
+                    showAlert(e.getClass().getSimpleName(), e.getMessage());
                 }
             }
         });

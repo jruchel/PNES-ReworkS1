@@ -35,6 +35,7 @@ public abstract class GridNetElement {
         this.onCreate.run(this);
         shape.setStroke(Color.BLACK);
         shape.setStrokeWidth(2);
+        shape.setFill(Color.TRANSPARENT);
     }
 
     public GridNetElement(NetElement netElement, Shape shape, OnGridElementAction onDelete, OnGridElementAction onCreate) {

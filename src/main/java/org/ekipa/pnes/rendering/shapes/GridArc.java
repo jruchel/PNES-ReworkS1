@@ -16,8 +16,8 @@ public class GridArc extends GridNetElement {
         super(
                 new Arc("", (NetObject) start.getNetElement(), (NetObject) end.getNetElement(), 1),
                 new Line(start.getPosition().getKey(), start.getPosition().getValue(), end.getPosition().getKey(), end.getPosition().getValue()),
-                onCreate,
-                onDelete
+                onDelete,
+                onCreate
         );
         if (start.getClass().equals(end.getClass()) || start instanceof GridArc || end instanceof GridArc) {
             throw new ProhibitedConnectionException("");

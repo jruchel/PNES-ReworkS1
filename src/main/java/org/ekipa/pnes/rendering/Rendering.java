@@ -17,7 +17,7 @@ public class Rendering extends Application {
         primaryStage.setTitle("Rendering");
         URL url = new File("src/main/java/org/ekipa/pnes/rendering/resources/Main.fxml").toURI().toURL();
         Parent root = FXMLLoader.load(url);
-        Scene scene = new Scene(root, 1300, 1000);
+        Scene scene = new Scene(root, 500, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
