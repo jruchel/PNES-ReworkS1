@@ -75,14 +75,14 @@ public class MainController {
                             if (mouseOverElement == null) {
                                 double x = getMousePosition(event).getKey();
                                 double y = getMousePosition(event).getValue();
-                                setClickHandling(new GridPlace(x, y, null, 0, null, onDelete, onCreate));
+                                setClickHandling(new GridPlace(x, y, null, 0, null, onCreate, onDelete));
                             }
                         }
                         if (selectedAction instanceof Transition) {
                             if (mouseOverElement == null) {
                                 double x = getMousePosition(event).getKey();
                                 double y = getMousePosition(event).getValue();
-                                setClickHandling(new GridTransition(x, y, null, onDelete, onCreate));
+                                setClickHandling(new GridTransition(x, y, null, onCreate, onDelete));
                             }
                         }
 
@@ -110,12 +110,7 @@ public class MainController {
             netModel.deleteById(netElement.getId());
         };
 
-        onCreate = new OnGridElementAction() {
-            @Override
-            public void run(GridNetElement gridNetElement) {
-                addGridElement(gridNetElement);
-            }
-        };
+        onCreate = this::addGridElement;
     }
 
     private void setClickHandling(GridNetElement element) {
@@ -137,7 +132,7 @@ public class MainController {
                         temporaryLine.setEndY(getMousePosition(event3).getValue());
                         gridPane.getChildren().add(temporaryLine);
                     } else {
-                        new GridArc(currentArcStart, element, onDelete, onCreate);
+                        new GridArc(currentArcStart, element, onCreate, onDelete);
                         gridPane.getChildren().removeIf(node -> node.equals(temporaryLine));
                         temporaryLine = null;
                     }

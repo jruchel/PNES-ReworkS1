@@ -25,7 +25,7 @@ public abstract class GridNetElement {
     @Getter(AccessLevel.NONE)
     private OnGridElementAction onCreate;
 
-    public GridNetElement(NetElement netElement, Shape shape, Label label, OnGridElementAction onDelete, OnGridElementAction onCreate) {
+    public GridNetElement(NetElement netElement, Shape shape, Label label, OnGridElementAction onCreate, OnGridElementAction onDelete) {
         this.netElement = netElement;
         this.shape = shape;
         this.label = label;
@@ -38,8 +38,8 @@ public abstract class GridNetElement {
         shape.setFill(Color.TRANSPARENT);
     }
 
-    public GridNetElement(NetElement netElement, Shape shape, OnGridElementAction onDelete, OnGridElementAction onCreate) {
-        this(netElement, shape, null, onDelete, onCreate);
+    public GridNetElement(NetElement netElement, Shape shape, OnGridElementAction onCreate, OnGridElementAction onDelete) {
+        this(netElement, shape, null, onCreate, onDelete);
     }
 
     public Pair<Double, Double> getPosition() throws NoCenterException {
