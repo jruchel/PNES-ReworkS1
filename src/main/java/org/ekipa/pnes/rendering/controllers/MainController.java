@@ -1,11 +1,8 @@
 package org.ekipa.pnes.rendering.controllers;
 
-import javafx.event.ActionEvent;
-import javafx.event.Event;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,7 +10,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -26,17 +22,15 @@ import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.NetIntegrityException;
+import org.ekipa.pnes.models.netModels.NetModel;
 import org.ekipa.pnes.models.netModels.PTNetModel;
 import org.ekipa.pnes.rendering.shapes.*;
 import org.hibernate.sql.Delete;
-import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
@@ -50,6 +44,7 @@ public class MainController {
     public Button selectArcButton;
     public Button deleteElementButton;
     public Button clearAllButton;
+    public Button oneStepSimulation;
 
     private GridNetElement mouseOverElement;
     private GridNetElement selectedElement;
@@ -63,6 +58,9 @@ public class MainController {
     private OnGridElementAction onDelete;
     private OnGridElementAction onCreate;
 
+    private final Color TRANSITION_READY_COLOR = Color.ORANGERED;
+    private final Color TRANSITION_RUNNING_COLOR = Color.GREEN;
+    private final Color TRANSITION_UNREADY_COLOR = Color.GREY;
 
     public void initialize() {
         gridNetElements = new ArrayList<>();
@@ -83,7 +81,7 @@ public class MainController {
                             if (mouseOverElement == null) {
                                 double x = getMousePosition(event).getKey();
                                 double y = getMousePosition(event).getValue();
-                                setClickHandling(new GridPlace(x, y, null, 0, null, onCreate, onDelete));
+                                setClickHandling(new GridPlace(x, y, 1, 0, null, onCreate, onDelete));
                             }
                         }
                         if (selectedAction instanceof Transition) {
@@ -130,6 +128,33 @@ public class MainController {
         };
 
         onCreate = this::addGridElement;
+        frameUpdater();
+    }
+
+    private void frameUpdater() {
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                gridNetElements.forEach(gridNetElement -> {
+                    if (gridNetElement instanceof GridTransition) {
+                        Transition transition = (Transition) gridNetElement.getNetElement();
+                        Color colorByState = getColorByState(transition.getState());
+                        gridNetElement.getShape().setFill(colorByState);
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private Color getColorByState(Transition.TransitionState state) {
+        if (state.equals(Transition.TransitionState.Ready)) {
+            return TRANSITION_READY_COLOR;
+        } else if (state.equals(Transition.TransitionState.Running)) {
+            return TRANSITION_RUNNING_COLOR;
+        } else if (state.equals(Transition.TransitionState.Unready)) {
+            return TRANSITION_UNREADY_COLOR;
+        }
+        return Color.TRANSPARENT;
     }
 
     private void setClickHandling(GridNetElement element) {
@@ -172,9 +197,7 @@ public class MainController {
                 case SECONDARY: {
                     break;
                 }
-
             }
-
         });
     }
 
@@ -264,5 +287,9 @@ public class MainController {
     public void clearAll() {
         gridNetElements.forEach(GridNetElement::delete);
         selectedAction = null;
+    }
+
+    public void simulateStep() {
+        netModel = (PTNetModel) NetModel.simulate(netModel, 1).get(0);
     }
 }

@@ -32,7 +32,9 @@
                         </Button>
                         <Button fx:id="deleteElementButton" lineSpacing="20.0" mnemonicParsing="false"
                                 onAction="#selectDelete" text="Usuń"/>
-                        <Button fx:id="clearAllButton" mnemonicParsing="false" onAction="#clearButtonClicked" text="Usuń sieć"/>
+                        <Button fx:id="clearAllButton" mnemonicParsing="false" onAction="#clearButtonClicked"
+                                text="Usuń sieć"/>
+                        <Button fx:id="oneStepSimulation" onMouseClicked="#simulateStep" mnemonicParsing="false" text="C R O C C"/>
                     </children>
                     <opaqueInsets>
                         <Insets left="50.0" right="50.0"/>
