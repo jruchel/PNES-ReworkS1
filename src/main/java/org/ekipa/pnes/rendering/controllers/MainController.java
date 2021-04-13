@@ -1,6 +1,8 @@
 package org.ekipa.pnes.rendering.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
@@ -81,7 +83,7 @@ public class MainController {
                             if (mouseOverElement == null) {
                                 double x = getMousePosition(event).getKey();
                                 double y = getMousePosition(event).getValue();
-                                setClickHandling(new GridPlace(x, y, 1, 0, null, onCreate, onDelete));
+                                setClickHandling(new GridPlace(x, y, 1, 1, null, onCreate, onDelete));
                             }
                         }
                         if (selectedAction instanceof Transition) {
@@ -110,10 +112,10 @@ public class MainController {
                 int fixedPosition;
                 if (angle < -25 && angle > -55) {
                     fixedPosition = 10;
-                } else if (angle < -55 && angle > -65){
-                    fixedPosition = - 10;
+                } else if (angle < -55 && angle > -65) {
+                    fixedPosition = -10;
                 } else {
-                    fixedPosition = - 5;
+                    fixedPosition = -5;
                 }
                 temporaryLine.setEndX(getMousePosition(e).getKey() + fixedPosition);
                 temporaryLine.setEndY(getMousePosition(e).getValue() + fixedPosition);
@@ -290,6 +292,24 @@ public class MainController {
     }
 
     public void simulateStep() {
-        netModel = (PTNetModel) NetModel.simulate(netModel, 1).get(0);
+        Runnable runnable = () -> {
+            try {
+                List<List<NetModel>> cycles = NetModel.simulate(netModel, 1);
+                for (List<NetModel> cycle : cycles) {
+                    for (NetModel step : cycle) {
+                        netModel = (PTNetModel) step;
+                        Thread.sleep(200);
+                    }
+                }
+
+            } catch (InterruptedException | JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        };
+        Platform.runLater(() -> {
+            new Thread(runnable).start();
+        });
+
+
     }
 }

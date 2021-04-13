@@ -86,6 +86,7 @@ public class MyRandom {
     }
 
     public static <E> E getRandom(List<E> list) {
+        if (list.isEmpty()) return null;
         return list.get(getRandom(0, list.size() - 1));
     }
 

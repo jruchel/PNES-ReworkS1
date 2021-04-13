@@ -94,6 +94,7 @@ public class PTNetModel extends NetModel {
 
     }
 
+
     @Override
     protected boolean runTransition(Transition transition) {
         if (!transition.getState().equals(Transition.TransitionState.Ready)) return false;
@@ -131,7 +132,12 @@ public class PTNetModel extends NetModel {
     private boolean canTransitionBeReady(Transition transition) {
         if (transition.getArcs().isEmpty()) return false;
         Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
-        return transitionArcs.stream().noneMatch(arc -> ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight());
+        return transitionArcs.stream().noneMatch(new Predicate<Arc>() {
+            @Override
+            public boolean test(Arc arc) {
+                return ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight();
+            }
+        });
     }
 
     @Override

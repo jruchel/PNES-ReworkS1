@@ -1,18 +1,16 @@
 package org.ekipa.pnes.models.elements;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-
+@NoArgsConstructor
 public class Place<V> extends NetObject {
     private int tokenCapacity;
     private V tokens;
 
-    public Place() {
-
-    }
 
     public Place(String id, String name, double x, double y, int tokenCapacity) {
         this(id, name, x, y, tokenCapacity, null);

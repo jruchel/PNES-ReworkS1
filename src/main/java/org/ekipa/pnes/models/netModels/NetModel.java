@@ -1,11 +1,15 @@
 package org.ekipa.pnes.models.netModels;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
+
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,6 +19,18 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public abstract class NetModel {
     protected List<NetElement> netElements;
+    @JsonIgnore
+    private ObjectMapper objectMapper;
+
+    public NetModel(List<NetElement> netElements) {
+        this.netElements = netElements;
+        this.objectMapper = new ObjectMapper();
+    }
+
+    public NetModel() {
+        this.netElements = new ArrayList<>();
+        this.objectMapper = new ObjectMapper();
+    }
 
     protected NetElement getElement(String id) {
         return netElements.stream().filter(element -> element.getId().equals(id)).findFirst().orElse(null);
@@ -27,9 +43,8 @@ public abstract class NetModel {
                 .map(netElement -> (NetObject) netElement).findFirst().orElse(null);
     }
 
-
-    public NetModel() {
-        this.netElements = new ArrayList<>();
+    private void setNetElements(List<NetElement> netElements) {
+        this.netElements = netElements;
     }
 
     /**
@@ -54,19 +69,19 @@ public abstract class NetModel {
      * Wykonuje podaną ilość kroków symulacji dla podanej sieci
      *
      * @param netModel sieć do symulowania
-     * @param steps    ilość kroków
+     * @param cycles   ilość kroków
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji
      */
-    public static List<List<NetModel>> simulate(NetModel netModel, int steps) {
-        List<List<NetModel>> cycles = new ArrayList<>();
+    public static List<List<NetModel>> simulate(NetModel netModel, int cycles) throws JsonProcessingException {
+        List<List<NetModel>> result = new ArrayList<>();
 
-        cycles.add(netModel.wholeStep());
-        for (int i = 0; i < steps - 1; i++) {
-            List<NetModel> previousCycle = cycles.get(i);
+        result.add(netModel.wholeStep());
+        for (int i = 0; i < cycles - 1; i++) {
+            List<NetModel> previousCycle = result.get(i);
             NetModel lastInCycle = previousCycle.get(previousCycle.size() - 1);
-            cycles.add(lastInCycle.wholeStep());
+            result.add(lastInCycle.wholeStep());
         }
-        return cycles;
+        return result;
     }
 
     /**
@@ -87,14 +102,14 @@ public abstract class NetModel {
      * @return Dodany obiekt
      */
     public NetElement addElement(NetElement element) {
-        if (!validateElement(element)) return element;
+        if (!validateElement(element)) return null;
         netElements.add(element);
         return element;
     }
 
     // TODO: dokumentacja
+
     /**
-     *
      * @param id
      */
     public void deleteById(String id) {
@@ -102,7 +117,6 @@ public abstract class NetModel {
     }
 
     /**
-     *
      * @param name
      */
     public void deleteByName(String name) {
@@ -147,6 +161,7 @@ public abstract class NetModel {
 
     /**
      * Odnajduje wszystkie łuki, które są połączone z obiektem sieci.
+     *
      * @param netObject Obiekt sieci
      * @return Łuk
      */
@@ -156,6 +171,7 @@ public abstract class NetModel {
 
     /**
      * Odnajduje pare obiektów sieci, z którymi połączony jest łuk
+     *
      * @param arc Łuk
      * @return Para obiektów połączone łukiem (początek, koniec)
      */
@@ -223,17 +239,23 @@ public abstract class NetModel {
      *
      * @return Model po wykonaniu kroku.
      */
-    protected List<NetModel> wholeStep() {
+    protected List<NetModel> wholeStep() throws JsonProcessingException {
         List<NetModel> currentSimulationSteps = new ArrayList<>();
         List<Transition> readyTransitions = prepareTransitions();
-        currentSimulationSteps.add(this);
+        currentSimulationSteps.add(this.copy());
         List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
-        transitionsToRun.forEach(transition -> runTransition(transition));
-        currentSimulationSteps.add(this);
+        transitionsToRun.forEach(this::runTransition);
+        currentSimulationSteps.add(this.copy());
         getTransitionsWithState(Transition.TransitionState.Ready).forEach(Transition::setUnready);
-        currentSimulationSteps.add(this);
+        currentSimulationSteps.add(this.copy());
         return currentSimulationSteps;
     }
+
+    private NetModel copy() throws JsonProcessingException {
+        String json = objectMapper.writeValueAsString(this);
+        return objectMapper.readValue(json, NetModel.class);
+    }
+
 
     /**
      * Uruchamia podaną tranzycję.

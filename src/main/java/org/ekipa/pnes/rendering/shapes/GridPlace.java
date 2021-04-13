@@ -10,11 +10,11 @@ import org.ekipa.pnes.models.elements.Place;
 @Setter
 public class GridPlace<V> extends GridNetElement {
 
-    private GridPlace(Place netElement, Circle shape, Label label, OnGridElementAction onCreate, OnGridElementAction onDelete) {
+    private GridPlace(Place<V> netElement, Circle shape, Label label, OnGridElementAction onCreate, OnGridElementAction onDelete) {
         super(netElement, shape, label, onCreate, onDelete);
     }
 
-    private GridPlace(Place netElement, Circle shape, OnGridElementAction onCreate, OnGridElementAction onDelete) {
+    private GridPlace(Place<V> netElement, Circle shape, OnGridElementAction onCreate, OnGridElementAction onDelete) {
         super(netElement, shape, onCreate, onDelete);
     }
 
