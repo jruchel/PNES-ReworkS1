@@ -123,14 +123,12 @@ public class MainController {
         element.setMouseClicked(event3 -> {
             selectedElement = element;
             if (selectedAction instanceof Delete) {
-                if (element instanceof GridArc) {
-                    element.delete();
-                } else if (element instanceof GridPlace || element instanceof GridTransition) {
+                element.delete();
+                if (element instanceof GridPlace || element instanceof GridTransition) {
                     NetElement netElement = element.getNetElement();
                     Set<Arc> connectedArcs = netModel.getArcsByNetObject((NetObject) netElement);
                     Set<GridArc> connectedGridArcs = findGridArcs(connectedArcs);
                     connectedGridArcs.forEach(GridNetElement::delete);
-                    element.delete();
                 }
                 selectedElement = null;
             } else if (selectedAction instanceof Arc) {
@@ -201,7 +199,7 @@ public class MainController {
         alert.setTitle(title);
         alert.setHeaderText(message);
         Optional<ButtonType> result = alert.showAndWait();
-        return result.get() == ButtonType.OK;
+        return result.orElse(null) == ButtonType.OK;
     }
 
     private GridNetElement findElementById(String id) {
@@ -223,11 +221,13 @@ public class MainController {
         return new ImagePattern(image, 0, 0, gridSize, gridSize, false);
     }
 
+    public void clearButtonClicked() {
+        if (confirmBox("Potwierdzenie", "Czy na pewno chcesz usunąć wszystko?")) clearAll();
+    }
+
     public void clearAll() {
-        if (confirmBox("Potwierdzenie", "Czy na pewno chcesz usunąć wszystko?")) {
-            gridPane.getChildren().clear();
-            gridNetElements.clear();
-            selectedAction = null;
-        }
+        gridPane.getChildren().clear();
+        gridNetElements.clear();
+        selectedAction = null;
     }
 }
