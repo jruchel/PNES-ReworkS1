@@ -222,7 +222,7 @@ public class MainController {
     }
 
     public void clearButtonClicked() {
-        if (confirmBox("Potwierdzenie", "Czy na pewno chcesz usunąć wszystko?")) clearAll();
+        if (confirmBox("Potwierdzenie", "Czy na pewno chcesz usunąć całą sieć?")) clearAll();
     }
 
     public void clearAll() {
