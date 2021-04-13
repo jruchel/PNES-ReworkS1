@@ -302,7 +302,7 @@ public class MainController {
                     }
                 }
 
-            } catch (InterruptedException | JsonProcessingException e) {
+            } catch (InterruptedException | JsonProcessingException | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         };

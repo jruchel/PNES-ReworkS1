@@ -3,6 +3,7 @@ package org.ekipa.pnes.models.netModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
@@ -72,7 +73,7 @@ public abstract class NetModel {
      * @param cycles   ilość kroków
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji
      */
-    public static List<List<NetModel>> simulate(NetModel netModel, int cycles) throws JsonProcessingException {
+    public static List<List<NetModel>> simulate(NetModel netModel, int cycles) throws JsonProcessingException, IllegalAccessException, InstantiationException {
         List<List<NetModel>> result = new ArrayList<>();
 
         result.add(netModel.wholeStep());
@@ -239,7 +240,7 @@ public abstract class NetModel {
      *
      * @return Model po wykonaniu kroku.
      */
-    protected List<NetModel> wholeStep() throws JsonProcessingException {
+    protected List<NetModel> wholeStep() throws JsonProcessingException, InstantiationException, IllegalAccessException {
         List<NetModel> currentSimulationSteps = new ArrayList<>();
         List<Transition> readyTransitions = prepareTransitions();
         currentSimulationSteps.add(this.copy());
@@ -251,9 +252,13 @@ public abstract class NetModel {
         return currentSimulationSteps;
     }
 
-    private NetModel copy() throws JsonProcessingException {
-        String json = objectMapper.writeValueAsString(this);
-        return objectMapper.readValue(json, NetModel.class);
+    private NetModel copy() throws JsonProcessingException, IllegalAccessException, InstantiationException {
+//        String json = objectMapper.writeValueAsString(this);
+//        return objectMapper.readValue(json, NetModel.class);
+        NetModel netModel = this.getClass().newInstance();
+        TypeReference<List<NetElement>> netElements = new TypeReference<List<NetElement>>() {};
+        String json = objectMapper.writeValue(netElements);
+        return netModel;
     }
 
 
