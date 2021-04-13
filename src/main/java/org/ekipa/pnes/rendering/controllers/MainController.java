@@ -1,6 +1,7 @@
 package org.ekipa.pnes.rendering.controllers;
 
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -11,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -93,14 +95,16 @@ public class MainController {
                     }
                     break;
                 case SECONDARY:
-                    if (selectedAction instanceof Arc && temporaryLine != null) {
-                        gridPane.getChildren().removeIf(node -> node.equals(temporaryLine));
-                        temporaryLine = null;
+                    if (selectedAction instanceof Arc) {
+                        removeTemporaryLine();
                     }
                     break;
             }
         });
         gridPane.setOnMouseMoved(e -> {
+            if (!(selectedAction instanceof Arc)) {
+                removeTemporaryLine();
+            }
             if (temporaryLine != null) {
                 temporaryLine.setEndX(getMousePosition(e).getKey() - 5);
                 temporaryLine.setEndY(getMousePosition(e).getValue() - 5);
@@ -121,36 +125,53 @@ public class MainController {
         element.setMouseEntered(event1 -> mouseOverElement = element);
         element.setMouseExited(event2 -> mouseOverElement = null);
         element.setMouseClicked(event3 -> {
-            selectedElement = element;
-            if (selectedAction instanceof Delete) {
-                element.delete();
-                if (element instanceof GridPlace || element instanceof GridTransition) {
-                    NetElement netElement = element.getNetElement();
-                    Set<Arc> connectedArcs = netModel.getArcsByNetObject((NetObject) netElement);
-                    Set<GridArc> connectedGridArcs = findGridArcs(connectedArcs);
-                    connectedGridArcs.forEach(GridNetElement::delete);
-                }
-                selectedElement = null;
-            } else if (selectedAction instanceof Arc) {
-                try {
-                    if (temporaryLine == null) {
-                        currentArcStart = element;
-                        temporaryLine = new Line();
-                        temporaryLine.setStartX(element.getPosition().getKey());
-                        temporaryLine.setStartY(element.getPosition().getValue());
-                        temporaryLine.setEndX(getMousePosition(event3).getKey());
-                        temporaryLine.setEndY(getMousePosition(event3).getValue());
-                        gridPane.getChildren().add(temporaryLine);
-                    } else {
-                        new GridArc(currentArcStart, element, onCreate, onDelete);
-                        gridPane.getChildren().removeIf(node -> node.equals(temporaryLine));
-                        temporaryLine = null;
+            switch (event3.getButton()) {
+                case PRIMARY: {
+                    selectedElement = element;
+                    if (selectedAction instanceof Delete) {
+                        element.delete();
+                        if (element instanceof GridPlace || element instanceof GridTransition) {
+                            NetElement netElement = element.getNetElement();
+                            Set<Arc> connectedArcs = netModel.getArcsByNetObject((NetObject) netElement);
+                            Set<GridArc> connectedGridArcs = findGridArcs(connectedArcs);
+                            connectedGridArcs.forEach(GridNetElement::delete);
+                        }
+                        selectedElement = null;
+                    } else if (selectedAction instanceof Arc) {
+                        try {
+                            if (temporaryLine == null) {
+                                currentArcStart = element;
+                                temporaryLine = new Line();
+                                temporaryLine.setStartX(element.getPosition().getKey());
+                                temporaryLine.setStartY(element.getPosition().getValue());
+                                temporaryLine.setEndX(getMousePosition(event3).getKey());
+                                temporaryLine.setEndY(getMousePosition(event3).getValue());
+                                gridPane.getChildren().add(temporaryLine);
+                            } else {
+                                new GridArc(currentArcStart, element, onCreate, onDelete);
+                                gridPane.getChildren().removeIf(node -> node.equals(temporaryLine));
+                                temporaryLine = null;
+                            }
+                        } catch (NetIntegrityException e) {
+                            showAlert(e.getClass().getSimpleName(), e.getMessage());
+                        }
                     }
-                } catch (NetIntegrityException e) {
-                    showAlert(e.getClass().getSimpleName(), e.getMessage());
+                    break;
                 }
+                case SECONDARY: {
+                    break;
+                }
+
             }
+
         });
+    }
+
+    private void removeTemporaryLine() {
+        if (temporaryLine != null) {
+            gridPane.getChildren().removeIf(node -> node.equals(temporaryLine));
+            temporaryLine = null;
+        }
     }
 
     private Set<GridArc> findGridArcs(Set<Arc> arcs) {
@@ -226,8 +247,7 @@ public class MainController {
     }
 
     public void clearAll() {
-        gridPane.getChildren().clear();
-        gridNetElements.clear();
+        gridNetElements.forEach(GridNetElement::delete);
         selectedAction = null;
     }
 }
