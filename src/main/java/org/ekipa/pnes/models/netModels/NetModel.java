@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -240,7 +241,7 @@ public abstract class NetModel {
      *
      * @return Model po wykonaniu kroku.
      */
-    protected List<NetModel> wholeStep() throws JsonProcessingException, InstantiationException, IllegalAccessException {
+    protected List<NetModel> wholeStep() throws JsonProcessingException {
         List<NetModel> currentSimulationSteps = new ArrayList<>();
         List<Transition> readyTransitions = prepareTransitions();
         currentSimulationSteps.add(this.copy());
@@ -252,13 +253,18 @@ public abstract class NetModel {
         return currentSimulationSteps;
     }
 
-    private NetModel copy() throws JsonProcessingException, IllegalAccessException, InstantiationException {
-//        String json = objectMapper.writeValueAsString(this);
-//        return objectMapper.readValue(json, NetModel.class);
-        NetModel netModel = this.getClass().newInstance();
-        TypeReference<List<NetElement>> netElements = new TypeReference<List<NetElement>>() {};
-        String json = objectMapper.writeValue(netElements);
-        return netModel;
+    private NetModel copy() throws JsonProcessingException {
+        TypeReference<List<NetElement>> typeReference = new TypeReference<List<NetElement>>() {
+        };
+        String json = objectMapper.writeValueAsString(this.netElements);
+        NetModel copy = null;
+        try {
+            copy = this.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        copy.setNetElements(objectMapper.readValue(json, typeReference));
+        return copy;
     }
 
 
