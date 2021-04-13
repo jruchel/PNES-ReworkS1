@@ -108,9 +108,17 @@ public class MainController {
                 removeTemporaryLine();
             }
             if (temporaryLine != null) {
-                System.out.println(getAngle());
-                temporaryLine.setEndX(getMousePosition(e).getKey() - 5);
-                temporaryLine.setEndY(getMousePosition(e).getValue() - 5);
+                double angle = getAngle();
+                int fixedPosition;
+                if (angle < -25 && angle > -55) {
+                    fixedPosition = 10;
+                } else if (angle < -55 && angle > -65){
+                    fixedPosition = - 10;
+                } else {
+                    fixedPosition = - 5;
+                }
+                temporaryLine.setEndX(getMousePosition(e).getKey() + fixedPosition);
+                temporaryLine.setEndY(getMousePosition(e).getValue() + fixedPosition);
             }
         });
         onDelete = gridNetElement -> {
