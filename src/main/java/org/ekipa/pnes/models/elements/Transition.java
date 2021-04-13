@@ -63,7 +63,6 @@ public class Transition extends NetObject {
      */
     public boolean setUnready() {
         if (this.state.equals(TransitionState.Unready)) return true;
-        if (!this.state.equals(TransitionState.Running)) return false;
         this.state = TransitionState.Unready;
         return true;
     }

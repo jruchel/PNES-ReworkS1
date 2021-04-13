@@ -7,6 +7,7 @@ import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.MyRandom;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class PTNetModel extends NetModel {
@@ -96,6 +97,7 @@ public class PTNetModel extends NetModel {
     @Override
     protected boolean runTransition(Transition transition) {
         if (!transition.getState().equals(Transition.TransitionState.Ready)) return false;
+        if (transition.getArcs().stream().noneMatch(arc -> arc.getStart().equals(transition))) return false;
         if (!transition.setRunning()) return false;
         List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd() == transition).collect(Collectors.toList());
         consumeTokenArcs.forEach(arc -> {
@@ -111,7 +113,12 @@ public class PTNetModel extends NetModel {
 
     @Override
     protected List<Transition> prepareTransitions() {
-        return getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(this::canTransitionBeReady).collect(Collectors.toList());
+        return getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(new Predicate<Transition>() {
+            @Override
+            public boolean test(Transition transition) {
+                return PTNetModel.this.canTransitionBeReady(transition);
+            }
+        }).peek(Transition::setReady).collect(Collectors.toList());
     }
 
     @Override
@@ -125,5 +132,12 @@ public class PTNetModel extends NetModel {
         if (transition.getArcs().isEmpty()) return false;
         Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
         return transitionArcs.stream().noneMatch(arc -> ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight());
+    }
+
+    @Override
+    public String toString() {
+        return "PTNetModel{" +
+                ", selectedTransition=" + selectedTransition +
+                '}';
     }
 }

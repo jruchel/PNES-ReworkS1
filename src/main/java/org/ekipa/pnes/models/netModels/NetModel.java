@@ -6,10 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
-
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,13 +57,16 @@ public abstract class NetModel {
      * @param steps    ilość kroków
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji
      */
-    public static List<NetModel> simulate(NetModel netModel, int steps) {
-        List<NetModel> netModels = new ArrayList<>();
-        netModels.add(netModel.nextStep());
+    public static List<List<NetModel>> simulate(NetModel netModel, int steps) {
+        List<List<NetModel>> cycles = new ArrayList<>();
+
+        cycles.add(netModel.wholeStep());
         for (int i = 0; i < steps - 1; i++) {
-            netModels.add(netModels.get(i).nextStep());
+            List<NetModel> previousCycle = cycles.get(i);
+            NetModel lastInCycle = previousCycle.get(previousCycle.size() - 1);
+            cycles.add(lastInCycle.wholeStep());
         }
-        return netModels;
+        return cycles;
     }
 
     /**
@@ -222,11 +223,16 @@ public abstract class NetModel {
      *
      * @return Model po wykonaniu kroku.
      */
-    protected NetModel nextStep() {
+    protected List<NetModel> wholeStep() {
+        List<NetModel> currentSimulationSteps = new ArrayList<>();
         List<Transition> readyTransitions = prepareTransitions();
+        currentSimulationSteps.add(this);
         List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
-        transitionsToRun.forEach(this::runTransition);
-        return this;
+        transitionsToRun.forEach(transition -> runTransition(transition));
+        currentSimulationSteps.add(this);
+        getTransitionsWithState(Transition.TransitionState.Ready).forEach(Transition::setUnready);
+        currentSimulationSteps.add(this);
+        return currentSimulationSteps;
     }
 
     /**
