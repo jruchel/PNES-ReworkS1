@@ -126,6 +126,7 @@ public class MainController {
                     Set<Arc> connectedArcs = netModel.getArcsByNetObject((NetObject) netElement);
                     Set<GridArc> connectedGridArcs = findGridArcs(connectedArcs);
                     connectedGridArcs.forEach(GridNetElement::delete);
+                    element.delete();
                 }
                 selectedElement = null;
             } else if (selectedAction instanceof Arc) {
