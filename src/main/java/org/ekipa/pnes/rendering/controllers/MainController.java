@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -28,6 +29,7 @@ import org.ekipa.pnes.models.exceptions.NetIntegrityException;
 import org.ekipa.pnes.models.netModels.PTNetModel;
 import org.ekipa.pnes.rendering.shapes.*;
 import org.hibernate.sql.Delete;
+import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +108,7 @@ public class MainController {
                 removeTemporaryLine();
             }
             if (temporaryLine != null) {
+                System.out.println(getAngle());
                 temporaryLine.setEndX(getMousePosition(e).getKey() - 5);
                 temporaryLine.setEndY(getMousePosition(e).getValue() - 5);
             }
@@ -165,6 +168,10 @@ public class MainController {
             }
 
         });
+    }
+
+    private double getAngle() {
+        return Math.toDegrees(Math.atan2(temporaryLine.getEndY() - temporaryLine.getStartY(), -(temporaryLine.getEndX() - temporaryLine.getStartX())));
     }
 
     private void removeTemporaryLine() {
