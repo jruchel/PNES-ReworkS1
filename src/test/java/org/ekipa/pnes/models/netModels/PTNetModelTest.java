@@ -15,13 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PTNetModelTest {
     private PTNetModel ptNetModel;
-    private  PTNetModel ptNetModel1;
 
     @BeforeEach
     public void initialize() {
         IdGenerator.resetElements();
         ptNetModel = new PTNetModel();
-        ptNetModel1 = new PTNetModel();
+
 
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
@@ -31,15 +30,11 @@ class PTNetModelTest {
         ptNetModel.createTransition("Kacper", 3, 2);
         ptNetModel.createTransition("Adrian", 91, 5000);
 
-        //ptNetModel2.createPlace("Wojcieche", 300, 600, 131, 25);
-        //ptNetModel2.createTransition("Kubae", 5, 1);
-
         try {
             ptNetModel.createArc(ptNetModel.getObject("P1"), ptNetModel.getObject("T3"), 1);
             ptNetModel.createArc(ptNetModel.getObject("P2"), ptNetModel.getObject("T2"), 1);
             ptNetModel.createArc(ptNetModel.getObject("P3"), ptNetModel.getObject("T1"), 1);
 
-           // ptNetModel2.createArc(ptNetModel2.getObject("P1"), ptNetModel2.getObject("T1"), 1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -247,7 +242,59 @@ class PTNetModelTest {
         assertEquals(expected, actual);
     }
 
-    //Zrobić test dla losowania stanu ready na running
+        @Test
+    public void testForRunTransition(){
+        ptNetModel.createTransition("Magnus", 1, 2).setReady();
+        try {
+            ptNetModel.createArc(ptNetModel.getObject("T4"), ptNetModel.getObject("P1"), 1);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        ptNetModel.runTransition((Transition) ptNetModel.getObject("T4"));
+        int expected = 26;
+        int actual = (int) ((Place)(ptNetModel.getObject("P1"))).getTokens();
+        assertEquals(expected, actual);
+
+    }
+
+
+    @Test
+    public void checkTheValuesForTokens() throws Exception {
+        IdGenerator.resetElements();
+        PTNetModel ptNetModel1 = new PTNetModel();
+        ptNetModel1.createTransition("Arek", 3, 5);
+        ptNetModel1.createPlace("Kacper", 4, 2, 15, 2);
+        ptNetModel1.createTransition("Krystian", 2, 3);
+        ptNetModel1.createPlace("Kamil", 3, 2, 15, 1);
+        ptNetModel1.createArc(ptNetModel1.getObject("P1"), ptNetModel1.getObject("T1"), 1);
+        ptNetModel1.createArc(ptNetModel1.getObject("T1"), ptNetModel1.getObject("P2"), 1);
+        ptNetModel1.createArc(ptNetModel1.getObject("P2"), ptNetModel1.getObject("T2"), 1);
+        ptNetModel1.createArc(ptNetModel1.getObject("T2"), ptNetModel1.getObject("P1"), 1);
+        List<List<NetModel>> example = NetModel.simulate(ptNetModel1, 3);
+        System.out.println(((Place)ptNetModel1.getObject("P1")).getTokens());
+        System.out.println(((Place)ptNetModel1.getObject("P2")).getTokens());
+        if(((int)((Place)ptNetModel1.getObject("P1")).getTokens() == 1)){
+            int actual = ((int)((Place)ptNetModel1.getObject("P2")).getTokens());
+            int expected = 2;
+            assertEquals(expected, actual);
+        }
+        if(((int)((Place)ptNetModel1.getObject("P1")).getTokens() == 2)){
+            int actual = ((int)((Place)ptNetModel1.getObject("P2")).getTokens());
+            int expected = 1;
+            assertEquals(expected, actual);
+        }
+        if(((int)((Place)ptNetModel1.getObject("P1")).getTokens() == 0)){
+            int actual = ((int)((Place)ptNetModel1.getObject("P2")).getTokens());
+            int expected = 3;
+            assertEquals(expected, actual);
+        }
+        if(((int)((Place)ptNetModel1.getObject("P1")).getTokens() == 3)){
+            int actual = ((int)((Place)ptNetModel1.getObject("P2")).getTokens());
+            int expected = 0;
+            assertEquals(expected, actual);
+        }
+
+    }
 
     @Test
     public void validationOfUnreadyTransitionStatesAfterSimulation() {
@@ -257,7 +304,7 @@ class PTNetModelTest {
         assertEquals(expected, actual);
     }
 
-
+    //robić testy na simulation, wholeStep
 
     @Test
     public void checkTransitionCanBeReadyUsingNextStepWithoutArc() {
