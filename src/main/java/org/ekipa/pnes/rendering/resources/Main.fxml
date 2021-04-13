@@ -4,30 +4,40 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ekipa.pnes.rendering.controllers.MainController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ekipa.pnes.rendering.controllers.MainController">
     <children>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <center>
-                <Pane fx:id="gridPane" prefHeight="375.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+                <Pane fx:id="gridPane" prefHeight="375.0" prefWidth="600.0" BorderPane.alignment="CENTER"/>
             </center>
             <top>
-                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0"
+                      BorderPane.alignment="CENTER">
                     <children>
-                        <Button fx:id="placeButton" graphicTextGap="0.0" lineSpacing="20.0" mnemonicParsing="false" onAction="#selectPlace" text="Miejsce" textAlignment="RIGHT">
+                        <Button fx:id="placeButton" graphicTextGap="0.0" lineSpacing="20.0" mnemonicParsing="false"
+                                onAction="#selectPlace" text="Miejsce" textAlignment="RIGHT">
                             <opaqueInsets>
-                                <Insets />
+                                <Insets/>
                             </opaqueInsets>
                         </Button>
-                        <Button fx:id="transitionButton" lineSpacing="20.0" mnemonicParsing="false" onAction="#selectTransition" text="Tranzycja" />
-                        <Button fx:id="selectArcButton" depthTest="ENABLE" lineSpacing="20.0" mnemonicParsing="false" onAction="#selectArc" text="Łuk">
+                        <Button fx:id="transitionButton" lineSpacing="20.0" mnemonicParsing="false"
+                                onAction="#selectTransition" text="Tranzycja"/>
+                        <Button fx:id="selectArcButton" depthTest="ENABLE" lineSpacing="20.0" mnemonicParsing="false"
+                                onAction="#selectArc" text="Łuk">
                             <opaqueInsets>
-                                <Insets left="50.0" right="50.0" />
+                                <Insets left="50.0" right="50.0"/>
                             </opaqueInsets>
                         </Button>
-                        <Button fx:id="deleteElementButton" lineSpacing="20.0" mnemonicParsing="false" onAction="#selectDelete" text="Usuń" />
+                        <Button fx:id="deleteElementButton" lineSpacing="20.0" mnemonicParsing="false"
+                                onAction="#selectDelete" text="Usuń"/>
+                        <Button fx:id="clearAllButton" mnemonicParsing="false" onAction="#clearButtonClicked"
+                                text="Usuń sieć"/>
+                        <Button fx:id="oneStepSimulation" onMouseClicked="#simulateStep" mnemonicParsing="false" text="C R O C C"/>
                     </children>
                     <opaqueInsets>
-                        <Insets left="50.0" right="50.0" />
+                        <Insets left="50.0" right="50.0"/>
                     </opaqueInsets>
                 </HBox>
             </top>
