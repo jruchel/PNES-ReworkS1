@@ -1,5 +1,6 @@
 package org.ekipa.pnes.rendering.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -8,6 +9,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -27,6 +29,7 @@ import org.hibernate.sql.Delete;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -42,6 +45,7 @@ public class MainController {
     public Button transitionButton;
     public Button selectArcButton;
     public Button deleteElementButton;
+    public Button clearAllButton;
 
     private GridNetElement mouseOverElement;
     private GridNetElement selectedElement;
@@ -192,6 +196,14 @@ public class MainController {
         alert.showAndWait();
     }
 
+    private boolean confirmBox(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(message);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.get() == ButtonType.OK;
+    }
+
     private GridNetElement findElementById(String id) {
         return gridNetElements.stream().filter(gridNetElement -> gridNetElement.getId().equals(id)).findFirst().orElse(null);
     }
@@ -209,5 +221,13 @@ public class MainController {
 
         Image image = canvas.snapshot(new SnapshotParameters(), null);
         return new ImagePattern(image, 0, 0, gridSize, gridSize, false);
+    }
+
+    public void clearAll() {
+        if (confirmBox("Potwierdzenie", "Czy na pewno chcesz usunąć wszystko?")) {
+            gridPane.getChildren().clear();
+            gridNetElements.clear();
+            selectedAction = null;
+        }
     }
 }
