@@ -77,7 +77,7 @@ public class MainController {
             switch (event.getButton()) {
                 case PRIMARY:
                     if (selectedAction == null) {
-                        showAlert("Nie wybrano elementu sieci do narysowania", "Nie wybrano elementu sieci do narysowania");
+                        showAlert("Nie wybrałeś elementu sieci do narysowania", "Nie wybrano elementu sieci do narysowania");
                     } else {
                         if (selectedAction instanceof Place) {
                             if (mouseOverElement == null) {
