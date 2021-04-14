@@ -3,9 +3,10 @@ package org.ekipa.pnes.models.netModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
+@JsonDeserialize(as = PTNetModel.class)
 public abstract class NetModel {
     protected List<NetElement> netElements;
     @JsonIgnore
@@ -33,11 +35,11 @@ public abstract class NetModel {
         this.netElements = new ArrayList<>();
         this.objectMapper = new ObjectMapper();
     }
-
+    @JsonIgnore
     protected NetElement getElement(String id) {
         return netElements.stream().filter(element -> element.getId().equals(id)).findFirst().orElse(null);
     }
-
+    @JsonIgnore
     protected NetObject getObject(String id) {
         return netElements.stream()
                 .filter(element -> element instanceof NetObject)
@@ -167,6 +169,7 @@ public abstract class NetModel {
      * @param netObject Obiekt sieci
      * @return Łuk
      */
+    @JsonIgnore
     public Set<Arc> getArcsByNetObject(NetObject netObject) {
         return netObject.getArcs();
     }
@@ -254,17 +257,17 @@ public abstract class NetModel {
     }
 
     private NetModel copy() throws JsonProcessingException {
-        TypeReference<List<NetElement>> typeReference = new TypeReference<List<NetElement>>() {
-        };
-        String json = objectMapper.writeValueAsString(this.netElements);
-        NetModel copy = null;
-        try {
-            copy = this.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        copy.setNetElements(objectMapper.readValue(json, typeReference));
-        return copy;
+        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator
+                .builder()
+                .allowIfSubType(NetModel.class)
+                .allowIfSubType(List.class)
+                .allowIfSubType(NetElement.class)
+                .allowIfSubType(Transition.TransitionState.class)
+                .build();
+        objectMapper.activateDefaultTyping(ptv);
+        String json = objectMapper.writeValueAsString(this);
+        PTNetModel ptNetModel = objectMapper.readValue(json, PTNetModel.class);
+        return ptNetModel;
     }
 
 
@@ -297,6 +300,7 @@ public abstract class NetModel {
      * @param state {@link org.ekipa.pnes.models.elements.Transition.TransitionState}
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> lista tranzycji.
      */
+    @JsonIgnore
     protected List<Transition> getTransitionsWithState(Transition.TransitionState state) {
         return netElements.stream()
                 .filter(element -> element instanceof Transition)
@@ -306,7 +310,7 @@ public abstract class NetModel {
                 .collect(Collectors.toList());
     }
 
-
+    @JsonIgnore
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
         Class clazz = o.getClass();
