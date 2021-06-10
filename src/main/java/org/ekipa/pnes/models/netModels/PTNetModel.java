@@ -115,24 +115,43 @@ public class PTNetModel extends NetModel {
 
     @Override
     protected boolean runTransition(Transition transition) {
-        if (!transition.getState().equals(Transition.TransitionState.Ready)) {
+        if (!transition.getState().equals(Transition.TransitionState.Running)) {
             return false;
         }
         if (transition.getArcs().stream().noneMatch(arc -> arc.getStart().getId().equals(transition.getId()))) {
             return false;
         }
-        if (!transition.setRunning()) {
-            return false;
-        }
+//        if ()
+
         List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().getId().equals(transition.getId())).collect(Collectors.toList());
         consumeTokenArcs.forEach(arc -> {
-            Place<Integer> place = (Place<Integer>) arc.getStart();
-            place.setTokens((place.getTokens() - (int) arc.getWeight()));
+            Place<Integer> place = (Place<Integer>) getNetElements().stream().filter(i -> i.getId().equals(arc.getStart().getId())).findFirst().orElse(null);
+            setNetElements(getNetElements().stream().peek(i -> {
+                if (i.getId().equals(place.getId())) {
+                    if (place.getTokens() > 0) {
+                        ((Place) i).setTokens((place.getTokens() - (int) arc.getWeight()));
+                    }
+                }
+            }).collect(Collectors.toList()));
         });
+
+
         List<Arc> forwardTokenArcs = transition.getArcs().stream().filter(arc -> arc.getStart().getId().equals(transition.getId())).collect(Collectors.toList());
         forwardTokenArcs.forEach(arc -> {
-            addTokens((Place) arc.getEnd(), arc.getWeight());
+
+            Place<Integer> place = (Place<Integer>) getNetElements().stream().filter(i -> i.getId().equals(arc.getEnd().getId())).findFirst().orElse(null);
+
+            setNetElements(getNetElements().stream().peek(i -> {
+                if (i.getId().equals(place.getId())) {
+
+                    if (place.getTokenCapacity() >= (place.getTokens() + (int) arc.getWeight())) {
+                        ((Place) i).setTokens(place.getTokens() + (int) arc.getWeight());
+                    }
+                }
+            }).collect(Collectors.toList()));
         });
+
+
         return transition.setUnready();
     }
 
@@ -158,13 +177,27 @@ public class PTNetModel extends NetModel {
     protected List<Transition> selectTransitionsToRun(List<Transition> transitions) {
         if (selectedTransition != null && selectedTransition.getState().equals(Transition.TransitionState.Ready))
             return Collections.singletonList(selectedTransition);
-        return Collections.singletonList(MyRandom.getRandom(transitions));
+        return Collections.singletonList(MyRandom.getRandom(transitions.stream().filter(i -> i.getState().equals(Transition.TransitionState.Ready)).collect(Collectors.toList())));
     }
 
     private boolean canTransitionBeReady(Transition transition) {
         if (transition.getArcs().isEmpty()) return false;
-        Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
-        return transitionArcs.stream().noneMatch(arc -> ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight());
+        Set<Arc> transitionArcs = transition.getArcs()
+                .stream()
+                .filter(arc -> arc.getEnd().getId().equals(transition.getId()))
+                .collect(Collectors.toSet());
+        return transitionArcs
+                .stream()
+                .noneMatch(arc -> getCurrentTokens(arc) < (int) arc.getWeight());
+    }
+
+    private int getCurrentTokens(Arc arc) {
+        Optional<Place<Integer>> first = getNetElements().stream().filter(i -> i.getId().equals(arc.getStart().getId())).map(i -> (Place<Integer>) i).findFirst();
+        if (first.isPresent()) {
+            return first.get().getTokens();
+        } else {
+            return Integer.MAX_VALUE;
+        }
     }
 
     @Override
