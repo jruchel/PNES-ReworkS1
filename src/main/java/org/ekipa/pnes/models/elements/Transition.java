@@ -1,11 +1,11 @@
 package org.ekipa.pnes.models.elements;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-
 public class Transition extends NetObject {
     private TransitionState state;
 
@@ -80,8 +80,11 @@ public class Transition extends NetObject {
     }
 
     public enum TransitionState {
+        @JsonProperty("Unready")
         Unready,
+        @JsonProperty("Ready")
         Ready,
+        @JsonProperty("Running")
         Running
     }
 

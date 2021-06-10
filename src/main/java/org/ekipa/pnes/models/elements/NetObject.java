@@ -3,7 +3,6 @@ package org.ekipa.pnes.models.elements;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -16,6 +15,16 @@ public abstract class NetObject extends NetElement {
     protected double x, y;
     @JsonIgnore
     protected Set<Arc> arcs;
+
+    @JsonIgnore
+    public Set<Arc> getArcs() {
+        return arcs;
+    }
+
+    @JsonIgnore
+    public void setArcs(Set<Arc> arcs) {
+        this.arcs = arcs;
+    }
 
     public NetObject() {
         this.arcs = new HashSet<>();

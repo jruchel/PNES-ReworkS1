@@ -237,7 +237,7 @@ class PTNetModelTest {
     }
 
     @Test
-    public void validationOfPrepareTransitions() throws JsonProcessingException {
+    public void validationOfPrepareTransitions() throws JsonProcessingException, InstantiationException, IllegalAccessException {
         List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
         List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
         List<Transition> actual = example.get(0).get(0).prepareTransitions();

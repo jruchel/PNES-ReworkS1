@@ -302,8 +302,8 @@ public class MainController {
                     }
                 }
 
-            } catch (InterruptedException | JsonProcessingException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | JsonProcessingException | InstantiationException | IllegalAccessException e) {
+                System.out.println(e.getMessage());
             }
         };
         Platform.runLater(() -> {
