@@ -1,5 +1,8 @@
 package org.ekipa.pnes.models.netModels;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
 import org.ekipa.pnes.models.exceptions.ProhibitedConnectionException;
@@ -9,15 +12,18 @@ import org.ekipa.pnes.utils.MyRandom;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@JsonDeserialize(using = PTNetModelDeserializer.class)
 public class PTNetModel extends NetModel {
+
     private Transition selectedTransition;
 
     public PTNetModel() {
         super();
     }
 
-    private PTNetModel(List<NetElement> netElements) {
+    public PTNetModel(List<NetElement> netElements) {
         super(netElements);
     }
 
@@ -94,6 +100,18 @@ public class PTNetModel extends NetModel {
 
     }
 
+    @Override
+    public String serialize() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(this);
+    }
+
+    @Override
+    public NetModel deserialize(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(json, this.getClass());
+    }
+
 
     @Override
     protected boolean runTransition(Transition transition) {
@@ -114,12 +132,20 @@ public class PTNetModel extends NetModel {
 
     @Override
     protected List<Transition> prepareTransitions() {
-        return getTransitionsWithState(Transition.TransitionState.Unready).stream().filter(new Predicate<Transition>() {
-            @Override
-            public boolean test(Transition transition) {
-                return PTNetModel.this.canTransitionBeReady(transition);
+
+        List<NetElement> newNetElements = this.getNetElements()
+                .stream()
+                .peek(i -> {
+            if (i instanceof Transition) {
+                if (canTransitionBeReady((Transition) i)) {
+                    ((Transition) i).setReady();
+                }
             }
-        }).peek(Transition::setReady).collect(Collectors.toList());
+        }).collect(Collectors.toList());
+        this.setNetElements(newNetElements);
+
+
+        return newNetElements.stream().filter(i -> i instanceof Transition).map(i -> ((Transition)i)).collect(Collectors.toList());
     }
 
     @Override
@@ -132,12 +158,7 @@ public class PTNetModel extends NetModel {
     private boolean canTransitionBeReady(Transition transition) {
         if (transition.getArcs().isEmpty()) return false;
         Set<Arc> transitionArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().equals(transition)).collect(Collectors.toSet());
-        return transitionArcs.stream().noneMatch(new Predicate<Arc>() {
-            @Override
-            public boolean test(Arc arc) {
-                return ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight();
-            }
-        });
+        return transitionArcs.stream().noneMatch(arc -> ((Place<Integer>) arc.getStart()).getTokens() < (int) arc.getWeight());
     }
 
     @Override

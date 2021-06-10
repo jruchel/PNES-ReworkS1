@@ -2,37 +2,27 @@ package org.ekipa.pnes.models.elements;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 public abstract class NetObject extends NetElement {
-    protected double x, y;
-    @JsonIgnore
-    protected Set<Arc> arcs;
+
+    private double x, y;
 
     @JsonIgnore
-    public Set<Arc> getArcs() {
-        return arcs;
-    }
-
-    @JsonIgnore
-    public void setArcs(Set<Arc> arcs) {
-        this.arcs = arcs;
-    }
+    private Set<Arc> arcs;
 
     public NetObject() {
         this.arcs = new HashSet<>();
     }
 
     public NetObject(String id, String name, double x, double y) {
-        this.id = id;
-        this.name = name;
+        this.setId(id);
+        this.setName(name);
         this.x = x;
         this.y = y;
         this.arcs = new HashSet<>();
@@ -46,8 +36,8 @@ public abstract class NetObject extends NetElement {
     @Override
     public String toString() {
         return "NetElement{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                "id='" + this.getId() + '\'' +
+                ", name='" + this.getName() + '\'' +
                 ", x=" + x +
                 ", y=" + y +
                 '}';
