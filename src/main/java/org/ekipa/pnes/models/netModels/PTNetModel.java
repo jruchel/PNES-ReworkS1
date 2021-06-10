@@ -115,15 +115,21 @@ public class PTNetModel extends NetModel {
 
     @Override
     protected boolean runTransition(Transition transition) {
-        if (!transition.getState().equals(Transition.TransitionState.Ready)) return false;
-        if (transition.getArcs().stream().noneMatch(arc -> arc.getStart().equals(transition))) return false;
-        if (!transition.setRunning()) return false;
-        List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd() == transition).collect(Collectors.toList());
+        if (!transition.getState().equals(Transition.TransitionState.Ready)) {
+            return false;
+        }
+        if (transition.getArcs().stream().noneMatch(arc -> arc.getStart().getId().equals(transition.getId()))) {
+            return false;
+        }
+        if (!transition.setRunning()) {
+            return false;
+        }
+        List<Arc> consumeTokenArcs = transition.getArcs().stream().filter(arc -> arc.getEnd().getId().equals(transition.getId())).collect(Collectors.toList());
         consumeTokenArcs.forEach(arc -> {
             Place<Integer> place = (Place<Integer>) arc.getStart();
             place.setTokens((place.getTokens() - (int) arc.getWeight()));
         });
-        List<Arc> forwardTokenArcs = transition.getArcs().stream().filter(arc -> arc.getStart() == transition).collect(Collectors.toList());
+        List<Arc> forwardTokenArcs = transition.getArcs().stream().filter(arc -> arc.getStart().getId().equals(transition.getId())).collect(Collectors.toList());
         forwardTokenArcs.forEach(arc -> {
             addTokens((Place) arc.getEnd(), arc.getWeight());
         });
@@ -136,16 +142,16 @@ public class PTNetModel extends NetModel {
         List<NetElement> newNetElements = this.getNetElements()
                 .stream()
                 .peek(i -> {
-            if (i instanceof Transition) {
-                if (canTransitionBeReady((Transition) i)) {
-                    ((Transition) i).setReady();
-                }
-            }
-        }).collect(Collectors.toList());
+                    if (i instanceof Transition) {
+                        if (canTransitionBeReady((Transition) i)) {
+                            ((Transition) i).setReady();
+                        }
+                    }
+                }).collect(Collectors.toList());
         this.setNetElements(newNetElements);
 
 
-        return newNetElements.stream().filter(i -> i instanceof Transition).map(i -> ((Transition)i)).collect(Collectors.toList());
+        return newNetElements.stream().filter(i -> i instanceof Transition).map(i -> ((Transition) i)).collect(Collectors.toList());
     }
 
     @Override

@@ -241,6 +241,8 @@ public abstract class NetModel {
         List<Transition> readyTransitions = prepareTransitions();
         currentSimulationSteps.add(this.copy());
         List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
+        transitionsToRun = transitionsToRun.stream().peek(Transition::setRunning).collect(Collectors.toList());
+        currentSimulationSteps.add(this.copy());
         transitionsToRun.forEach(this::runTransition);
         currentSimulationSteps.add(this.copy());
         getTransitionsWithState(Transition.TransitionState.Ready).forEach(Transition::setUnready);
