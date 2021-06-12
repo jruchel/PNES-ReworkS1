@@ -98,7 +98,7 @@ public abstract class NetModel {
      * @return Dodany obiekt
      */
     public NetElement addElement(NetElement element) {
-        if (!validateElement(element)) return null;
+        if (!validateElement(element.getId())) return null;
         netElements.add(IdGenerator.setElementId(element));
         return element;
     }
@@ -124,13 +124,14 @@ public abstract class NetModel {
      * jeśli jakakolwiek wartość pola obiektu jest równa wartości pola z listy, obiekt ten jest dodawany do poprzednio
      * stworzonej listy, a następnie zwraca listę wszystkich znalezionych obiektów
      *
-     * @param element wyszukiwany przez użytkownika obiekt, wartości jego pól są porównywane z wartościami pól obiektów
-     *                z listy w celu znalezienia poszukiwanych obiektów
+     * @param netElementId id elementu wyszukiwanego przez użytkownika obiektu,
+     *                     wartości jego pól są porównywane z wartościami pól obiektów
+     *                      z listy w celu znalezienia poszukiwanych obiektów
      * @return listę znalezionych obiektów
      */
-    protected List<NetElement> findObjects(NetElement element) {
+    protected List<NetElement> findObjects(String netElementId) {
         List<NetElement> elements = new ArrayList<>();
-        List<Field> elementFields = getAllFields(element);
+        List<Field> elementFields = getAllFields(getElement(netElementId));
         for (NetElement o : getNetElements()) {
             if (getAllFields(o).stream().anyMatch(field -> {
                 for (Field f : elementFields) {
@@ -140,7 +141,7 @@ public abstract class NetModel {
                     f.setAccessible(true);
                     field.setAccessible(true);
                     try {
-                        if (f.get(element).equals(field.get(o))) return true;
+                        if (f.get(getElement(netElementId)).equals(field.get(o))) return true;
                     } catch (Exception ignored) {
 
                     }
@@ -169,20 +170,20 @@ public abstract class NetModel {
     /**
      * Odnajduje pare obiektów sieci, z którymi połączony jest łuk
      *
-     * @param arc Łuk
+     * @param arcId Id łuku
      * @return Para obiektów połączone łukiem (początek, koniec)
      */
-    public Pair<NetObject, NetObject> getNetObjectsByArc(Arc arc) {
+    public Pair<NetObject, NetObject> getNetObjectsByArc(String arcId) {
         Stream<NetElement> netElementStream = netElements.stream()
-                .filter(netElement -> !(netElement instanceof Arc));
+                .filter(netElement -> !(netElement.getId().equals(arcId)));
 
         NetObject start = (NetObject) netElementStream
-                .filter(netElement -> arc.getStart().equals(netElement))
+                .filter(netElement -> ((Arc) getElement(arcId)).getStart().getId().equals(netElement.getId()))
                 .findFirst()
                 .orElse(null);
 
         NetObject end = (NetObject) netElementStream
-                .filter(netElement -> arc.getEnd().equals(netElement))
+                .filter(netElement -> ((Arc) getElement(arcId)).getEnd().getId().equals(netElement.getId()))
                 .findFirst()
                 .orElse(null);
 
@@ -193,43 +194,43 @@ public abstract class NetModel {
      * Edytuje obiekt z całego modelu jeśli przejdzie walidacje.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
      *
-     * @param actualObject Dokładny obiekt, który ma zostać zaktualizowany.
-     * @param newObject    Obiekt, z którego ma zamienić wartości.
+     * @param actualId Id dokładnego obiekt, który ma zostać zaktualizowany.
+     * @param newId    Id obiektu, z którego ma zamienić wartości.
      * @return Zwraca zaktualizowany obiekt.
      */
-    public NetElement editElement(NetElement actualObject, NetElement newObject) {
-        if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
-        if (!validateElement(newObject)) return actualObject;
-        List<Field> fieldsBefore = getAllFields(actualObject);
+    public NetElement editElement(String actualId, String newId) {
+        if (!(actualId.charAt(0)==newId.charAt(0))) return getElement(actualId);
+        if (!validateElement(newId)) return getElement(actualId);
+        List<Field> fieldsBefore = getAllFields(getElement(actualId));
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
         for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
             f.setAccessible(true);
             try {
-                f.set(actualObject, f.get(newObject));
+                f.set(getElement(actualId), f.get(getElement(newId)));
             } catch (IllegalAccessException ignored) {
 
             }
             f.setAccessible(false);
         }
-        return actualObject;
+        return getElement(actualId);
     }
 
     /**
      * Przeprowadza walidacje dowolnych elementów w modelu sieci.
      * Metoda musi być nadpisana poprawnie, aby móc korzystać z sieci.
      *
-     * @param o Obiekt do walidacji.
+     * @param id Id obiektu do walidacji.
      * @return Wynik walidacji.
      */
-    protected abstract boolean validateElement(NetElement o);
+    protected abstract boolean validateElement(String id);
 
     /**
      * Dodaje podaje tokeny do podanego miejsca.
      *
-     * @param place  Miejsce do którego mają zostać dodane tokeny.
+     * @param placeId  Id miejsca do którego mają zostać dodane tokeny.
      * @param tokens Tokeny.
      */
-    protected abstract void addTokens(Place place, Object tokens);
+    protected abstract void addTokens(String placeId, Object tokens);
 
     /**
      * Wykonuje pojedynczy krok symulacji.
