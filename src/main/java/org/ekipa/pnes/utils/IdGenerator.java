@@ -1,6 +1,5 @@
 package org.ekipa.pnes.utils;
 
-import org.ekipa.pnes.models.elements.Arc;
 import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.NetObject;
 
@@ -10,6 +9,7 @@ import java.util.List;
 public class IdGenerator {
 
     private static List<NetElement> elementsList;
+    private static List<String> idList;
 
     static {
         reset();
@@ -21,6 +21,7 @@ public class IdGenerator {
      */
     public static void resetElements() {
         elementsList = new ArrayList<>();
+        idList = new ArrayList<>();
 
     }
 
@@ -37,9 +38,11 @@ public class IdGenerator {
      * @return podany element z ustawionym poprawnym id
      */
     public static NetElement setElementId(NetElement element) {
-        if (elementsList.contains(element)) return element;
-        element.setId(String.format("%s%d", element.getClass().getSimpleName().charAt(0), findOccurrencesOfSameTypeOfNetElement(element)));
-        elementsList.add(element);
+        if (!idList.contains(element.getId())) {
+            element.setId(String.format("%s%d", element.getClass().getSimpleName().charAt(0), findOccurrencesOfSameTypeOfNetElement(element)));
+            idList.add(element.getId());
+            elementsList.add(element);
+        }
         return element;
     }
 

@@ -1,24 +1,20 @@
 package org.ekipa.pnes.models.elements;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.ekipa.pnes.models.exceptions.ProhibitedConnectionException;
 
-@Getter
-@Setter
-
+@Data
+@NoArgsConstructor
 public class Arc extends NetElement {
     private NetObject start;
     private NetObject end;
     private double weight;
 
-    public Arc() {
-
-    }
 
     public Arc(String id, NetObject start, NetObject end, double weight) throws ProhibitedConnectionException {
         validateElements(start, end);
-        this.id = id;
+        this.setId(id);
         this.start = start;
         this.end = end;
         this.weight = weight;
@@ -71,7 +67,7 @@ public class Arc extends NetElement {
     @Override
     public String toString() {
         return "Arc{" +
-                "id='" + id + '\'' +
+                "id='" + this.getId() + '\'' +
                 ", start=" + start +
                 ", end=" + end +
                 ", weight=" + weight +

@@ -2,7 +2,6 @@ package org.ekipa.pnes.rendering.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.SnapshotParameters;
@@ -33,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 
@@ -63,6 +64,8 @@ public class MainController {
     private final Color TRANSITION_READY_COLOR = Color.ORANGERED;
     private final Color TRANSITION_RUNNING_COLOR = Color.GREEN;
     private final Color TRANSITION_UNREADY_COLOR = Color.GREY;
+
+    private ExecutorService executor = Executors.newFixedThreadPool(1);
 
     public void initialize() {
         gridNetElements = new ArrayList<>();
@@ -298,15 +301,19 @@ public class MainController {
                 for (List<NetModel> cycle : cycles) {
                     for (NetModel step : cycle) {
                         netModel = (PTNetModel) step;
-                        Thread.sleep(200);
+
                     }
                 }
 
-            } catch (InterruptedException | JsonProcessingException | InstantiationException | IllegalAccessException e) {
+                List<NetModel> netModels = cycles.get(cycles.size() - 1);
+                this.netModel = (PTNetModel) netModels.get(netModels.size() - 1);
+                System.out.println("dsada");
+
+            } catch (JsonProcessingException | InstantiationException | IllegalAccessException e) {
                 System.out.println(e.getMessage());
             }
         };
-        Platform.runLater(() -> {
+        executor.execute(() -> {
             new Thread(runnable).start();
         });
 

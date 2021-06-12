@@ -3,42 +3,34 @@ package org.ekipa.pnes.models.netModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import javafx.util.Pair;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
+import org.ekipa.pnes.utils.IdGenerator;
 
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Getter
-@AllArgsConstructor
-@JsonDeserialize(as = PTNetModel.class)
+@Data
 public abstract class NetModel {
-    protected List<NetElement> netElements;
-    @JsonIgnore
-    private ObjectMapper objectMapper;
+    private List<NetElement> netElements;
 
     public NetModel(List<NetElement> netElements) {
         this.netElements = netElements;
-        this.objectMapper = new ObjectMapper();
     }
 
     public NetModel() {
         this.netElements = new ArrayList<>();
-        this.objectMapper = new ObjectMapper();
     }
+
     @JsonIgnore
     protected NetElement getElement(String id) {
         return netElements.stream().filter(element -> element.getId().equals(id)).findFirst().orElse(null);
     }
+
     @JsonIgnore
     protected NetObject getObject(String id) {
         return netElements.stream()
@@ -47,9 +39,9 @@ public abstract class NetModel {
                 .map(netElement -> (NetObject) netElement).findFirst().orElse(null);
     }
 
-    private void setNetElements(List<NetElement> netElements) {
-        this.netElements = netElements;
-    }
+//    private void setNetElements(List<NetElement> netElements) {
+//        this.netElements = netElements;
+//    }
 
     /**
      * Tworzy model obecnego typu na podstawie porównania parametry sieci z innym modelem i zamienia te parametry
@@ -107,7 +99,7 @@ public abstract class NetModel {
      */
     public NetElement addElement(NetElement element) {
         if (!validateElement(element)) return null;
-        netElements.add(element);
+        netElements.add(IdGenerator.setElementId(element));
         return element;
     }
 
@@ -249,6 +241,8 @@ public abstract class NetModel {
         List<Transition> readyTransitions = prepareTransitions();
         currentSimulationSteps.add(this.copy());
         List<Transition> transitionsToRun = selectTransitionsToRun(readyTransitions);
+        transitionsToRun = transitionsToRun.stream().peek(Transition::setRunning).collect(Collectors.toList());
+        currentSimulationSteps.add(this.copy());
         transitionsToRun.forEach(this::runTransition);
         currentSimulationSteps.add(this.copy());
         getTransitionsWithState(Transition.TransitionState.Ready).forEach(Transition::setUnready);
@@ -257,18 +251,12 @@ public abstract class NetModel {
     }
 
     private NetModel copy() throws JsonProcessingException {
-        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator
-                .builder()
-                .allowIfSubType(NetModel.class)
-                .allowIfSubType(List.class)
-                .allowIfSubType(NetElement.class)
-                .allowIfSubType(Transition.TransitionState.class)
-                .build();
-        objectMapper.activateDefaultTyping(ptv);
-        String json = objectMapper.writeValueAsString(this);
-        PTNetModel ptNetModel = objectMapper.readValue(json, PTNetModel.class);
-        return ptNetModel;
+        String json = serialize();
+        return deserialize(json);
     }
+
+    public abstract String serialize() throws JsonProcessingException;
+    public abstract NetModel deserialize(String  json) throws JsonProcessingException;
 
 
     /**

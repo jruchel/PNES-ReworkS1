@@ -1,29 +1,18 @@
 package org.ekipa.pnes.models.elements;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 public class Transition extends NetObject {
+
     private TransitionState state;
-
-    public Transition(){
-
-    }
 
     public Transition(String id, String name, double x, double y) {
         super(id, name, x, y);
         this.state = TransitionState.Unready;
-    }
-
-    public TransitionState getState() {
-        return state;
-    }
-
-    private void setState(TransitionState state) {
-        this.state = state;
     }
 
     /**
