@@ -98,7 +98,7 @@ public abstract class NetModel {
      * @return Dodany obiekt
      */
     public NetElement addElement(NetElement element) {
-        if (!validateElement(element.getId())) return null;
+        if (!validateElement(element)) return null;
         netElements.add(IdGenerator.setElementId(element));
         return element;
     }
@@ -117,43 +117,6 @@ public abstract class NetModel {
      */
     public void deleteByName(String name) {
         netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteElement);
-    }
-
-    /**
-     * Porównuje wartości pól wyszukiwanego elementu do wartości pól wszystkich istniejących obiektów w liście,
-     * jeśli jakakolwiek wartość pola obiektu jest równa wartości pola z listy, obiekt ten jest dodawany do poprzednio
-     * stworzonej listy, a następnie zwraca listę wszystkich znalezionych obiektów
-     *
-     * @param netElementId id elementu wyszukiwanego przez użytkownika obiektu,
-     *                     wartości jego pól są porównywane z wartościami pól obiektów
-     *                      z listy w celu znalezienia poszukiwanych obiektów
-     * @return listę znalezionych obiektów
-     */
-    protected List<NetElement> findObjects(String netElementId) {
-        List<NetElement> elements = new ArrayList<>();
-        List<Field> elementFields = getAllFields(getElement(netElementId));
-        for (NetElement o : getNetElements()) {
-            if (getAllFields(o).stream().anyMatch(field -> {
-                for (Field f : elementFields) {
-                    if (!f.getName().equals(field.getName())) continue;
-                    boolean fAccessible = f.isAccessible();
-                    boolean fieldAccessible = field.isAccessible();
-                    f.setAccessible(true);
-                    field.setAccessible(true);
-                    try {
-                        if (f.get(getElement(netElementId)).equals(field.get(o))) return true;
-                    } catch (Exception ignored) {
-
-                    }
-                    f.setAccessible(fAccessible);
-                    field.setAccessible(fieldAccessible);
-                }
-                return false;
-            })) {
-                elements.add(o);
-            }
-        }
-        return elements;
     }
 
     /**
@@ -200,7 +163,7 @@ public abstract class NetModel {
      */
     public NetElement editElement(String actualId, String newId) {
         if (!(actualId.charAt(0)==newId.charAt(0))) return getElement(actualId);
-        if (!validateElement(newId)) return getElement(actualId);
+        if (!validateElement(getElement(newId))) return getElement(actualId);
         List<Field> fieldsBefore = getAllFields(getElement(actualId));
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
         for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
@@ -219,10 +182,10 @@ public abstract class NetModel {
      * Przeprowadza walidacje dowolnych elementów w modelu sieci.
      * Metoda musi być nadpisana poprawnie, aby móc korzystać z sieci.
      *
-     * @param id Id obiektu do walidacji.
+     * @param o Id obiektu do walidacji.
      * @return Wynik walidacji.
      */
-    protected abstract boolean validateElement(String id);
+    protected abstract boolean validateElement(NetElement o);
 
     /**
      * Dodaje podaje tokeny do podanego miejsca.

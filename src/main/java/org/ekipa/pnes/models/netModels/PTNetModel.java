@@ -54,11 +54,11 @@ public class PTNetModel extends NetModel {
     }
 
     @Override
-    protected boolean validateElement(String id) {
+    protected boolean validateElement(NetElement o) {
         boolean wasValidated = false;
-        if (id.startsWith("A")) {
+        if (o instanceof Arc) {
             wasValidated = true;
-            Arc arc = (Arc) getElement(id);
+            Arc arc = (Arc) o;
             if (arc.getWeight() <= 0) return false;
             try {
                 if (arc.getEnd().getClass().equals(arc.getStart().getClass())) return false;
@@ -66,22 +66,24 @@ public class PTNetModel extends NetModel {
                 return false;
             }
         }
-        if (id.startsWith("P")) {
+        if (o instanceof Place) {
             wasValidated = true;
             try {
-                Place<Integer> place = (Place<Integer>) getElement(id);
+                Place<Integer> place = (Place<Integer>) o;
                 if (place.getTokenCapacity() < 0) return false;
                 if (place.getTokens() > place.getTokenCapacity()) return false;
-                if (place.getX() < 0 || place.getY() < 0) return false;
             } catch (Exception e) {
                 return false;
             }
         }
-        if (id.startsWith("T")) {
+        if (o instanceof Transition) {
             wasValidated = true;
-            Transition transition = (Transition) getElement(id);
+            Transition transition = (Transition) o;
             if (!transition.getState().equals(Transition.TransitionState.Unready)) return false;
-            if (transition.getX() < 0 || transition.getY() < 0) return false;
+        }
+        if (o instanceof NetObject) {
+            NetObject netObject = (NetObject) o;
+            if (netObject.getX() < 0 || netObject.getY() < 0) return false;
         }
         return wasValidated;
     }

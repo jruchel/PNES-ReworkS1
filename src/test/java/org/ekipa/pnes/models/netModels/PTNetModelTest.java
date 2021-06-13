@@ -24,7 +24,6 @@ class PTNetModelTest {
         IdGenerator.resetElements();
         ptNetModel = new PTNetModel();
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
-        ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Sebastian420", 742, 641, 101, 46);
         ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
         ptNetModel.createTransition("Kuba", 5, 1);
@@ -36,20 +35,6 @@ class PTNetModelTest {
         ptNetModel.createArc(ptNetModel.getObject("P3"), ptNetModel.getObject("T1"), 1);
 
         return ptNetModel;
-    }
-
-
-    @Test
-    public void checkNumberOfFoundObjects() throws Exception {
-//        ptNetModel = createDefaultNet();
-//
-//        NetObject expected = new Place<>("P1","Wojciech", 300, 600, 131, 25);
-//        List<NetElement> expectedList = new ArrayList<>();
-//        expectedList.add(expected);
-//        List<NetElement> actual = ptNetModel.findObjects("P1");
-//
-//        assertEquals(expectedList, actual);
-
     }
 
     @Test
