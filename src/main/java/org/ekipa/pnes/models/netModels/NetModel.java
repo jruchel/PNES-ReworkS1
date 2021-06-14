@@ -272,4 +272,13 @@ public abstract class NetModel {
         }
         return fields;
     }
+
+    @JsonIgnore
+    private List<Transition> getAllTransitions(){
+        return netElements.stream()
+                .filter(element -> element instanceof Transition)
+                .map(netElement -> (Transition) netElement)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
 }
