@@ -36,7 +36,7 @@ class IdGeneratorTest {
     public void doesIdWillBeChangedToCorrect() {
         rectangle1.setId("P5");
 
-        String expected = "T0";
+        String expected = "T1";
         String actual = IdGenerator.setElementId(rectangle1).getId();
 
         assertEquals(expected, actual);
@@ -45,7 +45,7 @@ class IdGeneratorTest {
     @Test
     public void doesShapeHaveTheSameIdBeforeUsingSetIdAndAfter() {
 
-        rectangle1.setId("T0");
+        rectangle1.setId("T1");
         String expected = rectangle1.getId();
         String actual = IdGenerator.setElementId(rectangle1).getId();
 
@@ -63,7 +63,7 @@ class IdGeneratorTest {
         IdGenerator.setElementId(rectangle2);
         IdGenerator.setElementId(rectangle3);
 
-        String expected = "T2";
+        String expected = "T3";
         String actual = rectangle3.getId();
 
         assertEquals(expected, actual);
@@ -76,19 +76,19 @@ class IdGeneratorTest {
         String actual;
 
         IdGenerator.setElementId(circle1);
-        expected = "P0";
+        expected = "P1";
         actual = circle1.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(circle2);
-        expected = "P1";
+        expected = "P2";
         actual = circle2.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(circle3);
-        expected = "P2";
+        expected = "P3";
         actual = circle3.getId();
 
         assertEquals(expected, actual);
@@ -102,19 +102,19 @@ class IdGeneratorTest {
         String actual;
 
         IdGenerator.setElementId(rectangle1);
-        expected = "T0";
+        expected = "T1";
         actual = rectangle1.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(rectangle2);
-        expected = "T1";
+        expected = "T2";
         actual = rectangle2.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(rectangle3);
-        expected = "T2";
+        expected = "T3";
         actual = rectangle3.getId();
 
         assertEquals(expected, actual);
@@ -128,38 +128,38 @@ class IdGeneratorTest {
         String actual;
 
         IdGenerator.setElementId(rectangle1);
-        expected = "T0";
+        expected = "T1";
         actual = rectangle1.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(circle1);
-        expected = "P0";
+        expected = "P1";
         actual = circle1.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(rectangle2);
-        expected = "T1";
+        expected = "T2";
         actual = rectangle2.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(circle2);
-        expected = "P1";
+        expected = "P2";
         actual = circle2.getId();
 
         assertEquals(expected, actual);
 
         IdGenerator.setElementId(rectangle3);
-        expected = "T2";
+        expected = "T3";
         actual = rectangle3.getId();
 
         assertEquals(expected, actual);
 
 
         IdGenerator.setElementId(circle3);
-        expected = "P2";
+        expected = "P3";
         actual = circle3.getId();
 
         assertEquals(expected, actual);
