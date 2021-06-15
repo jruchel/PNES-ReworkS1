@@ -16,11 +16,9 @@ class PTNetModelTest {
     @BeforeEach
     public void initialize() {
         IdGenerator.resetElements();
-
     }
 
     public PTNetModel createDefaultNet() throws Exception {
-        IdGenerator.resetElements();
         ptNetModel = new PTNetModel();
         ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
         ptNetModel.createPlace("Sebastian420", 742, 641, 101, 46);
@@ -40,7 +38,7 @@ class PTNetModelTest {
     public void doesEditObjectChangeFieldsForPlace() throws Exception {
         ptNetModel = createDefaultNet();
 
-        ptNetModel.edit("P1","P2");
+        ptNetModel.edit("P1", "P2");
 
         String expectedID = ptNetModel.getObject("P1").getId();
         String actualID = ptNetModel.getObject("P2").getId();
@@ -57,6 +55,14 @@ class PTNetModelTest {
         double expectedY = ptNetModel.getObject("P1").getY();
         double actualY = ptNetModel.getObject("P2").getY();
         assertEquals(expectedY, actualY);
+
+        int expectedTokens = ((Place<Integer>) (ptNetModel.getObject("P1"))).getTokens();
+        int actualTokens = ((Place<Integer>) (ptNetModel.getObject("P2"))).getTokens();
+        assertEquals(expectedTokens, actualTokens);
+
+        int expectedTokenCapacity = ((Place<Integer>) (ptNetModel.getObject("P1"))).getTokenCapacity();
+        int actualTokenCapacity = ((Place<Integer>) (ptNetModel.getObject("P2"))).getTokenCapacity();
+        assertEquals(expectedTokenCapacity, actualTokenCapacity);
     }
 
     @Test
@@ -139,7 +145,7 @@ class PTNetModelTest {
 
 
     @Test
-    public void doesEditObjectTurnsStartAndEndInArc() throws Exception {
+    public void doesEditObjectChangeStartAndEndInArc() throws Exception {
         ptNetModel = createDefaultNet();
         ptNetModel.edit("P1", ptNetModel.createArc(ptNetModel.getObject("P2"), ptNetModel.getObject("T1"), 3).getId());
 
@@ -199,14 +205,14 @@ class PTNetModelTest {
     @Test
     public void validationForSetTransitionReady() {
 
-        Transition transition = new Transition("","Flood",10,20);
+        Transition transition = new Transition("", "Flood", 10, 20);
         Transition.TransitionState actual = transition.getState();
         Transition.TransitionState expected = Transition.TransitionState.Ready;
         assertNotEquals(expected, actual);
     }
 
     @Test
-    public void validationOfPrepareTransitions() throws JsonProcessingException, InstantiationException, IllegalAccessException,Exception {
+    public void validationOfPrepareTransitions() throws JsonProcessingException, InstantiationException, IllegalAccessException, Exception {
         ptNetModel = createDefaultNet();
         List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
         List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
@@ -224,7 +230,7 @@ class PTNetModelTest {
     public void testForRunTransition() throws Exception {
         ptNetModel = createDefaultNet();
         ptNetModel.createTransition("Magnus", 1, 2).setReady();
-        ((Transition)(ptNetModel.getObject("T4"))).setRunning();
+        ((Transition) (ptNetModel.getObject("T4"))).setRunning();
         try {
             ptNetModel.createArc(ptNetModel.getObject("T4"), ptNetModel.getObject("P1"), 1);
         } catch (Exception exception) {
@@ -249,7 +255,8 @@ class PTNetModelTest {
         ptNetModel1.createArc(ptNetModel1.getObject("T1"), ptNetModel1.getObject("P2"), 1);
         ptNetModel1.createArc(ptNetModel1.getObject("P2"), ptNetModel1.getObject("T2"), 1);
         ptNetModel1.createArc(ptNetModel1.getObject("T2"), ptNetModel1.getObject("P1"), 1);
-        List<List<NetModel>> example = NetModel.simulate(ptNetModel1, 3);
+        NetModel.simulate(ptNetModel1, 3);
+
         if (((int) ((Place) ptNetModel1.getObject("P1")).getTokens() == 1)) {
             int actual = ((int) ((Place) ptNetModel1.getObject("P2")).getTokens());
             int expected = 2;
@@ -285,10 +292,7 @@ class PTNetModelTest {
     @Test
     public void checkTransitionCanBeReadyUsingNextStepWithoutArc() {
 
-        Transition transition = new Transition("","Flood",10,20);
-
-        System.out.println(transition.getId());
-
+        Transition transition = new Transition("", "Flood", 10, 20);
 
         Transition.TransitionState actual = transition.getState();
         Transition.TransitionState expected = Transition.TransitionState.Unready;
@@ -296,6 +300,4 @@ class PTNetModelTest {
         assertEquals(expected, actual);
 
     }
-
-
 }

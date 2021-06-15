@@ -43,7 +43,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void doesShapeHaveTheSameIdBeforeUsingSetIdAndAfter() {
+    public void doesNetElementsHaveTheSameIdBeforeUsingSetIdAndAfter() {
 
         rectangle1.setId("T1");
         String expected = rectangle1.getId();
@@ -70,7 +70,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void doesIdGenerateWellForCircle() {
+    public void doesIdGenerateWellForPlace() {
 
         String expected;
         String actual;
@@ -96,7 +96,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void doesIdGenerateWellForRectangle() {
+    public void doesIdGenerateWellForTranistion() {
 
         String expected;
         String actual;
@@ -122,7 +122,7 @@ class IdGeneratorTest {
     }
 
     @Test
-    public void doesIdGenerateWellForCircleAndRectangleTogether() {
+    public void doesIdGenerateWellForPlaceAndTransitionTogether() {
 
         String expected;
         String actual;
