@@ -131,6 +131,18 @@ public abstract class NetModel {
     }
 
     /**
+     * Odnajduje wszystkie łuki po id, które są połączone z obiektem sieci.
+     *
+     * @param id Obiektu sieci
+     * @return Łuk
+     */
+    
+    @JsonIgnore
+    public Set<Arc> getArcsByNetObjectId(String id) {
+        return getObject(id).getArcs();
+    }
+
+    /**
      * Odnajduje pare obiektów sieci, z którymi połączony jest łuk
      *
      * @param arcId Id łuku
@@ -162,7 +174,7 @@ public abstract class NetModel {
      * @return Zwraca zaktualizowany obiekt.
      */
     public NetElement editElement(String actualId, String newId) {
-        if (!(actualId.charAt(0)==newId.charAt(0))) return getElement(actualId);
+        if (!(actualId.charAt(0) == newId.charAt(0))) return getElement(actualId);
         if (!validateElement(getElement(newId))) return getElement(actualId);
         List<Field> fieldsBefore = getAllFields(getElement(actualId));
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
@@ -190,8 +202,8 @@ public abstract class NetModel {
     /**
      * Dodaje podaje tokeny do podanego miejsca.
      *
-     * @param placeId  Id miejsca do którego mają zostać dodane tokeny.
-     * @param tokens Tokeny.
+     * @param placeId Id miejsca do którego mają zostać dodane tokeny.
+     * @param tokens  Tokeny.
      */
     protected abstract void addTokens(String placeId, Object tokens);
 
@@ -220,7 +232,8 @@ public abstract class NetModel {
     }
 
     public abstract String serialize() throws JsonProcessingException;
-    public abstract NetModel deserialize(String  json) throws JsonProcessingException;
+
+    public abstract NetModel deserialize(String json) throws JsonProcessingException;
 
 
     /**
