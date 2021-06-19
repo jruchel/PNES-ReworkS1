@@ -26,22 +26,16 @@ public abstract class NetModel {
         this.netElements = new ArrayList<>();
     }
 
-    @JsonIgnore
     protected NetElement getElement(String id) {
         return netElements.stream().filter(element -> element.getId().equals(id)).findFirst().orElse(null);
     }
 
-    @JsonIgnore
     protected NetObject getObject(String id) {
         return netElements.stream()
                 .filter(element -> element instanceof NetObject)
                 .filter(netObject -> netObject.getId().equals(id))
                 .map(netElement -> (NetObject) netElement).findFirst().orElse(null);
     }
-
-//    private void setNetElements(List<NetElement> netElements) {
-//        this.netElements = netElements;
-//    }
 
     /**
      * Tworzy model obecnego typu na podstawie porównania parametry sieci z innym modelem i zamienia te parametry
@@ -103,17 +97,19 @@ public abstract class NetModel {
         return element;
     }
 
-    // TODO: dokumentacja
-
     /**
-     * @param id
+     * Usuwanie elementu sieci po id {@link org.ekipa.pnes.models.elements.NetElement}
+     *
+     * @param id id elementu do usunięcia
      */
     public void deleteById(String id) {
         netElements.stream().filter(net -> net.getId().equals(id)).forEach(this::deleteElement);
     }
 
     /**
-     * @param name
+     * Usuwanie elemtu sieci po nazwie {@link org.ekipa.pnes.models.elements.NetElement}
+     *
+     * @param name nazwa elementu do usunięcia
      */
     public void deleteByName(String name) {
         netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteElement);
@@ -125,7 +121,6 @@ public abstract class NetModel {
      * @param netObject Obiekt sieci
      * @return Łuk
      */
-    @JsonIgnore
     public Set<Arc> getArcsByNetObject(NetObject netObject) {
         return netObject.getArcs();
     }
@@ -136,8 +131,7 @@ public abstract class NetModel {
      * @param id Obiektu sieci
      * @return Łuk
      */
-    
-    @JsonIgnore
+
     public Set<Arc> getArcsByNetObjectId(String id) {
         return getObject(id).getArcs();
     }
@@ -226,12 +220,29 @@ public abstract class NetModel {
         return currentSimulationSteps;
     }
 
+    /**
+     * Tworzy kopie obecnego stanu tej klasy {@link org.ekipa.pnes.models.netModels.NetModel} bez referencji
+     * @return zwraca skopiowany element
+     */
+
     private NetModel copy() throws JsonProcessingException {
-        String json = serialize();
+        String json = serialize(this);
         return deserialize(json);
     }
 
-    public abstract String serialize() throws JsonProcessingException;
+    /**
+     * Serializuje dany obiekt do JSON'a w postaci stringa
+     * @param netModel Model sieci do serializowania
+     * @return zwraca serializowany obiekt
+     */
+
+    public abstract String serialize(NetModel netModel) throws JsonProcessingException;
+
+    /**
+     * Deserializuje dany obiekt w postaci JSON'a
+     * @param json Obiekt {@link org.ekipa.pnes.models.netModels.NetModel} w postaci JSON'a
+     * @return zwraca deserializowany obiekt
+     */
 
     public abstract NetModel deserialize(String json) throws JsonProcessingException;
 
@@ -265,7 +276,6 @@ public abstract class NetModel {
      * @param state {@link org.ekipa.pnes.models.elements.Transition.TransitionState}
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> lista tranzycji.
      */
-    @JsonIgnore
     protected List<Transition> getTransitionsWithState(Transition.TransitionState state) {
         return netElements.stream()
                 .filter(element -> element instanceof Transition)
@@ -275,7 +285,6 @@ public abstract class NetModel {
                 .collect(Collectors.toList());
     }
 
-    @JsonIgnore
     private List<Field> getAllFields(Object o) {
         List<Field> fields = new ArrayList<>();
         Class clazz = o.getClass();
