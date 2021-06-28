@@ -7,22 +7,20 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import lombok.SneakyThrows;
 import org.ekipa.pnes.models.elements.*;
-import org.ekipa.pnes.models.exceptions.ProhibitedConnectionException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//import javafx.scene.shape.Arc;
-
 public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
 
+    @SneakyThrows
     @Override
-    public PTNetModel deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public PTNetModel deserialize(JsonParser p, DeserializationContext ctxt) {
 
         JsonNode jsonNode = p.getCodec().readTree(p);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -58,43 +56,20 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
                         end = objectMapper.readValue(endNode.toString(), Transition.class);
                     }
 
-                    Arc arc = null;
-                    try {
-                        arc = new Arc(id, start, end, weight);
-                    } catch (ProhibitedConnectionException e) {
-                        //
-                        System.out.println("Dupa");
-                    }
+                    Arc arc = new Arc(id, start, end, weight);
                     arcs.add(arc);
 
-
                 } else {
+                    Transition transition = objectMapper.readValue(next.toString(), Transition.class);
+                    transition.setArcs(new HashSet<>());
+                    netElements.add(transition);
 
-                    try {
-                        Transition transition = objectMapper.readValue(next.toString(), Transition.class);
-                        transition.setArcs(new HashSet<>());
-                        netElements.add(transition);
-                    } catch (JsonProcessingException e) {
-                        //
-                    }
-
-                    try {
-                        Place<Integer> place = objectMapper.readValue(next.toString(), Place.class);
-                        netElements.add(place);
-                    } catch (JsonProcessingException e) {
-                        //
-                    }
+                    Place<Integer> place = objectMapper.readValue(next.toString(), Place.class);
+                    netElements.add(place);
                 }
 
             }
         }
-
-
-
-
-//        netElementsJson.
-
-
         for (Arc arc : arcs) {
             NetObject start = arc.getStart();
             NetObject end = arc.getEnd();
@@ -120,12 +95,9 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
             }
         }
 
-
-
         netElements.addAll(arcs);
         return new PTNetModel(netElements);
     }
-
 
     private NetElement getElementWithId(String id, List<NetElement> netElements) {
         return netElements.stream().filter(i -> i.getId().equals(id)).findFirst().orElse(null);

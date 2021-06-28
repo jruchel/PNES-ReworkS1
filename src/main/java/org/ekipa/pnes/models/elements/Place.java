@@ -5,14 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-//@Builder
 public class Place<V> extends NetObject {
     private int tokenCapacity;
     private V tokens;
 
 
     public Place(String id, String name, double x, double y, int tokenCapacity) {
-//        super();
         this(id, name, x, y, tokenCapacity, null);
     }
 

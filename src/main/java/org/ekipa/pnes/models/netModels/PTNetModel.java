@@ -102,9 +102,9 @@ public class PTNetModel extends NetModel {
     }
 
     @Override
-    public String serialize() throws JsonProcessingException {
+    public String serialize(NetModel netModel) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(this);
+        return objectMapper.writeValueAsString(netModel);
     }
 
     @Override
