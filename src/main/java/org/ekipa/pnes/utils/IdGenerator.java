@@ -4,12 +4,14 @@ import org.ekipa.pnes.models.elements.NetElement;
 import org.ekipa.pnes.models.elements.NetObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IdGenerator {
 
     private static List<NetElement> elementsList;
-    private static List<String> idList;
+    private static Map<String, NetElement> idMap;
 
     static {
         reset();
@@ -21,7 +23,7 @@ public class IdGenerator {
      */
     public static void resetElements() {
         elementsList = new ArrayList<>();
-        idList = new ArrayList<>();
+        idMap = new HashMap<>();
 
     }
 
@@ -38,11 +40,15 @@ public class IdGenerator {
      * @return podany element z ustawionym poprawnym id
      */
     public static NetElement setElementId(NetElement element) {
-        if (!idList.contains(element.getId())) {
-            element.setId(String.format("%s%d", element.getClass().getSimpleName().charAt(0), findOccurrencesOfSameTypeOfNetElement(element)));
-            idList.add(element.getId());
+        long numberOfOccupiedElements = findOccurrencesOfSameTypeOfNetElement(element);
+        String id = String.format("%s%d", element.getClass().getSimpleName().charAt(0), numberOfOccupiedElements);
+            while (idMap.containsKey(id)) {
+                numberOfOccupiedElements++;
+                id = (String.format("%s%d", element.getClass().getSimpleName().charAt(0), numberOfOccupiedElements));
+            }
+            element.setId(id);
+            idMap.put(element.getId(), element);
             elementsList.add(element);
-        }
         return element;
     }
 
@@ -53,7 +59,7 @@ public class IdGenerator {
      * @return liczbę wystąpień typu podanego elementu
      */
     private static long findOccurrencesOfSameTypeOfNetElement(NetElement element) {
-        return elementsList.stream().filter(e -> e.getClass().equals(element.getClass())).count()+1;
+        return elementsList.stream().filter(e -> e.getClass().equals(element.getClass())).count() + 1;
     }
 
 }
