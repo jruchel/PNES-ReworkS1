@@ -60,12 +60,15 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
                     arcs.add(arc);
 
                 } else {
-                    Transition transition = objectMapper.readValue(next.toString(), Transition.class);
-                    transition.setArcs(new HashSet<>());
-                    netElements.add(transition);
+                    if (next.has("state")) {
+                        Transition transition = objectMapper.readValue(next.toString(), Transition.class);
+                        transition.setArcs(new HashSet<>());
+                        netElements.add(transition);
 
-                    Place<Integer> place = objectMapper.readValue(next.toString(), Place.class);
-                    netElements.add(place);
+                    } else {
+                        Place<Integer> place = objectMapper.readValue(next.toString(), Place.class);
+                        netElements.add(place);
+                    }
                 }
 
             }
