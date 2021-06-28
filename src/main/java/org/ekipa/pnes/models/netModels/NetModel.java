@@ -3,11 +3,11 @@ package org.ekipa.pnes.models.netModels;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import javafx.util.Pair;
 import lombok.Data;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
 import org.ekipa.pnes.utils.IdGenerator;
+import org.ekipa.pnes.utils.Pair;
 
 import java.lang.reflect.Field;
 import java.util.*;
