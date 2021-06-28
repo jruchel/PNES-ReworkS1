@@ -39,8 +39,8 @@ public class PTNetModel extends NetModel {
         return (Place<Integer>) addElement(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
     }
 
-    public NetElement edit(NetElement actualObject, NetElement newObject) {
-        return editElement(actualObject, newObject);
+    public NetElement edit(String actualId, String newId) {
+        return editElement(actualId, newId);
     }
 
     @Override
@@ -89,13 +89,14 @@ public class PTNetModel extends NetModel {
     }
 
     @Override
-    protected void addTokens(Place place, Object tokens) {
-        if (tokens instanceof Integer && (Integer) tokens > 0 && place.getTokens() instanceof Integer) {
-            int placeTokens = (Integer) place.getTokens();
+    protected void addTokens(String placeId, Object tokens) {
+        if (tokens instanceof Integer && (Integer) tokens > 0 && ((Place) getElement(placeId)).getTokens() instanceof Integer) {
+            int placeTokens = (Integer) ((Place) getElement(placeId)).getTokens();
             int newTokens = (Integer) tokens;
             int tokenSet = placeTokens + newTokens;
-            place.setTokens(tokenSet);
-            if (tokenSet > place.getTokenCapacity()) place.setTokens(place.getTokenCapacity());
+            ((Place) getElement(placeId)).setTokens(tokenSet);
+            if (tokenSet > ((Place) getElement(placeId)).getTokenCapacity())
+                ((Place) getElement(placeId)).setTokens(((Place) getElement(placeId)).getTokenCapacity());
         }
 
     }
@@ -162,7 +163,7 @@ public class PTNetModel extends NetModel {
                 .stream()
                 .peek(i -> {
                     if (i instanceof Transition) {
-                        if (canTransitionBeReady((Transition) i)) {
+                        if (canTransitionBeReady(i.getId())) {
                             ((Transition) i).setReady();
                         }
                     }
@@ -177,22 +178,25 @@ public class PTNetModel extends NetModel {
     protected List<Transition> selectTransitionsToRun(List<Transition> transitions) {
         if (selectedTransition != null && selectedTransition.getState().equals(Transition.TransitionState.Ready))
             return Collections.singletonList(selectedTransition);
-        return Collections.singletonList(MyRandom.getRandom(transitions.stream().filter(i -> i.getState().equals(Transition.TransitionState.Ready)).collect(Collectors.toList())));
+        return Collections.singletonList(MyRandom.getRandom(transitions.stream()
+                .filter(i -> i.getState().equals(Transition.TransitionState.Ready))
+                .collect(Collectors.toList())));
     }
 
-    private boolean canTransitionBeReady(Transition transition) {
-        if (transition.getArcs().isEmpty()) return false;
-        Set<Arc> transitionArcs = transition.getArcs()
+    private boolean canTransitionBeReady(String transitionId) {
+        if (((Transition) getElement(transitionId)).getArcs().isEmpty()) return false;
+        Set<Arc> transitionArcs = ((Transition) getElement(transitionId)).getArcs()
                 .stream()
-                .filter(arc -> arc.getEnd().getId().equals(transition.getId()))
+                .filter(arc -> arc.getEnd().getId().equals(transitionId))
                 .collect(Collectors.toSet());
         return transitionArcs
                 .stream()
-                .noneMatch(arc -> getCurrentTokens(arc) < (int) arc.getWeight());
+                .noneMatch(arc -> getCurrentTokens(arc.getId()) < (int) arc.getWeight());
     }
 
-    private int getCurrentTokens(Arc arc) {
-        Optional<Place<Integer>> first = getNetElements().stream().filter(i -> i.getId().equals(arc.getStart().getId())).map(i -> (Place<Integer>) i).findFirst();
+    private int getCurrentTokens(String arcId) {
+        Optional<Place<Integer>> first = getNetElements().stream()
+                .filter(i -> i.getId().equals( ((Arc) getElement(arcId)).getStart().getId())).map(i -> (Place<Integer>) i).findFirst();
         if (first.isPresent()) {
             return first.get().getTokens();
         } else {

@@ -120,42 +120,6 @@ public abstract class NetModel {
     }
 
     /**
-     * Porównuje wartości pól wyszukiwanego elementu do wartości pól wszystkich istniejących obiektów w liście,
-     * jeśli jakakolwiek wartość pola obiektu jest równa wartości pola z listy, obiekt ten jest dodawany do poprzednio
-     * stworzonej listy, a następnie zwraca listę wszystkich znalezionych obiektów
-     *
-     * @param element wyszukiwany przez użytkownika obiekt, wartości jego pól są porównywane z wartościami pól obiektów
-     *                z listy w celu znalezienia poszukiwanych obiektów
-     * @return listę znalezionych obiektów
-     */
-    protected List<NetElement> findObjects(NetElement element) {
-        List<NetElement> elements = new ArrayList<>();
-        List<Field> elementFields = getAllFields(element);
-        for (NetElement o : getNetElements()) {
-            if (getAllFields(o).stream().anyMatch(field -> {
-                for (Field f : elementFields) {
-                    if (!f.getName().equals(field.getName())) continue;
-                    boolean fAccessible = f.isAccessible();
-                    boolean fieldAccessible = field.isAccessible();
-                    f.setAccessible(true);
-                    field.setAccessible(true);
-                    try {
-                        if (f.get(element).equals(field.get(o))) return true;
-                    } catch (Exception ignored) {
-
-                    }
-                    f.setAccessible(fAccessible);
-                    field.setAccessible(fieldAccessible);
-                }
-                return false;
-            })) {
-                elements.add(o);
-            }
-        }
-        return elements;
-    }
-
-    /**
      * Odnajduje wszystkie łuki, które są połączone z obiektem sieci.
      *
      * @param netObject Obiekt sieci
@@ -167,22 +131,34 @@ public abstract class NetModel {
     }
 
     /**
+     * Odnajduje wszystkie łuki po id, które są połączone z obiektem sieci.
+     *
+     * @param id Obiektu sieci
+     * @return Łuk
+     */
+    
+    @JsonIgnore
+    public Set<Arc> getArcsByNetObjectId(String id) {
+        return getObject(id).getArcs();
+    }
+
+    /**
      * Odnajduje pare obiektów sieci, z którymi połączony jest łuk
      *
-     * @param arc Łuk
+     * @param arcId Id łuku
      * @return Para obiektów połączone łukiem (początek, koniec)
      */
-    public Pair<NetObject, NetObject> getNetObjectsByArc(Arc arc) {
+    public Pair<NetObject, NetObject> getNetObjectsByArc(String arcId) {
         Stream<NetElement> netElementStream = netElements.stream()
-                .filter(netElement -> !(netElement instanceof Arc));
+                .filter(netElement -> !(netElement.getId().equals(arcId)));
 
         NetObject start = (NetObject) netElementStream
-                .filter(netElement -> arc.getStart().equals(netElement))
+                .filter(netElement -> ((Arc) getElement(arcId)).getStart().getId().equals(netElement.getId()))
                 .findFirst()
                 .orElse(null);
 
         NetObject end = (NetObject) netElementStream
-                .filter(netElement -> arc.getEnd().equals(netElement))
+                .filter(netElement -> ((Arc) getElement(arcId)).getEnd().getId().equals(netElement.getId()))
                 .findFirst()
                 .orElse(null);
 
@@ -193,32 +169,32 @@ public abstract class NetModel {
      * Edytuje obiekt z całego modelu jeśli przejdzie walidacje.
      * Jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
      *
-     * @param actualObject Dokładny obiekt, który ma zostać zaktualizowany.
-     * @param newObject    Obiekt, z którego ma zamienić wartości.
+     * @param actualId Id dokładnego obiekt, który ma zostać zaktualizowany.
+     * @param newId    Id obiektu, z którego ma zamienić wartości.
      * @return Zwraca zaktualizowany obiekt.
      */
-    public NetElement editElement(NetElement actualObject, NetElement newObject) {
-        if (!actualObject.getClass().equals(newObject.getClass())) return actualObject;
-        if (!validateElement(newObject)) return actualObject;
-        List<Field> fieldsBefore = getAllFields(actualObject);
+    public NetElement editElement(String actualId, String newId) {
+        if (!(actualId.charAt(0) == newId.charAt(0))) return getElement(actualId);
+        if (!validateElement(getElement(newId))) return getElement(actualId);
+        List<Field> fieldsBefore = getAllFields(getElement(actualId));
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
         for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
             f.setAccessible(true);
             try {
-                f.set(actualObject, f.get(newObject));
+                f.set(getElement(actualId), f.get(getElement(newId)));
             } catch (IllegalAccessException ignored) {
 
             }
             f.setAccessible(false);
         }
-        return actualObject;
+        return getElement(actualId);
     }
 
     /**
      * Przeprowadza walidacje dowolnych elementów w modelu sieci.
      * Metoda musi być nadpisana poprawnie, aby móc korzystać z sieci.
      *
-     * @param o Obiekt do walidacji.
+     * @param o Id obiektu do walidacji.
      * @return Wynik walidacji.
      */
     protected abstract boolean validateElement(NetElement o);
@@ -226,10 +202,10 @@ public abstract class NetModel {
     /**
      * Dodaje podaje tokeny do podanego miejsca.
      *
-     * @param place  Miejsce do którego mają zostać dodane tokeny.
-     * @param tokens Tokeny.
+     * @param placeId Id miejsca do którego mają zostać dodane tokeny.
+     * @param tokens  Tokeny.
      */
-    protected abstract void addTokens(Place place, Object tokens);
+    protected abstract void addTokens(String placeId, Object tokens);
 
     /**
      * Wykonuje pojedynczy krok symulacji.
@@ -256,7 +232,8 @@ public abstract class NetModel {
     }
 
     public abstract String serialize() throws JsonProcessingException;
-    public abstract NetModel deserialize(String  json) throws JsonProcessingException;
+
+    public abstract NetModel deserialize(String json) throws JsonProcessingException;
 
 
     /**
@@ -307,5 +284,14 @@ public abstract class NetModel {
             clazz = clazz.getSuperclass();
         }
         return fields;
+    }
+
+    @JsonIgnore
+    private List<Transition> getAllTransitions(){
+        return netElements.stream()
+                .filter(element -> element instanceof Transition)
+                .map(netElement -> (Transition) netElement)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 }
