@@ -9,10 +9,11 @@ import org.ekipa.pnes.models.exceptions.ProhibitedConnectionException;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.MyRandom;
 
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @JsonDeserialize(using = PTNetModelDeserializer.class)
 public class PTNetModel extends NetModel {
@@ -28,15 +29,15 @@ public class PTNetModel extends NetModel {
     }
 
     public Arc createArc(NetObject start, NetObject end, int weight) throws ProhibitedConnectionException {
-        return (Arc) addElement(IdGenerator.setElementId(new Arc(start, end, weight)));
+        return (Arc) addElement(new Arc(start, end, weight));
     }
 
     public Transition createTransition(String name, double x, double y) {
-        return (Transition) addElement(IdGenerator.setElementId(new Transition("", name, x, y)));
+        return (Transition) addElement(new Transition("", name, x, y));
     }
 
     public Place<Integer> createPlace(String name, double x, double y, int tokenCapacity, int token) {
-        return (Place<Integer>) addElement(IdGenerator.setElementId(new Place<>("", name, x, y, tokenCapacity, token)));
+        return (Place<Integer>) addElement(new Place<>("", name, x, y, tokenCapacity, token));
     }
 
     public NetElement edit(String actualId, String newId) {
@@ -196,7 +197,7 @@ public class PTNetModel extends NetModel {
 
     private int getCurrentTokens(String arcId) {
         Optional<Place<Integer>> first = getNetElements().stream()
-                .filter(i -> i.getId().equals( ((Arc) getElement(arcId)).getStart().getId())).map(i -> (Place<Integer>) i).findFirst();
+                .filter(i -> i.getId().equals(((Arc) getElement(arcId)).getStart().getId())).map(i -> (Place<Integer>) i).findFirst();
         if (first.isPresent()) {
             return first.get().getTokens();
         } else {

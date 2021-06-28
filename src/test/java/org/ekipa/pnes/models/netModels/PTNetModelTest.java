@@ -1,12 +1,14 @@
 package org.ekipa.pnes.models.netModels;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.ekipa.pnes.models.elements.*;
+import org.ekipa.pnes.models.elements.Arc;
+import org.ekipa.pnes.models.elements.NetObject;
+import org.ekipa.pnes.models.elements.Place;
+import org.ekipa.pnes.models.elements.Transition;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,7 +92,7 @@ class PTNetModelTest {
     }
 
     @Test
-    public void EditObjectBehaveiorForObjectsOfDifferentClass() throws Exception {
+    public void EditObjectBehaviorForObjectsOfDifferentClass() throws Exception {
         ptNetModel = createDefaultNet();
 
         ptNetModel.edit("P1", "T3");
@@ -212,7 +214,7 @@ class PTNetModelTest {
     }
 
     @Test
-    public void validationOfPrepareTransitions() throws JsonProcessingException, InstantiationException, IllegalAccessException, Exception {
+    public void validationOfPrepareTransitions() throws Exception {
         ptNetModel = createDefaultNet();
         List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
         List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
