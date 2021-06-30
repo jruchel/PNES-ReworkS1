@@ -39,15 +39,15 @@ public abstract class NetModel {
 
     /**`
      * Tworzy model obecnego typu na podstawie porównywania parametrów sieci z innym modelem i zamienia te parametry,
-     * które są możliwe do zmiany, w przeciwnym razie dla danych których nie da się przetłumaczyć
-     * to zostaną stworzone dla nich odpowiedniki i ustawi im wartości.
+     * które są możliwe do zmiany, w przeciwnym razie dla danych których nie da się przetłumaczyć,
+     * zostaną stworzone odpowiedniki i zostaną ustawione im wartości.
      *
      * @param model Model {@link org.ekipa.pnes.models.netModels.NetModel}.
      */
     public abstract void translate(NetModel model);
 
     /**
-     * Tworzy model obecnego typu na podstawie przekazanego modelu,jeżeli jest to możliwe
+     * Tworzy model obecnego typu na podstawie przekazanego modelu jeżeli jest to możliwe,
      * w przeciwnym razie wyrzuca wyjątek o niemożliwej transformacji.
      *
      * @param model {@link org.ekipa.pnes.models.netModels.NetModel}.
@@ -75,8 +75,7 @@ public abstract class NetModel {
     }
 
     /**
-     * Usuwa podany element z całego modelu sieci,
-     * jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     * Usuwa podany element z całego modelu sieci.
      *
      * @param element Element który ma zostać usunięty.
      */
@@ -85,8 +84,7 @@ public abstract class NetModel {
     }
 
     /**
-     * Dodaje podany element do modelu sieci jeśli przejdzie walidację,
-     * jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     * Dodaje podany element do modelu sieci jeśli przejdzie walidację.
      *
      * @param element Element który ma zostać dodany.
      * @return Dodany element.
@@ -98,7 +96,7 @@ public abstract class NetModel {
     }
 
     /**
-     * Usuwanie elementu sieci po id {@link org.ekipa.pnes.models.elements.NetElement}.
+     * Usuwanie elementu sieci za pomocą jego id {@link org.ekipa.pnes.models.elements.NetElement}.
      *
      * @param id Id elementu który ma zostać usunięty.
      */
@@ -119,7 +117,7 @@ public abstract class NetModel {
      * Odnajduje wszystkie łuki, które są połączone z obiektem sieci.
      *
      * @param netObject Obiekt sieci.
-     * @return Łuk podanego obiektu.
+     * @return Łuki podanego obiektu.
      */
     public Set<Arc> getArcsByNetObject(NetObject netObject) {
         return netObject.getArcs();
@@ -129,7 +127,7 @@ public abstract class NetModel {
      * Odnajduje wszystkie łuki po id, które są połączone z obiektem sieci.
      *
      * @param id Obiektu sieci.
-     * @return Łuk podanego obiektu.
+     * @return Łuki podanego obiektu.
      */
 
     public Set<Arc> getArcsByNetObjectId(String id) {
@@ -137,10 +135,10 @@ public abstract class NetModel {
     }
 
     /**
-     * Odnajduje pare obiektów sieci, z którymi połączony jest łukiem.
+     * Odnajduje początek i koniec podanego łuku.
      *
      * @param arcId Id łuku.
-     * @return Para obiektów połączone łukiem (początek, koniec).
+     * @return Para obiektów połączonych łukiem (początek, koniec).
      */
     public Pair<NetObject, NetObject> getNetObjectsByArc(String arcId) {
         Stream<NetElement> netElementStream = netElements.stream()
@@ -160,8 +158,7 @@ public abstract class NetModel {
     }
 
     /**
-     * Edytuje obiekt z całego modelu jeśli przejdzie walidację,
-     * jeżeli zostaną dodane własne klasy i własne modele, ta metoda powinna zostać nadpisana.
+     * Edytuje obiekt modelu jeśli przejdzie walidację.
      *
      * @param actualId Id dokładnego obiektu, który ma zostać zaktualizowany.
      * @param newId    Id obiektu, z którego ma zamienić wartości.
@@ -185,8 +182,7 @@ public abstract class NetModel {
     }
 
     /**
-     * Przeprowadza walidację dowolnych elementów w modelu sieci,
-     * metoda musi być nadpisana poprawnie, aby móc korzystać z sieci.
+     * Przeprowadza walidację dowolnych elementów w modelu sieci.
      *
      * @param o Id obiektu do walidacji.
      * @return Wynik walidacji.
@@ -254,19 +250,19 @@ public abstract class NetModel {
      * Uruchamia podaną tranzycję.
      *
      * @param transition Tranzycja do uruchomienia.
-     * @return True jeśli uruchomiono, w przeciwnym przypadku zwraca False.
+     * @return true jeśli uruchomiono, w przeciwnym przypadku zwraca false.
      */
     protected abstract boolean runTransition(Transition transition);
 
     /**
-     * Odnajduje te tranzycję, które mogą zostać przygotowane, następnie ustawia je jako gotowe.
+     * Odnajduje te tranzycje, które mogą zostać przygotowane, następnie ustawia je jako gotowe.
      *
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista gotowych tranzycji.
      */
     protected abstract List<Transition> prepareTransitions();
 
     /**
-     * Wybiera te tranzycję spośród gotowych, które mają zostać uruchomione.
+     * Wybiera te tranzycje spośród gotowych, które mają zostać uruchomione.
      *
      * @param transitions {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji do wybrania.
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji do uruchomienia.
@@ -274,7 +270,7 @@ public abstract class NetModel {
     protected abstract List<Transition> selectTransitionsToRun(List<Transition> transitions);
 
     /**
-     * Zwraca te tranzycję sieci, które znajdują się w podanym stanie.
+     * Zwraca te tranzycje sieci, które znajdują się w podanym stanie.
      *
      * @param state {@link org.ekipa.pnes.models.elements.Transition.TransitionState}
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji.
@@ -292,7 +288,7 @@ public abstract class NetModel {
      * Zwraca wszystkie pola podanego obiektu.
      *
      * @param o Obiekt z którego bedą wyciągane pola.
-     * @return {@link java.util.List}<{@link java.lang.reflect.Field}> Lista podanego obiektu.
+     * @return {@link java.util.List}<{@link java.lang.reflect.Field}> Lista pól podanego obiektu.
      */
 
     private List<Field> getAllFields(Object o) {
@@ -306,7 +302,7 @@ public abstract class NetModel {
     }
 
     /**
-     * Zwraca wszystkie tranzycję.
+     * Zwraca wszystkie tranzycje.
      *
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista wszystkich tranzycji.
      */

@@ -16,11 +16,10 @@ public class Transition extends NetObject {
     }
 
     /**
-     * Ustawia stan tranzycji na gotowy jeśli został poprawnie ustawiony lub już taki był zwraca true, jeśli
-     * nie, false.
+     * Ustawia stan tranzycji na gotowy.
+     * Zwraca true przy poprawnym ustawieniu stanu lub w momencie gdy już taki był, w przeciwnym wypadku zwraca false.
      *
-     * @return Gdy stan tranzycji jest {@link org.ekipa.pnes.models.elements.Transition.TransitionState#Ready} - true
-     * w przeciwnym wypadku - false
+     * @return Gdy stan tranzycji jest gotowy true, w przeciwnym wypadku false.
      */
 
     public boolean setReady() {
@@ -31,11 +30,10 @@ public class Transition extends NetObject {
     }
 
     /**
-     * Ustawia stan tranzycji na odpalony jeśli został poprawnie ustawiony lub już taki był zwraca true, jeśli
-     * nie, false.
+     * Ustawia stan tranzycji na uruchomiony.
+     * Zwraca true przy poprawnym ustawieniu stanu lub w momencie gdy już taki był, w przeciwnym wypadku zwraca false.
      *
-     * @return Gdy stan tranzycji jest {@link org.ekipa.pnes.models.elements.Transition.TransitionState#Running} - true
-     * w przeciwnym wypadku - false
+     * @return Gdy stan tranzycji jest uruchomiony true, w przeciwnym wypadku false.
      */
     public boolean setRunning() {
         if (this.state.equals(TransitionState.Running)) return true;
@@ -45,11 +43,10 @@ public class Transition extends NetObject {
     }
 
     /**
-     * Ustawia stan tranzycji na niegotowy jeśli został poprawnie ustawiony lub już taki był zwraca true, jeśli
-     * nie, false.
+     * Ustawia stan tranzycji na niegotowy.
+     * Zwraca true przy poprawnym ustawieniu stanu lub w momencie gdy już taki był, w przeciwnym wypadku zwraca false.
      *
-     * @return Gdy stan tranzycji jest {@link org.ekipa.pnes.models.elements.Transition.TransitionState#Unready} - true
-     * w przeciwnym wypadku - false
+     * @return Gdy stan tranzycji jest niegotowy true, w przeciwnym wypadku false.
      */
     public boolean setUnready() {
         if (this.state.equals(TransitionState.Unready)) return true;

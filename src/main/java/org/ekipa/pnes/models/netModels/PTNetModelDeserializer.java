@@ -100,9 +100,9 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
     /**
      * Zwracanie elementu za pomocą id z podanej listy elemntów.
      *
-     * @param id szukanego elementu.
-     * @param netElements lista elementów.
-     * @return element sieci.
+     * @param id Szukanego elementu.
+     * @param netElements Lista elementów.
+     * @return Element sieci.
      */
 
     private NetElement getElementWithId(String id, List<NetElement> netElements) {
@@ -112,8 +112,8 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
     /**
      * Sprawdza czy obiekt jest tranzycją.
      *
-     * @param object obiekt sieci.
-     * @return False jeśli jest tranzycją, w przeciwnym przypadku zwraca True.
+     * @param object Obiekt sieci.
+     * @return false jeśli jest tranzycją, w przeciwnym przypadku zwraca true.
      */
 
     private boolean isTransition(NetObject object) {

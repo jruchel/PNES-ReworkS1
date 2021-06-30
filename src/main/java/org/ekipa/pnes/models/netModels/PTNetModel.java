@@ -30,23 +30,24 @@ public class PTNetModel extends NetModel {
     /**
      * Tworzy łuk {@link org.ekipa.pnes.models.elements.Arc}.
      *
-     * @param start  początek łuku.
-     * @param end    koniec łuku.
-     * @param weight waga łuku.
-     * @return stworzony łuk.
-     * @throws {@link org.ekipa.pnes.models.exceptions.ProhibitedConnectionException} ProhibitedConnectionException
+     * @param start  Początek łuku.
+     * @param end    Koniec łuku.
+     * @param weight Waga łuku.
+     * @return Stworzony łuk.
+     * @throws {@link org.ekipa.pnes.models.exceptions.ProhibitedConnectionException} W momencie próby stworzenia łuku,
+     * o początku i końcu tej samej klasy.
      */
     public Arc createArc(NetObject start, NetObject end, int weight) throws ProhibitedConnectionException {
         return (Arc) addElement(new Arc(start, end, weight));
     }
 
     /**
-     * Tworzy tranzycję {@link org.ekipa.pnes.models.elements.Transition}.
+     * Tworzy tranzycje {@link org.ekipa.pnes.models.elements.Transition}.
      *
-     * @param name nazwa tranzycji.
-     * @param x    współrzędne tranzycji x.
-     * @param y    współrzędne tranzycji y.
-     * @return stworzona tranzycja.
+     * @param name Nazwa tranzycji.
+     * @param x    Współrzędne tranzycji x.
+     * @param y    Współrzędne tranzycji y.
+     * @return Stworzona tranzycja.
      */
 
     public Transition createTransition(String name, double x, double y) {
@@ -56,12 +57,12 @@ public class PTNetModel extends NetModel {
     /**
      * Tworzy miejsce {@link org.ekipa.pnes.models.elements.Place}.
      *
-     * @param name          nazwa miejsca.
-     * @param x             współrzędne tranzycji x.
-     * @param y             współrzędne tranzycji y.
-     * @param tokenCapacity limit tokenów dla danego miejsca.
-     * @param token         ilość tokenów.
-     * @return stworzone miejsce.
+     * @param name          Nazwa miejsca.
+     * @param x             Współrzędne tranzycji x.
+     * @param y             Współrzędne tranzycji y.
+     * @param tokenCapacity Limit tokenów dla danego miejsca.
+     * @param token         Ilość tokenów.
+     * @return Stworzone miejsce.
      */
 
     public Place<Integer> createPlace(String name, double x, double y, int tokenCapacity, int token) {
@@ -71,9 +72,9 @@ public class PTNetModel extends NetModel {
     /**
      * Edytuje element {@link org.ekipa.pnes.models.netModels.NetModel}.
      *
-     * @param actualId id zmienionego obiektu.
-     * @param newId    id nowego obiektu.
-     * @return zmieniony element.
+     * @param actualId Id zmienionego obiektu.
+     * @param newId    Id nowego obiektu.
+     * @return Zmieniony element.
      */
 
     public NetElement edit(String actualId, String newId) {
@@ -217,8 +218,8 @@ public class PTNetModel extends NetModel {
     /**
      * Sprawdza czy podana tranzycja może być gotowa.
      *
-     * @param transitionId id tranzycji która ma być sprawdzona.
-     * @return True jeśli tranzycja może być gotowa, lub w przeciwnym przypadku zwraca False.
+     * @param transitionId Id tranzycji która ma być sprawdzona.
+     * @return true jeśli tranzycja może być gotowa, w przeciwnym przypadku false.
      */
 
     private boolean canTransitionBeReady(String transitionId) {
@@ -235,8 +236,8 @@ public class PTNetModel extends NetModel {
     /**
      * Zwracanie dokładnej ilości tokenów.
      *
-     * @param arcId podawany jest id łuku.
-     * @return ilość tokenów z początku łuku.
+     * @param arcId Podawany jest id łuku.
+     * @return Ilość tokenów z początku łuku.
      */
 
     private int getCurrentTokens(String arcId) {
