@@ -14,17 +14,18 @@ public class IdGenerator {
     }
 
     /**
-     * Czyści listę elementów
+     * Czyści mapę elementów
      */
     public static void resetElements() {
         netElements = new HashMap<>();
 
     }
     /**
-     * Sprawdza czy lista posiada podany element, jeśli tak zwraca ten element, jeśli nie ustawia podanemu elementowi id,
-     * następnie dodaje ten element do listy i zwraca go
+     * Ustawia odpowiednie id w zależności od ilości wystąpień dla podanego elementu,
+     * w przypadku gdy początkowe id jest zajęte licznik zwiększa się do momentu znalezienia wolnego id.
+     * Element po dodaniu właściwego id zostaje zapisany do mapy, a następnie zostaje zwrócony.
      *
-     * @param element {@link NetObject}, może nim Place lub Transition
+     * @param element {@link NetElement} sieci dla którego ma być ustawione id.
      * @return podany element z ustawionym poprawnym id
      */
     public static NetElement setElementId(NetElement element) {
@@ -42,7 +43,7 @@ public class IdGenerator {
     /**
      * Zlicza ilość wystąpień typu podanego elementu następnie ją zwraca
      *
-     * @param element {@link NetObject}, może nim Place lub Transition
+     * @param element {@link NetElement} sieci dla którego ma zostać policzona ilość wszystkich wystąpień tego samego typu.
      * @return liczbę wystąpień typu podanego elementu
      */
     private static long findOccurrencesOfSameTypeOfNetElement(NetElement element) {

@@ -22,7 +22,6 @@ public class Arc extends NetElement {
         this.end.addArc(this);
     }
 
-
     public Arc(NetObject start, NetObject end, double weight) throws ProhibitedConnectionException {
         this("", start, end, weight);
     }
@@ -45,7 +44,7 @@ public class Arc extends NetElement {
      *              {@link org.ekipa.pnes.models.elements.Transition} lub {@link org.ekipa.pnes.models.elements.Place}
      * @param end   element końcowy {@link org.ekipa.pnes.models.elements.Transition} lub
      *              {@link org.ekipa.pnes.models.elements.Place}
-     * @throws ProhibitedConnectionException wypisuje komunikat ze elementy sa tego samego typu
+     * @throws ProhibitedConnectionException wypisuje komunikat, że elementy są tego samego typu
      */
     private void validateElements(NetObject start, NetObject end) throws ProhibitedConnectionException {
         if (start.getClass().equals(end.getClass()))

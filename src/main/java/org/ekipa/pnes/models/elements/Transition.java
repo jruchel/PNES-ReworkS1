@@ -16,12 +16,13 @@ public class Transition extends NetObject {
     }
 
     /**
-     * Ustawia stan tranzycji na gotowy jesli został poprawnie ustawiony lub już taki był zwraca true, jeśli
+     * Ustawia stan tranzycji na gotowy jeśli został poprawnie ustawiony lub już taki był zwraca true, jeśli
      * nie, false.
      *
      * @return Gdy stan tranzycji jest {@link org.ekipa.pnes.models.elements.Transition.TransitionState#Ready} - true
      * w przeciwnym wypadku - false
      */
+
     public boolean setReady() {
         if (this.state.equals(TransitionState.Ready)) return true;
         if (!this.state.equals(TransitionState.Unready)) return false;
@@ -30,7 +31,7 @@ public class Transition extends NetObject {
     }
 
     /**
-     * Ustawia stan tranzycji na odpalony jesli został poprawnie ustawiony lub już taki był zwraca true, jeśli
+     * Ustawia stan tranzycji na odpalony jeśli został poprawnie ustawiony lub już taki był zwraca true, jeśli
      * nie, false.
      *
      * @return Gdy stan tranzycji jest {@link org.ekipa.pnes.models.elements.Transition.TransitionState#Running} - true
@@ -44,7 +45,7 @@ public class Transition extends NetObject {
     }
 
     /**
-     * Ustawia stan tranzycji na niegotowy jesli został poprawnie ustawiony lub już taki był zwraca true, jeśli
+     * Ustawia stan tranzycji na niegotowy jeśli został poprawnie ustawiony lub już taki był zwraca true, jeśli
      * nie, false.
      *
      * @return Gdy stan tranzycji jest {@link org.ekipa.pnes.models.elements.Transition.TransitionState#Unready} - true
@@ -76,5 +77,4 @@ public class Transition extends NetObject {
         @JsonProperty("Running")
         Running
     }
-
 }

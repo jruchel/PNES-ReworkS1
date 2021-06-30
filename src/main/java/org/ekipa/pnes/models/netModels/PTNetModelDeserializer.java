@@ -31,19 +31,15 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
 
 
         if (netElementsJson.isArray()) {
-
             Iterator<JsonNode> elements = netElementsJson.elements();
-
             while (elements.hasNext()) {
                 JsonNode next = elements.next();
 
                 if (next.has("start")) {
-
                     JsonNode startNode = next.get("start");
                     JsonNode endNode = next.get("end");
                     double weight = next.get("weight").asDouble();
                     String id = next.get("id").asText();
-
                     NetObject start;
                     NetObject end;
 
@@ -51,7 +47,6 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
                         start = objectMapper.readValue(startNode.toString(), Transition.class);
                         end = objectMapper.readValue(endNode.toString(), Place.class);
                     } catch (JsonProcessingException e) {
-
                         start = objectMapper.readValue(startNode.toString(), Place.class);
                         end = objectMapper.readValue(endNode.toString(), Transition.class);
                     }
@@ -102,9 +97,24 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
         return new PTNetModel(netElements);
     }
 
+    /**
+     * Zwracanie elementu za pomocą id z podanej listy elemntów.
+     *
+     * @param id szukanego elementu.
+     * @param netElements lista elementów.
+     * @return element sieci.
+     */
+
     private NetElement getElementWithId(String id, List<NetElement> netElements) {
         return netElements.stream().filter(i -> i.getId().equals(id)).findFirst().orElse(null);
     }
+
+    /**
+     * Sprawdza czy obiekt jest tranzycją.
+     *
+     * @param object obiekt sieci.
+     * @return False jeśli jest tranzycją, w przeciwnym przypadku zwraca True.
+     */
 
     private boolean isTransition(NetObject object) {
         return object.getId().startsWith("T");
