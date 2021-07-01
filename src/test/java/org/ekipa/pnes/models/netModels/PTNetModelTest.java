@@ -34,161 +34,161 @@ class PTNetModelTest {
         return sut;
     }
 
-//    @Test
-//    public void doesEditObjectChangeFieldsForPlace() throws Exception {
-//        ptNetModel = createDefaultNet();
-//
-//        ptNetModel.edit("P1", "P2");
-//
-//        String expectedID = ptNetModel.getObject("P1").getId();
-//        String actualID = ptNetModel.getObject("P2").getId();
-//        assertNotEquals(expectedID, actualID);
-//
-//        String expectedName = ptNetModel.getObject("P1").getName();
-//        String actualName = ptNetModel.getObject("P2").getName();
-//        assertEquals(expectedName, actualName);
-//
-//        double expectedX = ptNetModel.getObject("P1").getX();
-//        double actualX = ptNetModel.getObject("P2").getX();
-//        assertEquals(expectedX, actualX);
-//
-//        double expectedY = ptNetModel.getObject("P1").getY();
-//        double actualY = ptNetModel.getObject("P2").getY();
-//        assertEquals(expectedY, actualY);
-//
-//        int expectedTokens = ((Place<Integer>) (ptNetModel.getObject("P1"))).getTokens();
-//        int actualTokens = ((Place<Integer>) (ptNetModel.getObject("P2"))).getTokens();
-//        assertEquals(expectedTokens, actualTokens);
-//
-//        int expectedTokenCapacity = ((Place<Integer>) (ptNetModel.getObject("P1"))).getTokenCapacity();
-//        int actualTokenCapacity = ((Place<Integer>) (ptNetModel.getObject("P2"))).getTokenCapacity();
-//        assertEquals(expectedTokenCapacity, actualTokenCapacity);
-//    }
+    @Test
+    public void doesEditObjectChangeFieldsForPlace() throws Exception {
+        sut = createDefaultNet();
 
-//    @Test
-//    public void doesEditObjectChangeFieldsForTransition() throws Exception {
-//        ptNetModel = createDefaultNet();
-//
-//       ptNetModel.editElement("T1", "T2");
-//
-//        String expectedID = ptNetModel.getObject("T1").getId();
-//        String actualID = ptNetModel.getObject("T2").getId();
-//        assertNotEquals(expectedID, actualID);
-//
-//        String expectedName = ptNetModel.getObject("T1").getName();
-//        String actualName = ptNetModel.getObject("T2").getName();
-//        assertEquals(expectedName, actualName);
-//
-//        double expectedX = ptNetModel.getObject("T1").getX();
-//        double actualX = ptNetModel.getObject("T2").getX();
-//        assertEquals(expectedX, actualX);
-//
-//        double expectedY = ptNetModel.getObject("T1").getY();
-//        double actualY = ptNetModel.getObject("T2").getY();
-//        assertEquals(expectedY, actualY);
-//
-//    }
-//
-//    @Test
-//    public void EditObjectBehaviorForObjectsOfDifferentClass() throws Exception {
-//        ptNetModel = createDefaultNet();
-//
-//        ptNetModel.edit("P1", "T3");
-//
-//        String expectedID = ptNetModel.getObject("P1").getId();
-//        String actualID = ptNetModel.getObject("T3").getId();
-//        assertNotEquals(expectedID, actualID);
-//
-//        String expectedName = ptNetModel.getObject("P1").getName();
-//        String actualName = ptNetModel.getObject("T3").getName();
-//        assertNotEquals(expectedName, actualName);
-//
-//        double expectedX = ptNetModel.getObject("P1").getX();
-//        double actualX = ptNetModel.getObject("T3").getX();
-//        assertNotEquals(expectedX, actualX);
-//
-//        double expectedY = ptNetModel.getObject("P1").getY();
-//        double actualY = ptNetModel.getObject("T3").getY();
-//        assertNotEquals(expectedY, actualY);
-//    }
-//
-//    @Test
-//    public void doesEditObjectForTheSameObjects() throws Exception {
-//        ptNetModel = createDefaultNet();
-//
-//        ptNetModel.editElement("P1", "P1");
-//        assertEquals(ptNetModel.getObject("P1"), ptNetModel.getObject("P1"));
-//    }
-//
-//    @Test
-//    public void doesEditObjectChangeFieldsForArcs() throws Exception {
-//        ptNetModel = createDefaultNet();
-//
-//        ptNetModel.editElement("A1", "A2");
-//
-//        String expectedID = ptNetModel.getElement("A1").getId();
-//        String actualID = ptNetModel.getElement("A2").getId();
-//        assertNotEquals(expectedID, actualID);
-//
-//        NetObject expectedStart = ((Arc) (ptNetModel.getElement("A1"))).getStart();
-//        NetObject actualStart = ((Arc) (ptNetModel.getElement("A2"))).getStart();
-//        assertNotEquals(expectedStart, actualStart);
-//
-//        NetObject expectedEnd = ((Arc) (ptNetModel.getElement("A1"))).getEnd();
-//        NetObject actualEnd = ((Arc) (ptNetModel.getElement("A2"))).getEnd();
-//        assertNotEquals(expectedEnd, actualEnd);
-//
-//        double expectedWeight = ((Arc) (ptNetModel.getElement("A1"))).getWeight();
-//        double actualWeight = ((Arc) (ptNetModel.getElement("A2"))).getWeight();
-//        assertEquals(expectedWeight, actualWeight);
-//    }
-//
-//
-//    @Test
-//    public void doesEditObjectChangeStartAndEndInArc() throws Exception {
-//        ptNetModel = createDefaultNet();
-//        ptNetModel.edit("P1", ptNetModel.createArc(ptNetModel.getObject("P2"), ptNetModel.getObject("T1"), 3).getId());
-//
-//        Object expectedStart = ptNetModel.getObject("P1");
-//        Object actualStart = ptNetModel.getObject("P2");
-//        assertNotEquals(expectedStart, actualStart);
-//
-//        Object expectedEnd = ptNetModel.getObject("T3");
-//        Object actualEnd = ptNetModel.getObject("T1");
-//        assertNotEquals(expectedEnd, actualEnd);
-//
-//    }
-//
-//    @Test
-//    public void validationForNegativeValues() throws Exception {
-//        ptNetModel = createDefaultNet();
-//
-//        Place<Integer> newPlace = new Place<>("P10", "name", 3, 5, -30, -4);
-//        ptNetModel.edit("P1", newPlace.getId());
-//
-//
-//        double expectedX = 300;
-//        double actualX = ptNetModel.getObject("P1").getX();
-//
-//        assertEquals(expectedX, actualX);
-//
-//        double expectedY = 600;
-//        double actualY = ptNetModel.getObject("P1").getY();
-//
-//        assertEquals(expectedY, actualY);
-//
-//        int expected = 131;
-//        int actual = ((Place) ptNetModel.getObject("P1")).getTokenCapacity();
-//
-//        assertEquals(expected, actual);
-//        if (ptNetModel.getObject("P1").getClass().equals(new Place<Integer>().getClass())) {
-//            expected = 25;
-//            actual = ((Place<Integer>) ptNetModel.getObject("P1")).getTokens();
-//        } else {
-//            assertThrows(Exception.class, () -> ((Place<Integer>) ptNetModel.getObject("P1")).getTokens());
-//        }
-//        assertEquals(expected, actual);
-//    }
+        sut.edit("P1", sut.getElement("P2"));
+
+        String expectedID = sut.getObject("P1").getId();
+        String actualID = sut.getObject("P2").getId();
+        assertNotEquals(expectedID, actualID);
+
+        String expectedName = sut.getObject("P1").getName();
+        String actualName = sut.getObject("P2").getName();
+        assertEquals(expectedName, actualName);
+
+        double expectedX = sut.getObject("P1").getX();
+        double actualX = sut.getObject("P2").getX();
+        assertEquals(expectedX, actualX);
+
+        double expectedY = sut.getObject("P1").getY();
+        double actualY = sut.getObject("P2").getY();
+        assertEquals(expectedY, actualY);
+
+        int expectedTokens = ((Place<Integer>) (sut.getObject("P1"))).getTokens();
+        int actualTokens = ((Place<Integer>) (sut.getObject("P2"))).getTokens();
+        assertEquals(expectedTokens, actualTokens);
+
+        int expectedTokenCapacity = ((Place<Integer>) (sut.getObject("P1"))).getTokenCapacity();
+        int actualTokenCapacity = ((Place<Integer>) (sut.getObject("P2"))).getTokenCapacity();
+        assertEquals(expectedTokenCapacity, actualTokenCapacity);
+    }
+
+    @Test
+    public void doesEditObjectChangeFieldsForTransition() throws Exception {
+        sut = createDefaultNet();
+
+       sut.editElement("T1", sut.getElement("T2"));
+
+        String expectedID = sut.getObject("T1").getId();
+        String actualID = sut.getObject("T2").getId();
+        assertNotEquals(expectedID, actualID);
+
+        String expectedName = sut.getObject("T1").getName();
+        String actualName = sut.getObject("T2").getName();
+        assertEquals(expectedName, actualName);
+
+        double expectedX = sut.getObject("T1").getX();
+        double actualX = sut.getObject("T2").getX();
+        assertEquals(expectedX, actualX);
+
+        double expectedY = sut.getObject("T1").getY();
+        double actualY = sut.getObject("T2").getY();
+        assertEquals(expectedY, actualY);
+
+    }
+
+    @Test
+    public void EditObjectBehaviorForObjectsOfDifferentClass() throws Exception {
+        sut = createDefaultNet();
+
+        sut.edit("P1", sut.getElement("T3"));
+
+        String expectedID = sut.getObject("P1").getId();
+        String actualID = sut.getObject("T3").getId();
+        assertNotEquals(expectedID, actualID);
+
+        String expectedName = sut.getObject("P1").getName();
+        String actualName = sut.getObject("T3").getName();
+        assertNotEquals(expectedName, actualName);
+
+        double expectedX = sut.getObject("P1").getX();
+        double actualX = sut.getObject("T3").getX();
+        assertNotEquals(expectedX, actualX);
+
+        double expectedY = sut.getObject("P1").getY();
+        double actualY = sut.getObject("T3").getY();
+        assertNotEquals(expectedY, actualY);
+    }
+
+    @Test
+    public void doesEditObjectForTheSameObjects() throws Exception {
+        sut = createDefaultNet();
+
+        sut.editElement("P1", sut.getElement("P2"));
+        assertEquals(sut.getObject("P1"), sut.getObject("P1"));
+    }
+
+    @Test
+    public void doesEditObjectChangeFieldsForArcs() throws Exception {
+        sut = createDefaultNet();
+
+        sut.editElement("A1", sut.getElement("A2"));
+
+        String expectedID = sut.getElement("A1").getId();
+        String actualID = sut.getElement("A2").getId();
+        assertNotEquals(expectedID, actualID);
+
+        NetObject expectedStart = ((Arc) (sut.getElement("A1"))).getStart();
+        NetObject actualStart = ((Arc) (sut.getElement("A2"))).getStart();
+        assertNotEquals(expectedStart, actualStart);
+
+        NetObject expectedEnd = ((Arc) (sut.getElement("A1"))).getEnd();
+        NetObject actualEnd = ((Arc) (sut.getElement("A2"))).getEnd();
+        assertNotEquals(expectedEnd, actualEnd);
+
+        double expectedWeight = ((Arc) (sut.getElement("A1"))).getWeight();
+        double actualWeight = ((Arc) (sut.getElement("A2"))).getWeight();
+        assertEquals(expectedWeight, actualWeight);
+    }
+
+
+    @Test
+    public void doesEditObjectChangeStartAndEndInArc() throws Exception {
+        sut = createDefaultNet();
+        sut.edit("P1", sut.createArc(sut.getObject("P2"), sut.getObject("T1"), 3));
+
+        Object expectedStart = sut.getObject("P1");
+        Object actualStart = sut.getObject("P2");
+        assertNotEquals(expectedStart, actualStart);
+
+        Object expectedEnd = sut.getObject("T3");
+        Object actualEnd = sut.getObject("T1");
+        assertNotEquals(expectedEnd, actualEnd);
+
+    }
+
+    @Test
+    public void validationForNegativeValues() throws Exception {
+        sut = createDefaultNet();
+
+        Place<Integer> newPlace = new Place<>("P10", "name", 3, 5, -30, -4);
+        sut.edit("P1", new Place<>("P40", "name", 300, 600, 131, 25));
+
+
+        double expectedX = 300;
+        double actualX = sut.getObject("P1").getX();
+
+        assertEquals(expectedX, actualX);
+
+        double expectedY = 600;
+        double actualY = sut.getObject("P1").getY();
+
+        assertEquals(expectedY, actualY);
+
+        int expected = 131;
+        int actual = ((Place) sut.getObject("P1")).getTokenCapacity();
+
+        assertEquals(expected, actual);
+        if (sut.getObject("P1").getClass().equals(new Place<Integer>().getClass())) {
+            expected = 25;
+            actual = ((Place<Integer>) sut.getObject("P1")).getTokens();
+        } else {
+            assertThrows(Exception.class, () -> ((Place<Integer>) sut.getObject("P1")).getTokens());
+        }
+        assertEquals(expected, actual);
+    }
 
     @Test
     public void validationForAddingTokens() throws Exception {

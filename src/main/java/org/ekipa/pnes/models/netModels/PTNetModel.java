@@ -92,13 +92,7 @@ public class PTNetModel extends NetModel {
 
     }
 
-    private Place<Integer> cropTokens(Place<Integer> place) {
-        if(place.getTokens() < 0) place.setTokens(0);
-        if(place.getTokenCapacity()<0) place.setTokenCapacity(0);
-        if(place.getTokenCapacity() == 0) return place;
-        if(place.getTokens()>place.getTokenCapacity()) place.setTokens(place.getTokenCapacity());
-        return place;
-    }
+
 
     @Override
     protected boolean validateElement(NetElement o) {
@@ -138,6 +132,7 @@ public class PTNetModel extends NetModel {
             if (tokenSet > ((Place) getElement(placeId)).getTokenCapacity())
                 ((Place) getElement(placeId)).setTokens(((Place) getElement(placeId)).getTokenCapacity());
         }
+
 
     }
 
@@ -181,7 +176,7 @@ public class PTNetModel extends NetModel {
             setNetElements(getNetElements().stream().peek(i -> {
                 if (i.getId().equals(place.getId())) {
 
-                    if (place.getTokenCapacity() >= (place.getTokens() + (int) arc.getWeight())) {
+                    if (place.getTokenCapacity() >= (place.getTokens() + (int) arc.getWeight()) || place.getTokenCapacity() == 0) {
                         ((Place) i).setTokens(place.getTokens() + (int) arc.getWeight());
                     }
                 }

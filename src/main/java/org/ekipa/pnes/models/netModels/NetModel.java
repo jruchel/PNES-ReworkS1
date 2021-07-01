@@ -91,9 +91,19 @@ public abstract class NetModel {
      * @return Dodany element.
      */
     public NetElement addElement(NetElement element) {
+        if(element instanceof Place) {
+            cropTokens(((Place<Integer>)(element)));
+        }
         if (!validateElement(element)) return null;
         netElements.add(IdGenerator.setElementId(element));
         return element;
+    }
+
+    protected static Place<Integer> cropTokens(Place<Integer> place) {
+        if(place.getTokens() < 0) place.setTokens(0);
+        if(place.getTokenCapacity()<0) place.setTokenCapacity(0);
+        if(place.getTokens()>place.getTokenCapacity() && place.getTokenCapacity() != 0) place.setTokens(place.getTokenCapacity());
+        return place;
     }
 
     /**
