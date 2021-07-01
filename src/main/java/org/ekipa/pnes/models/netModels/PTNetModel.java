@@ -35,7 +35,7 @@ public class PTNetModel extends NetModel {
      * @param weight Waga łuku.
      * @return Stworzony łuk.
      * @throws {@link org.ekipa.pnes.models.exceptions.ProhibitedConnectionException} W momencie próby stworzenia łuku,
-     * o początku i końcu tej samej klasy.
+     *                o początku i końcu tej samej klasy.
      */
     public Arc createArc(NetObject start, NetObject end, int weight) throws ProhibitedConnectionException {
         return (Arc) addElement(new Arc(start, end, weight));
@@ -72,13 +72,13 @@ public class PTNetModel extends NetModel {
     /**
      * Edytuje element {@link org.ekipa.pnes.models.netModels.NetModel}.
      *
-     * @param actualId Id zmienionego obiektu.
-     * @param newId    Id nowego obiektu.
+     * @param actualId   Id zmienionego obiektu.
+     * @param newElement Element sieci, na który ma zamienić.
      * @return Zmieniony element.
      */
 
-    public NetElement edit(String actualId, String newId) {
-        return editElement(actualId, newId);
+    public NetElement edit(String actualId, NetElement newElement) {
+        return editElement(actualId, newElement);
     }
 
     @Override
@@ -222,9 +222,12 @@ public class PTNetModel extends NetModel {
      * @return true jeśli tranzycja może być gotowa, w przeciwnym przypadku false.
      */
 
-    private boolean canTransitionBeReady(String transitionId) {
-        if (((Transition) getElement(transitionId)).getArcs().isEmpty()) return false;
-        Set<Arc> transitionArcs = ((Transition) getElement(transitionId)).getArcs()
+    private boolean canTransitionBeReady(String transitionId){
+        Transition transition = (Transition) getElement(transitionId);
+        if (transition == null) return false;
+        if (transition.getArcs().isEmpty()) return false;
+        if (transition.getArcs().stream().noneMatch(arc -> arc.getEnd().equals(transition))) return true;
+        Set<Arc> transitionArcs = transition.getArcs()
                 .stream()
                 .filter(arc -> arc.getEnd().getId().equals(transitionId))
                 .collect(Collectors.toSet());

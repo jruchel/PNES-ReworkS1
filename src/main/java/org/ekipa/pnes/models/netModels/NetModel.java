@@ -37,7 +37,8 @@ public abstract class NetModel {
                 .map(netElement -> (NetObject) netElement).findFirst().orElse(null);
     }
 
-    /**`
+    /**
+     * `
      * Tworzy model obecnego typu na podstawie porównywania parametrów sieci z innym modelem i zamienia te parametry,
      * które są możliwe do zmiany, w przeciwnym razie dla danych których nie da się przetłumaczyć,
      * zostaną stworzone odpowiedniki i zostaną ustawione im wartości.
@@ -160,25 +161,28 @@ public abstract class NetModel {
     /**
      * Edytuje obiekt modelu jeśli przejdzie walidację.
      *
-     * @param actualId Id dokładnego obiektu, który ma zostać zaktualizowany.
-     * @param newId    Id obiektu, z którego ma zamienić wartości.
+     * @param elementId Id dokładnego obiektu, który ma zostać zaktualizowany.
+     * @param newElement Element sieci, na który ma zamienić.
      * @return Zaktualizowany obiekt.
      */
-    public NetElement editElement(String actualId, String newId) {
-        if (!(actualId.charAt(0) == newId.charAt(0))) return getElement(actualId);
-        if (!validateElement(getElement(newId))) return getElement(actualId);
-        List<Field> fieldsBefore = getAllFields(getElement(actualId));
+    public NetElement editElement(String elementId, NetElement newElement) {
+        NetElement actualElement = getElement(elementId);
+        if (actualElement == null) return null;
+        if (newElement == null) return actualElement;
+        if (!actualElement.getClass().equals(newElement.getClass())) return actualElement;
+        if (!validateElement(newElement)) return actualElement;
+        List<Field> fieldsBefore = getAllFields(actualElement);
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
         for (Field f : fieldsBefore.stream().filter(f -> !ignoredFields.contains(f.getName())).collect(Collectors.toList())) {
             f.setAccessible(true);
             try {
-                f.set(getElement(actualId), f.get(getElement(newId)));
+                f.set(actualElement, f.get(newElement));
             } catch (IllegalAccessException ignored) {
 
             }
             f.setAccessible(false);
         }
-        return getElement(actualId);
+        return actualElement;
     }
 
     /**
