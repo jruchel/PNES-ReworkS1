@@ -3,6 +3,7 @@ package org.ekipa.pnes.models.netModels;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.swagger.models.auth.In;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
 import org.ekipa.pnes.models.exceptions.ProhibitedConnectionException;
@@ -91,6 +92,14 @@ public class PTNetModel extends NetModel {
 
     }
 
+    private Place<Integer> cropTokens(Place<Integer> place) {
+        if(place.getTokens() < 0) place.setTokens(0);
+        if(place.getTokenCapacity()<0) place.setTokenCapacity(0);
+        if(place.getTokenCapacity() == 0) return place;
+        if(place.getTokens()>place.getTokenCapacity()) place.setTokens(place.getTokenCapacity());
+        return place;
+    }
+
     @Override
     protected boolean validateElement(NetElement o) {
         boolean wasValidated = false;
@@ -106,13 +115,6 @@ public class PTNetModel extends NetModel {
         }
         if (o instanceof Place) {
             wasValidated = true;
-            try {
-                Place<Integer> place = (Place<Integer>) o;
-                if (place.getTokenCapacity() < 0) return false;
-                if (place.getTokens() > place.getTokenCapacity()) return false;
-            } catch (Exception e) {
-                return false;
-            }
         }
         if (o instanceof Transition) {
             wasValidated = true;

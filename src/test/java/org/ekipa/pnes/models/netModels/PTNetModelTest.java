@@ -1,18 +1,17 @@
 package org.ekipa.pnes.models.netModels;
 
+import io.swagger.models.auth.In;
 import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.parameters.P;
-import sun.reflect.annotation.ExceptionProxy;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PTNetModelTest {
-    private PTNetModel ptNetModel;
+    private PTNetModel sut;
 
     @BeforeEach
     public void initialize() {
@@ -20,19 +19,19 @@ class PTNetModelTest {
     }
 
     public PTNetModel createDefaultNet() throws Exception {
-        ptNetModel = new PTNetModel();
-        ptNetModel.createPlace("Wojciech", 300, 600, 131, 25);
-        ptNetModel.createPlace("Sebastian420", 742, 641, 101, 46);
-        ptNetModel.createPlace("Mirek", 5, 7, 10, 2);
-        ptNetModel.createTransition("Kuba", 5, 1);
-        ptNetModel.createTransition("Kacper", 3, 2);
-        ptNetModel.createTransition("Adrian", 91, 5000);
+        sut = new PTNetModel();
+        sut.createPlace("Wojciech", 300, 600, 131, 25);
+        sut.createPlace("Sebastian420", 742, 641, 101, 46);
+        sut.createPlace("Mirek", 5, 7, 10, 2);
+        sut.createTransition("Kuba", 5, 1);
+        sut.createTransition("Kacper", 3, 2);
+        sut.createTransition("Adrian", 91, 5000);
 
-        ptNetModel.createArc(ptNetModel.getObject("P1"), ptNetModel.getObject("T3"), 1);
-        ptNetModel.createArc(ptNetModel.getObject("P2"), ptNetModel.getObject("T2"), 1);
-        ptNetModel.createArc(ptNetModel.getObject("P3"), ptNetModel.getObject("T1"), 1);
+        sut.createArc(sut.getObject("P1"), sut.getObject("T3"), 1);
+        sut.createArc(sut.getObject("P2"), sut.getObject("T2"), 1);
+        sut.createArc(sut.getObject("P3"), sut.getObject("T1"), 1);
 
-        return ptNetModel;
+        return sut;
     }
 
 //    @Test
@@ -193,10 +192,10 @@ class PTNetModelTest {
 
     @Test
     public void validationForAddingTokens() throws Exception {
-        ptNetModel = createDefaultNet();
+        sut = createDefaultNet();
 
-        Place<Integer> place = ptNetModel.createPlace("P20", 2.5, 2, 20, 2);
-        ptNetModel.addTokens(place.getId(), 35);
+        Place<Integer> place = sut.createPlace("P20", 2.5, 2, 20, 2);
+        sut.addTokens(place.getId(), 35);
         int expected = 20;
         int actual = place.getTokens();
         assertEquals(expected, actual);
@@ -214,9 +213,9 @@ class PTNetModelTest {
 
     @Test
     public void validationOfPrepareTransitions() throws Exception {
-        ptNetModel = createDefaultNet();
-        List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
-        List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
+        sut = createDefaultNet();
+        List<Transition> expected = sut.getTransitionsWithState(Transition.TransitionState.Unready);
+        List<List<NetModel>> example = NetModel.simulate(sut, 1);
         List<Transition> actual = example.get(0).get(0).prepareTransitions();
         for (int i = 0; i < expected.size(); i++) {
             expected.get(i).setUnready();
@@ -229,18 +228,18 @@ class PTNetModelTest {
 
     @Test
     public void testForRunTransition() throws Exception {
-        ptNetModel = createDefaultNet();
-        ptNetModel.createTransition("Magnus", 1, 2).setReady();
-        ((Transition) (ptNetModel.getObject("T4"))).setRunning();
+        sut = createDefaultNet();
+        sut.createTransition("Magnus", 1, 2).setReady();
+        ((Transition) (sut.getObject("T4"))).setRunning();
         try {
-            ptNetModel.createArc(ptNetModel.getObject("T4"), ptNetModel.getObject("P1"), 1);
+            sut.createArc(sut.getObject("T4"), sut.getObject("P1"), 1);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
-        ptNetModel.runTransition((Transition) ptNetModel.getObject("T4"));
+        sut.runTransition((Transition) sut.getObject("T4"));
         int expected = 26;
-        int actual = (int) ((Place) (ptNetModel.getObject("P1"))).getTokens();
+        int actual = (int) ((Place) (sut.getObject("P1"))).getTokens();
         assertEquals(expected, actual);
     }
 
@@ -283,10 +282,10 @@ class PTNetModelTest {
 
     @Test
     public void validationOfUnreadyTransitionStatesAfterSimulation() throws Exception {
-        ptNetModel = createDefaultNet();
-        List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
+        sut = createDefaultNet();
+        List<List<NetModel>> example = NetModel.simulate(sut, 1);
         List<Transition> actual = example.get(0).get(3).getTransitionsWithState(Transition.TransitionState.Unready);
-        List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
+        List<Transition> expected = sut.getTransitionsWithState(Transition.TransitionState.Unready);
         assertEquals(expected, actual);
     }
 
@@ -304,19 +303,19 @@ class PTNetModelTest {
 
 
     public PTNetModel preparinginfiniteGeneratingTransitionNet() throws Exception {
-        ptNetModel = new PTNetModel();
-        ptNetModel.createTransition("Generator", 420, 699);
-        ptNetModel.createPlace("Odbiorca", 430, 700, 100, 0);
-        ptNetModel.createArc(ptNetModel.getObject("T1"), ptNetModel.getObject("P1"), 1);
+        sut = new PTNetModel();
+        sut.createTransition("Generator", 420, 699);
+        sut.createPlace("Odbiorca", 430, 700, 100, 0);
+        sut.createArc(sut.getObject("T1"), sut.getObject("P1"), 1);
 
-        return ptNetModel;
+        return sut;
     }
 
     @Test
     public void validationForNetWithGeneratingTransition() throws Exception {
-        ptNetModel = preparinginfiniteGeneratingTransitionNet();
+        sut = preparinginfiniteGeneratingTransitionNet();
 
-        List<List<NetModel>> example = NetModel.simulate(ptNetModel, 6);
+        List<List<NetModel>> example = NetModel.simulate(sut, 6);
 
         List<NetModel> lastListOfSimulation = example.get(example.size()-1);
 
@@ -329,22 +328,52 @@ class PTNetModelTest {
 
     }
 
-    public PTNetModel preparingConsumingTransitionNet() throws Exception {
-        ptNetModel = new PTNetModel();
-        ptNetModel.createPlace("Dawca", 10, 20, 20, 20);
-        ptNetModel.createTransition("Pochlaniacz", 20, 20);
-        ptNetModel.createArc(ptNetModel.getObject("T1"), ptNetModel.getObject("P1"), 1);
+    private PTNetModel preparingInfinitelyGeneratingTransitionWithOnePlaceNoLimit() throws Exception {
+        sut = new PTNetModel();
+        sut.createPlace("Dawca", 10, 20, 0, 20);
+        sut.createTransition("Pochlaniacz", 20, 20);
+        sut.createArc(sut.getObject("T1"), sut.getObject("P1"), 1);
 
-        return ptNetModel;
+        return sut;
     }
 
+
+
     @Test
-    public void validationForNetWithConsumingTransition() throws Exception {
-        ptNetModel = preparingConsumingTransitionNet();
-        ptNetModel.wholeStep();
-        ptNetModel.wholeStep();
-        int actual = ((int) ((Place) ptNetModel.getObject("P1")).getTokens());
-        int expected = 18;
-        assertEquals(expected, actual);
+    public void shouldGenerateTokensIndefinitely() throws Exception {
+       sut = preparingInfinitelyGeneratingTransitionWithOnePlaceNoLimit();
+       PTNetModel lastStep = (PTNetModel)(getLastSimulationStep(NetModel.simulate(sut,3)));
+       int expected = 23;
+       int actual = (((Place<Integer>)(lastStep.getElement("P1"))).getTokens());
+
+       assertEquals(expected,actual);
+
+    }
+
+    private PTNetModel preparingInfinitelyGeneratingTransitionWithOnePlaceWithLimit() throws Exception {
+        sut = new PTNetModel();
+        sut.createPlace("Dawca", 10, 20, 5, 20);
+        sut.createTransition("Pochlaniacz", 20, 20);
+        sut.createArc(sut.getObject("T1"), sut.getObject("P1"), 1);
+
+        return sut;
+    }
+
+
+
+    @Test
+    public void tokensOverLimit() throws Exception {
+        sut = preparingInfinitelyGeneratingTransitionWithOnePlaceWithLimit();
+        PTNetModel lastStep = (PTNetModel)(getLastSimulationStep(NetModel.simulate(sut,3)));
+        int expected = 5;
+        int actual = (((Place<Integer>)(lastStep.getElement("P1"))).getTokens());
+
+        assertEquals(expected,actual);
+
+    }
+
+    private NetModel getLastSimulationStep(List<List<NetModel>> list) {
+        List<NetModel> lastCycle = list.get(list.size()-1);
+        return lastCycle.get(lastCycle.size()-1);
     }
 }
