@@ -36,31 +36,17 @@ public abstract class NetModel {
                 .filter(netObject -> netObject.getId().equals(id))
                 .map(netElement -> (NetObject) netElement).findFirst().orElse(null);
     }
-
-    /**`
-     * Tworzy model obecnego typu na podstawie porównywania parametrów sieci z innym modelem i zamienia te parametry,
-     * które są możliwe do zmiany, w przeciwnym razie dla danych których nie da się przetłumaczyć,
-     * zostaną stworzone odpowiedniki i zostaną ustawione im wartości.
-     *
-     * @param model Model {@link org.ekipa.pnes.models.netModels.NetModel}.
-     */
+    
     public abstract void translate(NetModel model);
 
-    /**
-     * Tworzy model obecnego typu na podstawie przekazanego modelu jeżeli jest to możliwe,
-     * w przeciwnym razie wyrzuca wyjątek o niemożliwej transformacji.
-     *
-     * @param model {@link org.ekipa.pnes.models.netModels.NetModel}.
-     * @throws ImpossibleTransformationException Wyjątek informujący o niemożliwej transformacji.
-     */
     public abstract void transform(NetModel model) throws ImpossibleTransformationException;
 
     /**
      * Wykonuje podaną ilość kroków symulacji dla podanej sieci.
      *
-     * @param netModel Sieć na której ma zostać przeprowadzona symulacja.
+     * @param netModel Sieć {@link org.ekipa.pnes.models.netModels.NetModel}, na której ma zostać przeprowadzona symulacja.
      * @param cycles   Ilość kroków, które mają się wykonać.
-     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> - lista modeli jako kroki symulacji.
      */
     public static List<List<NetModel>> simulate(NetModel netModel, int cycles) throws JsonProcessingException, IllegalAccessException, InstantiationException {
         List<List<NetModel>> result = new ArrayList<>();
@@ -77,16 +63,16 @@ public abstract class NetModel {
     /**
      * Usuwa podany element z całego modelu sieci.
      *
-     * @param element Element który ma zostać usunięty.
+     * @param element Element, który ma zostać usunięty.
      */
     public void deleteElement(NetElement element) {
         netElements = netElements.stream().filter(net -> !net.equals(element)).collect(Collectors.toList());
     }
 
     /**
-     * Dodaje podany element do modelu sieci jeśli przejdzie walidację.
+     * Dodaje podany element do modelu sieci, jeśli przejdzie walidację.
      *
-     * @param element Element który ma zostać dodany.
+     * @param element Element, który ma zostać dodany.
      * @return Dodany element.
      */
     public NetElement addElement(NetElement element) {
@@ -98,7 +84,7 @@ public abstract class NetModel {
     /**
      * Usuwanie elementu sieci za pomocą jego id {@link org.ekipa.pnes.models.elements.NetElement}.
      *
-     * @param id Id elementu który ma zostać usunięty.
+     * @param id Id elementu, który ma zostać usunięty.
      */
     public void deleteById(String id) {
         netElements.stream().filter(net -> net.getId().equals(id)).forEach(this::deleteElement);
@@ -107,7 +93,7 @@ public abstract class NetModel {
     /**
      * Usuwanie elemtu sieci po nazwie {@link org.ekipa.pnes.models.elements.NetElement}.
      *
-     * @param name Nazwa elementu do usunięcia.
+     * @param name Nazwa elementu, który ma zostać usunięty.
      */
     public void deleteByName(String name) {
         netElements.stream().filter(net -> net.getName().equals(name)).forEach(this::deleteElement);
@@ -116,8 +102,8 @@ public abstract class NetModel {
     /**
      * Odnajduje wszystkie łuki, które są połączone z obiektem sieci.
      *
-     * @param netObject Obiekt sieci.
-     * @return Łuki podanego obiektu.
+     * @param netObject {@link org.ekipa.pnes.models.elements.NetObject} - obiekt sieci.
+     * @return {@link java.util.Set}<{@link org.ekipa.pnes.models.elements.Arc}> - łuki podanego obiektu.
      */
     public Set<Arc> getArcsByNetObject(NetObject netObject) {
         return netObject.getArcs();
@@ -127,7 +113,7 @@ public abstract class NetModel {
      * Odnajduje wszystkie łuki po id, które są połączone z obiektem sieci.
      *
      * @param id Obiektu sieci.
-     * @return Łuki podanego obiektu.
+     * @return {@link java.util.Set}<{@link org.ekipa.pnes.models.elements.Arc}> - łuki podanego obiektu.
      */
 
     public Set<Arc> getArcsByNetObjectId(String id) {
@@ -184,7 +170,7 @@ public abstract class NetModel {
     /**
      * Przeprowadza walidację dowolnych elementów w modelu sieci.
      *
-     * @param o Id obiektu do walidacji.
+     * @param o {@link org.ekipa.pnes.models.elements.NetElement} - obiekt, który będzie podlegał walidacji.
      * @return Wynik walidacji.
      */
     protected abstract boolean validateElement(NetElement o);
@@ -192,7 +178,7 @@ public abstract class NetModel {
     /**
      * Dodaje tokeny do podanego miejsca.
      *
-     * @param placeId Id miejsca do którego mają zostać dodane tokeny.
+     * @param placeId Id miejsca, do którego mają zostać dodane tokeny.
      * @param tokens  Tokeny.
      */
     protected abstract void addTokens(String placeId, Object tokens);
@@ -200,7 +186,7 @@ public abstract class NetModel {
     /**
      * Wykonuje pojedynczy krok symulacji, zwraca kopie modelu po wykonaniu kroku.
      *
-     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Model po wykonaniu kroku.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> - model po wykonaniu kroku.
      */
     protected List<NetModel> wholeStep() throws JsonProcessingException {
         List<NetModel> currentSimulationSteps = new ArrayList<>();
@@ -219,7 +205,7 @@ public abstract class NetModel {
     /**
      * Tworzy kopie obecnego stanu tej klasy {@link org.ekipa.pnes.models.netModels.NetModel} bez referencji.
      *
-     * @return Skopiowany element.
+     * @return {@link org.ekipa.pnes.models.netModels.NetModel} - skopiowany element.
      */
 
     private NetModel copy() throws JsonProcessingException {
@@ -230,7 +216,7 @@ public abstract class NetModel {
     /**
      * Serializuje dany obiekt do JSON'a w postaci stringa.
      *
-     * @param netModel Model sieci do serializowania.
+     * @param netModel {@link org.ekipa.pnes.models.netModels.NetModel} - model sieci do serializowania.
      * @return Serializowany obiekt.
      */
 
@@ -240,7 +226,7 @@ public abstract class NetModel {
      * Deserializuje dany obiekt w postaci JSON'a.
      *
      * @param json Obiekt {@link org.ekipa.pnes.models.netModels.NetModel} w postaci JSON'a.
-     * @return Deserializowany obiekt.
+     * @return {@link org.ekipa.pnes.models.netModels.NetModel} - deserializowany obiekt.
      */
 
     public abstract NetModel deserialize(String json) throws JsonProcessingException;
@@ -249,23 +235,23 @@ public abstract class NetModel {
     /**
      * Uruchamia podaną tranzycję.
      *
-     * @param transition Tranzycja do uruchomienia.
-     * @return true jeśli uruchomiono, w przeciwnym przypadku zwraca false.
+     * @param transition {@link org.ekipa.pnes.models.elements.Transition} - tranzycja do uruchomienia.
+     * @return true jeśli uruchomiono, w przeciwnym wypadku zwraca false.
      */
     protected abstract boolean runTransition(Transition transition);
 
     /**
      * Odnajduje te tranzycje, które mogą zostać przygotowane, następnie ustawia je jako gotowe.
      *
-     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista gotowych tranzycji.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> - lista gotowych tranzycji.
      */
     protected abstract List<Transition> prepareTransitions();
 
     /**
      * Wybiera te tranzycje spośród gotowych, które mają zostać uruchomione.
      *
-     * @param transitions {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji do wybrania.
-     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji do uruchomienia.
+     * @param transitions {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> - lista tranzycji do wybrania.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> - lista tranzycji do uruchomienia.
      */
     protected abstract List<Transition> selectTransitionsToRun(List<Transition> transitions);
 
@@ -273,7 +259,7 @@ public abstract class NetModel {
      * Zwraca te tranzycje sieci, które znajdują się w podanym stanie.
      *
      * @param state {@link org.ekipa.pnes.models.elements.Transition.TransitionState}
-     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista tranzycji.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> - lista tranzycji.
      */
     protected List<Transition> getTransitionsWithState(Transition.TransitionState state) {
         return netElements.stream()
@@ -287,8 +273,8 @@ public abstract class NetModel {
     /**
      * Zwraca wszystkie pola podanego obiektu.
      *
-     * @param o Obiekt z którego bedą wyciągane pola.
-     * @return {@link java.util.List}<{@link java.lang.reflect.Field}> Lista pól podanego obiektu.
+     * @param o Obiekt, z którego bedą wyciągane pola.
+     * @return {@link java.util.List}<{@link java.lang.reflect.Field}> - lista pól podanego obiektu.
      */
 
     private List<Field> getAllFields(Object o) {
@@ -304,7 +290,7 @@ public abstract class NetModel {
     /**
      * Zwraca wszystkie tranzycje.
      *
-     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> Lista wszystkich tranzycji.
+     * @return {@link java.util.List}<{@link org.ekipa.pnes.models.elements.Transition}> - lista wszystkich tranzycji.
      */
 
     @JsonIgnore

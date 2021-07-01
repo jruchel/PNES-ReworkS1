@@ -14,7 +14,7 @@ public class IdGenerator {
     }
 
     /**
-     * Czyści mapę elementów
+     * Usuwa elementy z mapy
      */
     public static void resetElements() {
         netElements = new HashMap<>();
@@ -22,11 +22,11 @@ public class IdGenerator {
     }
     /**
      * Ustawia odpowiednie id w zależności od ilości wystąpień dla podanego elementu,
-     * w przypadku gdy początkowe id jest zajęte licznik zwiększa się do momentu znalezienia wolnego id.
+     * w przypadku gdy początkowe id jest zajęte, licznik zwiększa się do momentu znalezienia wolnego id.
      * Element po dodaniu właściwego id zostaje zapisany do mapy, a następnie zostaje zwrócony.
      *
      * @param element {@link NetElement} dla którego ma być ustawione id.
-     * @return Podany element z ustawionym poprawnym id.
+     * @return Podany element z poprawnie ustawionym id.
      */
     public static NetElement setElementId(NetElement element) {
         long numberOfOccupiedElements = findOccurrencesOfSameTypeOfNetElement(element.getClass());
@@ -41,7 +41,7 @@ public class IdGenerator {
     }
 
     /**
-     * Zlicza ilość wystąpień typu podanego elementu następnie ją zwraca
+     * Zlicza ilość wystąpień typu podanego elementu, następnie ją zwraca
      *
      * @param elementClass {@link Class} dla której ma zostać policzona ilość wszystkich wystąpień.
      * @return Liczba wystąpień podanej klasy.

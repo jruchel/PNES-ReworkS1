@@ -14,7 +14,7 @@ public class MyRandom {
      *
      * @param list Lista obiektów.
      * @param <E> Rodzaj obiektu.
-     * @return null jeśli lista jest pusta, w przeciwnym przypadku zwraca losowy obiekt z listy.
+     * @return null jeśli lista jest pusta, w przeciwnym wypadku zwraca losowy obiekt z listy.
      */
     public static <E> E getRandom(List<E> list) {
         if (list.isEmpty()) return null;

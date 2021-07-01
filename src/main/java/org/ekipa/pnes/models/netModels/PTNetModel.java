@@ -30,10 +30,10 @@ public class PTNetModel extends NetModel {
     /**
      * Tworzy łuk {@link org.ekipa.pnes.models.elements.Arc}.
      *
-     * @param start  Początek łuku.
-     * @param end    Koniec łuku.
+     * @param start  {@link org.ekipa.pnes.models.elements.NetObject} - początek łuku.
+     * @param end    {@link org.ekipa.pnes.models.elements.NetObject} - koniec łuku.
      * @param weight Waga łuku.
-     * @return Stworzony łuk.
+     * @return {@link org.ekipa.pnes.models.elements.Arc} - stworzony łuk.
      * @throws {@link org.ekipa.pnes.models.exceptions.ProhibitedConnectionException} W momencie próby stworzenia łuku,
      * o początku i końcu tej samej klasy.
      */
@@ -42,12 +42,12 @@ public class PTNetModel extends NetModel {
     }
 
     /**
-     * Tworzy tranzycje {@link org.ekipa.pnes.models.elements.Transition}.
+     * Tworzy tranzycję {@link org.ekipa.pnes.models.elements.Transition}.
      *
      * @param name Nazwa tranzycji.
      * @param x    Współrzędne tranzycji x.
      * @param y    Współrzędne tranzycji y.
-     * @return Stworzona tranzycja.
+     * @return {@link org.ekipa.pnes.models.elements.Transition} - stworzona tranzycja.
      */
 
     public Transition createTransition(String name, double x, double y) {
@@ -62,7 +62,7 @@ public class PTNetModel extends NetModel {
      * @param y             Współrzędne tranzycji y.
      * @param tokenCapacity Limit tokenów dla danego miejsca.
      * @param token         Ilość tokenów.
-     * @return Stworzone miejsce.
+     * @return {@link org.ekipa.pnes.models.elements.Place} - stworzone miejsce.
      */
 
     public Place<Integer> createPlace(String name, double x, double y, int tokenCapacity, int token) {
@@ -219,7 +219,7 @@ public class PTNetModel extends NetModel {
      * Sprawdza czy podana tranzycja może być gotowa.
      *
      * @param transitionId Id tranzycji która ma być sprawdzona.
-     * @return true jeśli tranzycja może być gotowa, w przeciwnym przypadku false.
+     * @return true, jeśli tranzycja może być gotowa, w przeciwnym wypadku false.
      */
 
     private boolean canTransitionBeReady(String transitionId) {
@@ -234,7 +234,7 @@ public class PTNetModel extends NetModel {
     }
 
     /**
-     * Zwracanie dokładnej ilości tokenów.
+     * Zwracanie ilości tokenów.
      *
      * @param arcId Podawany jest id łuku.
      * @return Ilość tokenów z początku łuku.

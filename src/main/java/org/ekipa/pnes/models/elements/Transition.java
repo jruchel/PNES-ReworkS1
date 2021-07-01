@@ -19,7 +19,7 @@ public class Transition extends NetObject {
      * Ustawia stan tranzycji na gotowy.
      * Zwraca true przy poprawnym ustawieniu stanu lub w momencie gdy już taki był, w przeciwnym wypadku zwraca false.
      *
-     * @return Gdy stan tranzycji jest gotowy true, w przeciwnym wypadku false.
+     * @return Gdy stan tranzycji jest gotowy zwraca true, w przeciwnym wypadku zwraca false.
      */
 
     public boolean setReady() {
@@ -33,7 +33,7 @@ public class Transition extends NetObject {
      * Ustawia stan tranzycji na uruchomiony.
      * Zwraca true przy poprawnym ustawieniu stanu lub w momencie gdy już taki był, w przeciwnym wypadku zwraca false.
      *
-     * @return Gdy stan tranzycji jest uruchomiony true, w przeciwnym wypadku false.
+     * @return Gdy stan tranzycji jest uruchomiony zwraca true, w przeciwnym wypadku zwraca false.
      */
     public boolean setRunning() {
         if (this.state.equals(TransitionState.Running)) return true;
@@ -46,7 +46,7 @@ public class Transition extends NetObject {
      * Ustawia stan tranzycji na niegotowy.
      * Zwraca true przy poprawnym ustawieniu stanu lub w momencie gdy już taki był, w przeciwnym wypadku zwraca false.
      *
-     * @return Gdy stan tranzycji jest niegotowy true, w przeciwnym wypadku false.
+     * @return Gdy stan tranzycji jest niegotowy zwraca true, w przeciwnym wypadku zwraca false.
      */
     public boolean setUnready() {
         if (this.state.equals(TransitionState.Unready)) return true;

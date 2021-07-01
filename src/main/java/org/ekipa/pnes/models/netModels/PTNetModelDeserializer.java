@@ -98,11 +98,11 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
     }
 
     /**
-     * Zwracanie elementu za pomocą id z podanej listy elemntów.
+     * Zwraca element sieci {@link org.ekipa.pnes.models.elements.NetElement} za pomocą id z podanej listy elemntów.
      *
-     * @param id Szukanego elementu.
-     * @param netElements Lista elementów.
-     * @return Element sieci.
+     * @param id Id szukanego elementu.
+     * @param netElements {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> - lista elementów.
+     * @return {@link org.ekipa.pnes.models.elements.NetElement} - element sieci.
      */
 
     private NetElement getElementWithId(String id, List<NetElement> netElements) {
@@ -112,8 +112,8 @@ public class PTNetModelDeserializer extends JsonDeserializer<PTNetModel> {
     /**
      * Sprawdza czy obiekt jest tranzycją.
      *
-     * @param object Obiekt sieci.
-     * @return false jeśli jest tranzycją, w przeciwnym przypadku zwraca true.
+     * @param object {@link org.ekipa.pnes.models.elements.NetObject} - obiekt sieci.
+     * @return false jeśli jest tranzycją, w przeciwnym wypadku zwraca true.
      */
 
     private boolean isTransition(NetObject object) {

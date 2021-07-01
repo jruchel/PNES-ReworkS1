@@ -1,7 +1,7 @@
 package org.ekipa.pnes.models.exceptions;
 
 /**
- * Ogólny wyjątek spójności sieci.
+ * Wyjątek jest wyrzucany przy braku spójności sieci.
  */
 
 public class NetIntegrityException extends Exception {
