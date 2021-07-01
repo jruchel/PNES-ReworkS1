@@ -1,12 +1,11 @@
 package org.ekipa.pnes.models.netModels;
 
-import org.ekipa.pnes.models.elements.Arc;
-import org.ekipa.pnes.models.elements.NetObject;
-import org.ekipa.pnes.models.elements.Place;
-import org.ekipa.pnes.models.elements.Transition;
+import org.ekipa.pnes.models.elements.*;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.parameters.P;
+import sun.reflect.annotation.ExceptionProxy;
 
 import java.util.List;
 
@@ -301,5 +300,51 @@ class PTNetModelTest {
 
         assertEquals(expected, actual);
 
+    }
+
+
+    public PTNetModel preparinginfiniteGeneratingTransitionNet() throws Exception {
+        ptNetModel = new PTNetModel();
+        ptNetModel.createTransition("Generator", 420, 699);
+        ptNetModel.createPlace("Odbiorca", 430, 700, 100, 0);
+        ptNetModel.createArc(ptNetModel.getObject("T1"), ptNetModel.getObject("P1"), 1);
+
+        return ptNetModel;
+    }
+
+    @Test
+    public void validationForNetWithGeneratingTransition() throws Exception {
+        ptNetModel = preparinginfiniteGeneratingTransitionNet();
+
+        List<List<NetModel>> example = NetModel.simulate(ptNetModel, 6);
+
+        List<NetModel> lastListOfSimulation = example.get(example.size()-1);
+
+        NetModel lastElement = lastListOfSimulation.get(lastListOfSimulation.size()-1);
+
+
+
+        int expected = 2;
+
+
+    }
+
+    public PTNetModel preparingConsumingTransitionNet() throws Exception {
+        ptNetModel = new PTNetModel();
+        ptNetModel.createPlace("Dawca", 10, 20, 20, 20);
+        ptNetModel.createTransition("Pochlaniacz", 20, 20);
+        ptNetModel.createArc(ptNetModel.getObject("T1"), ptNetModel.getObject("P1"), 1);
+
+        return ptNetModel;
+    }
+
+    @Test
+    public void validationForNetWithConsumingTransition() throws Exception {
+        ptNetModel = preparingConsumingTransitionNet();
+        ptNetModel.wholeStep();
+        ptNetModel.wholeStep();
+        int actual = ((int) ((Place) ptNetModel.getObject("P1")).getTokens());
+        int expected = 18;
+        assertEquals(expected, actual);
     }
 }
