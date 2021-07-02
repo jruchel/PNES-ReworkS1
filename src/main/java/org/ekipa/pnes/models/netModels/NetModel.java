@@ -180,6 +180,9 @@ public abstract class NetModel {
         if (actualElement == null) return null;
         if (newElement == null) return actualElement;
         if (!actualElement.getClass().equals(newElement.getClass())) return actualElement;
+        if(newElement instanceof Place) {
+            cropTokens(((Place<Integer>)(newElement)));
+        }
         if (!validateElement(newElement)) return actualElement;
         List<Field> fieldsBefore = getAllFields(actualElement);
         List<String> ignoredFields = Arrays.asList("arcs", "id", "start", "end");
