@@ -193,7 +193,7 @@ class PTNetModelTest {
     }
 
     @Test
-    public void validationForAddingTokens() throws Exception {
+    public void shouldNotAddTokensOverTokenCapacity() throws Exception {
         ptNetModel = createDefaultNet();
 
         Place<Integer> place = ptNetModel.createPlace("P20", 2.5, 2, 20, 2);
@@ -205,12 +205,12 @@ class PTNetModelTest {
     }
 
     @Test
-    public void validationForSetTransitionReady() {
+    public void newTransitionShouldBeUnready() {
 
         Transition transition = new Transition("", "Flood", 10, 20);
         Transition.TransitionState actual = transition.getState();
-        Transition.TransitionState expected = Transition.TransitionState.Ready;
-        assertNotEquals(expected, actual);
+        Transition.TransitionState expected = Transition.TransitionState.Unready;
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -283,7 +283,7 @@ class PTNetModelTest {
     }
 
     @Test
-    public void validationOfUnreadyTransitionStatesAfterSimulation() throws Exception {
+    public void shouldHaveUnreadyTransitionStatesAfterSimulation() throws Exception {
         ptNetModel = createDefaultNet();
         List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
         List<Transition> actual = example.get(0).get(3).getTransitionsWithState(Transition.TransitionState.Unready);
