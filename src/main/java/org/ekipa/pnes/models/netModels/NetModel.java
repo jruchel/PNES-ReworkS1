@@ -9,6 +9,7 @@ import org.ekipa.pnes.models.exceptions.ImpossibleTransformationException;
 import org.ekipa.pnes.utils.IdGenerator;
 import org.ekipa.pnes.utils.Pair;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -65,11 +66,10 @@ public abstract class NetModel {
      */
     public static List<List<NetModel>> simulate(NetModel netModel, int cycles) throws Exception {
         if (netModel.getNetElements() == null || netModel.getNetElements().isEmpty())
-            return new ArrayList<>(new ArrayList<>());
+            return Collections.singletonList(Collections.singletonList(netModel));
         List<List<NetModel>> result = new ArrayList<>();
-
-        result.add(netModel.wholeStep());
-        for (int i = 0; i < cycles - 1; i++) {
+        result.add(Collections.singletonList(netModel));
+        for (int i = 0; i < cycles; i++) {
             List<NetModel> previousCycle = result.get(i);
             NetModel lastInCycle = previousCycle.get(previousCycle.size() - 1);
             result.add(lastInCycle.wholeStep());

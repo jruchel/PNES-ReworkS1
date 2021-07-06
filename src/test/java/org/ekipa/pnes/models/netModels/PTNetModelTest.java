@@ -286,7 +286,9 @@ class PTNetModelTest {
     public void validationOfUnreadyTransitionStatesAfterSimulation() throws Exception {
         ptNetModel = createDefaultNet();
         List<List<NetModel>> example = NetModel.simulate(ptNetModel, 1);
-        List<Transition> actual = example.get(0).get(3).getTransitionsWithState(Transition.TransitionState.Unready);
+        List<NetModel> lastCycle = example.get(example.size() - 1);
+        NetModel lastStep = lastCycle.get(lastCycle.size() - 1);
+        List<Transition> actual = lastStep.getTransitionsWithState(Transition.TransitionState.Unready);
         List<Transition> expected = ptNetModel.getTransitionsWithState(Transition.TransitionState.Unready);
         assertEquals(expected, actual);
     }

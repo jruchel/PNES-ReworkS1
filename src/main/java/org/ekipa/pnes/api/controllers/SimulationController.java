@@ -4,7 +4,6 @@ import org.ekipa.pnes.api.configs.security.Controller;
 import org.ekipa.pnes.api.configs.security.SecuredMapping;
 import org.ekipa.pnes.models.netModels.NetModel;
 import org.ekipa.pnes.models.netModels.PTNetModel;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/simulation")
-@Validated
 public class SimulationController extends Controller {
 
     @SecuredMapping(path = "/pt-net", method = RequestMethod.POST)
