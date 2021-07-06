@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @JsonDeserialize(using = PTNetModelDeserializer.class)
 public class PTNetModel extends NetModel {
 
-    private Transition selectedTransition;
-
     public PTNetModel() {
         super();
     }
@@ -208,8 +206,6 @@ public class PTNetModel extends NetModel {
 
     @Override
     protected List<Transition> selectTransitionsToRun(List<Transition> transitions) {
-        if (selectedTransition != null && selectedTransition.getState().equals(Transition.TransitionState.Ready))
-            return Collections.singletonList(selectedTransition);
         return Collections.singletonList(MyRandom.getRandom(transitions.stream()
                 .filter(i -> i.getState().equals(Transition.TransitionState.Ready))
                 .collect(Collectors.toList())));
@@ -248,12 +244,5 @@ public class PTNetModel extends NetModel {
         } else {
             return Integer.MAX_VALUE;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "PTNetModel{" +
-                ", selectedTransition=" + selectedTransition +
-                '}';
     }
 }

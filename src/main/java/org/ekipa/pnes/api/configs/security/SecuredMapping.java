@@ -14,8 +14,10 @@ import java.lang.annotation.Target;
 @RequestMapping
 public @interface SecuredMapping {
     String[] role() default "";
+
     @AliasFor(annotation = RequestMapping.class)
-    RequestMethod[] method();
+    RequestMethod[] method() default RequestMethod.GET;
+
     @AliasFor(annotation = RequestMapping.class)
-    String path();
+    String path() default "";
 }

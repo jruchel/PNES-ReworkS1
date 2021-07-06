@@ -37,7 +37,8 @@ public abstract class NetModel {
                 .map(netElement -> (NetObject) netElement).findFirst().orElse(null);
     }
 
-    /**`
+    /**
+     * `
      * Tworzy model obecnego typu na podstawie porównywania parametrów sieci z innym modelem i zamienia te parametry,
      * które są możliwe do zmiany, w przeciwnym razie dla danych których nie da się przetłumaczyć,
      * zostaną stworzone odpowiedniki i zostaną ustawione im wartości.
@@ -62,7 +63,9 @@ public abstract class NetModel {
      * @param cycles   Ilość kroków, które mają się wykonać.
      * @return {@link java.util.List}<{@link org.ekipa.pnes.models.netModels.NetModel}> Lista modeli jako kroki symulacji.
      */
-    public static List<List<NetModel>> simulate(NetModel netModel, int cycles) throws JsonProcessingException, IllegalAccessException, InstantiationException {
+    public static List<List<NetModel>> simulate(NetModel netModel, int cycles) throws Exception {
+        if (netModel.getNetElements() == null || netModel.getNetElements().isEmpty())
+            return new ArrayList<>(new ArrayList<>());
         List<List<NetModel>> result = new ArrayList<>();
 
         result.add(netModel.wholeStep());
